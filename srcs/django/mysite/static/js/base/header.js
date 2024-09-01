@@ -19,6 +19,9 @@ document.addEventListener("DOMContentLoaded", function() {
   // menu
 
   let dashboardBtn = document.querySelector("#dashboard-link");
+  let navbarLogo = document.querySelector("#navbar-logo");
+
+  // dashboard
 
   dashboardBtn.addEventListener("click", function(e) {
     e.preventDefault();
@@ -26,6 +29,31 @@ document.addEventListener("DOMContentLoaded", function() {
     history.pushState(null, '', '/dashboard');
 
     fetch('/dashboard_content')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur lors du chargement du dashboard');
+            }
+            return response.text();
+        })
+        .then(html => {
+            pageContent.innerHTML = html;
+            document.getElementById('loader').style.display = 'none';
+
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            pageContent.innerHTML = '<p>Une erreur est survenue lors du chargement du contenu.</p>';
+            document.getElementById('loader').style.display = 'none';
+        });
+  });
+
+  // navbar logo
+  navbarLogo.addEventListener("click", function(e) {
+    e.preventDefault();
+    document.getElementById('loader').style.display = 'unset';
+    history.pushState(null, '', '/');
+
+    fetch('/home_content')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Erreur lors du chargement du dashboard');

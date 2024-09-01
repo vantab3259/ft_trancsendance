@@ -12,3 +12,6 @@ def dashboard(request):
 
 def dashboard_content(request):
     return render(request, 'dashboard/dashboard_content.html')
+
+def home_content(request):
+    return render(request, 'home/home_content.html')
