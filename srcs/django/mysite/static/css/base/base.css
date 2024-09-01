@@ -85,3 +85,33 @@ table {
 body {
   font-family: 'FuturaPTBold', sans-serif;
 }
+
+body{
+  background-color: #c9d6ff;
+  background: linear-gradient(to right, #e2e2e2, #c9d6ff);
+
+  height: 100vh;
+}
+
+.spinner-border {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 100001;
+  /* display: none; */
+}
+
+.bg-loader {
+  background-color: grey;
+  opacity: 0.4;
+  position:absolute;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 100000;
+}
+
+#loader {
+  display: none;
+}

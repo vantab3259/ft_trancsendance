@@ -1,10 +1,48 @@
-let profileDropdownList = document.querySelector(".profile-dropdown-list");
-let btn = document.querySelector(".profile-dropdown-btn");
+document.addEventListener("DOMContentLoaded", function() {
+  
 
-let classList = profileDropdownList.classList;
+  // dropdown header
 
-const toggle = () => classList.toggle("active");
+  let profileDropdownList = document.querySelector(".profile-dropdown-list");
+  let btn = document.querySelector(".profile-dropdown-btn");
+  var pageContent = document.querySelector("div.content");
+  let classList = profileDropdownList.classList;
+  
+  const toggle = () => classList.toggle("active");
+  
+  btn.addEventListener("click", toggle);
+  
+  window.addEventListener("click", function (e) {
+    if (!btn.contains(e.target)) classList.remove("active");
+  });
 
-window.addEventListener("click", function (e) {
-  if (!btn.contains(e.target)) classList.remove("active");
+  // menu
+
+  let dashboardBtn = document.querySelector("#dashboard-link");
+
+  dashboardBtn.addEventListener("click", function(e) {
+    e.preventDefault();
+    document.getElementById('loader').style.display = 'unset';
+    history.pushState(null, '', '/dashboard');
+
+    fetch('/dashboard_content')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur lors du chargement du dashboard');
+            }
+            return response.text();
+        })
+        .then(html => {
+            pageContent.innerHTML = html;
+            document.getElementById('loader').style.display = 'none';
+
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            pageContent.innerHTML = '<p>Une erreur est survenue lors du chargement du contenu.</p>';
+            document.getElementById('loader').style.display = 'none';
+        });
+});
+
+
 });
