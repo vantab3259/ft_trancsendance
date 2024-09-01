@@ -215,10 +215,18 @@ body{
   transform: scale(1.3);
 }
 
-.form-container button {
+.form-container button, .toggle-container button {
   transition: transform 0.3s ease-in-out;
 }
 
-.form-container button:hover {
-  transform: scale(1.2);
+.form-container button:hover, .toggle-container button:hover {
+  transform: scale(1.2) !important;
+}
+
+.container-flex-login {
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  height: 80%;
 }

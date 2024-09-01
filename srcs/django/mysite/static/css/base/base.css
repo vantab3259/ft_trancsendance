@@ -69,3 +69,7 @@ table {
 .navbar {
   display: flex;
 }
+
+.content {
+  height: 100%;
+}
