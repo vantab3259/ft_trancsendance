@@ -1,10 +1,8 @@
-DOCKER_COMPOSE_FILE=/mnt/nfs/homes/mudoh/Desktop/ft_transcendance/srcs/docker-compose.yml
-SSL_FOLDER=/mnt/nfs/homes/mudoh/Desktop/ft_transcendance/srcs/nginx/certs
-CREATE_KEY_SSL=openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./srcs/nginx/certs/transcendance.key -out ./srcs/nginx/certs/transcendance.crt -subj "/CN=testi"
-
+SSL_FOLDER=./srcs/nginx/certs
+DOCKER_COMPOSE_FILE=./srcs/docker-compose.yml
 build:
 	mkdir -p $(SSL_FOLDER)
-	$(CREATE_KEY_SSL)
+	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./srcs/nginx/certs/transcendance.key -out ./srcs/nginx/certs/transcendance.crt -subj "/CN=testi"
 	docker-compose -f $(DOCKER_COMPOSE_FILE) up --build
 
 down:

@@ -5,6 +5,7 @@ services:
     build: ./django
     container_name: django-app
     command: python manage.py runserver 0.0.0.0:8000
+    env_file: .env
     volumes:
       - ./django:/usr/src/app
     ports:
@@ -15,10 +16,7 @@ services:
   db:
     image: postgres:latest  
     container_name: postgres
-    environment:
-      POSTGRES_DB: django_db
-      POSTGRES_USER: django_user
-      POSTGRES_PASSWORD: django_password
+    env_file: .env
     volumes:
       - db_data:/var/lib/postgresql/data
 
@@ -26,6 +24,7 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx
+    env_file: .env
     ports:
       - "4443:443" 
     volumes:
