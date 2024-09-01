@@ -115,3 +115,7 @@ body{
 #loader {
   display: none;
 }
+
+.profile-dropdown-list {
+  z-index: 3;
+}
