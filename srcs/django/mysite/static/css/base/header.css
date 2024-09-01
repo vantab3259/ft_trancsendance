@@ -158,3 +158,12 @@
 .navbar {
   margin-bottom: 20px;
 }
+
+.navbar-list li, .navbar-logo {
+  transition: transform 0.3s ease-in-out;
+}
+
+.navbar-list li:hover, .navbar-logo:hover {
+  transform: scale(1.1);
+  font-weight: 800;
+}

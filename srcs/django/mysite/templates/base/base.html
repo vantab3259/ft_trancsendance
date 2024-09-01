@@ -1,10 +1,12 @@
 <!-- mon_app/templates/base.html -->
+{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Mon Site{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'images/login/42_logo.png' %}">
+    <title>{% block title %}Ft-Transcendence{% endblock %}</title>
 
     <!-- BOOTSTRAP CSS -->
 
@@ -22,7 +24,6 @@
       
     <!-- BASE CSS -->
 
-    {% load static %}
     <link rel="stylesheet" href="{% static 'css/base/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/base/header.css' %}">
 
