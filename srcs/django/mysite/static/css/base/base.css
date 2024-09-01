@@ -73,3 +73,15 @@ table {
 .content {
   height: 100%;
 }
+
+@font-face {
+  font-family: 'FuturaPTBold';
+  src: url("{% static 'font/futura/FuturaPTBold.otf' %}") format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* Utiliser la police dans votre style */
+body {
+  font-family: 'FuturaPTBold', sans-serif;
+}
