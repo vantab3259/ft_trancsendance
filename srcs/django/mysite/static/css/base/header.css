@@ -84,8 +84,8 @@
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
-  background: url(./assets/profile-pic.jpg);
   background-size: cover;
+  margin: 4px;
 }
 
 .profile-img i {
@@ -93,6 +93,7 @@
   right: 0;
   bottom: 0.3rem;
   font-size: 0.5rem;
+  margin: -5px;
   color: var(--green);
 }
 
