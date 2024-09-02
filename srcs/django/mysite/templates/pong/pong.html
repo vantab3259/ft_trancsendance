@@ -1,0 +1,15 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Pong{% endblock %}
+
+{% block overload_css %}
+    <link rel="stylesheet" href="{% static 'css/pong/pong.css' %}">
+{% endblock %}
+
+{% block content %}
+
+  {% include 'pong/pong_content.html' %}
+
+
+{% endblock %}

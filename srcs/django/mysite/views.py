@@ -15,3 +15,9 @@ def dashboard_content(request):
 
 def home_content(request):
     return render(request, 'home/home_content.html')
+
+def pong(request):
+    return render(request, 'pong/pong.html')
+
+def pong_content(request):
+    return render(request, 'pong/pong_content.html')
