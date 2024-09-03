@@ -1,1 +1,6 @@
-*.pyc
+srcs/django/mysite/__pycache__/*
+srcs/django/mysite/__pycache__/
+srcs/django/mysite/__pycache__
+.ideal/
+.ideal
+.ideal/*

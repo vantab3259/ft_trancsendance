@@ -4,12 +4,16 @@
 {% block title %}Pong{% endblock %}
 
 {% block overload_css %}
-    <link rel="stylesheet" href="{% static 'css/pong/pong.css' %}">
+
 {% endblock %}
 
 {% block content %}
 
-  {% include 'pong/pong_content.html' %}
+{% include 'pong/pong_content.html' %}
 
 
+    {% block overload_javascript %}
+        <script src="{% static 'js/pong/pong.js' %}"></script>
+    {% endblock %}
+    
 {% endblock %}
