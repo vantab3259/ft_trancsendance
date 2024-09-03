@@ -21,3 +21,7 @@
     position: absolute;
     top: 50px;
 }
+
+#quitModal {
+    background-color: rgba(0, 0, 0, 0.3);
+}
