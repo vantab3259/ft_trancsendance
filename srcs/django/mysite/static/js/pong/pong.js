@@ -40,6 +40,15 @@ if (!window.com) {
         score: 0
     };
     window.com = com;
+} else {
+    window.com = com = {
+        x: canvas.width - 20,
+        y: canvas.height / 2 - 100 / 2,
+        width: 20,
+        height: 100,
+        color: "WHITE",
+        score: 0
+    };
 }
 
 // Create the ball Object
