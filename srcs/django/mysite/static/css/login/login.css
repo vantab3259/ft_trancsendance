@@ -230,3 +230,8 @@ body{
   align-items: center;
   height: 80%;
 }
+
+.container-flex-login {
+    font-weight: 600;
+    font-style: normal;
+}
