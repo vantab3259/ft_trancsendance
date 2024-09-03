@@ -27,4 +27,8 @@ urlpatterns = [
     path('home_content/', views.home_content, name='home_content'),
     path('pong/', views.pong, name='pong'),
     path('pong_content/', views.pong_content, name='pong_content'),
+    path('profile/edit', views.profile_edit, name='profile_edit'),
+    path('profile_edit', views.profile_edit, name='profile_edit'),
+    path('profile_edit_content', views.profile_edit_content, name='profile_edit'),
+
 ]

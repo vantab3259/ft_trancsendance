@@ -1,0 +1,106 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/profile/profile_edit.css' %}">
+
+<div class="content-form-profile">
+    
+    <div class="title-container-profile">
+        <span>SETTINGS</span>
+    </div>
+    
+    <div class="main-profile-part">
+        <div class="left-menu-profile">
+
+        </div>
+
+        <div class="right-profile-container">
+            <form class="form-edit-profile">
+                <div class="form-section">
+                    <h2>PERSONAL INFORMATION</h2>
+                    <label for="first-name">First name</label>
+                    <input type="text" id="first-name" name="first-name" value="Rayan">
+
+                    <label for="last-name">Last name</label>
+                    <input type="text" id="last-name" name="last-name" value="Anki">
+
+                    <label for="usual-name">Usual first name</label>
+                    <input type="text" id="usual-name" name="usual-name">
+
+                    <label for="birth-date">Birth date</label>
+                    <input type="text" id="birth-date" name="birth-date" value="01/09/2002">
+
+                    <label for="birth-city">Birth city</label>
+                    <input type="text" id="birth-city" name="birth-city" value="Charenton-le-Pont">
+                </div>
+
+                <div class="form-section">
+                    <h2>CONTACT</h2>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="rabalone94@gmail.com">
+
+                    <label for="phone-code">Phone country code</label>
+                    <select id="phone-code" name="phone-code">
+                        <option value="">Select</option>
+                    </select>
+
+                    <label for="phone">Phone</label>
+                    <input type="text" id="phone" name="phone" value="0664353863">
+
+                    <label>
+                        <input type="checkbox" name="hide-phone"> Hide phone from students
+                    </label>
+
+                    <label for="address">Address</label>
+                    <input type="text" id="address" name="address" value="32 Rue De Strasbourg">
+
+                    <label for="address-complement">Address complement</label>
+                    <input type="text" id="address-complement" name="address-complement">
+
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="city" value="Maisons-Alfort">
+
+                    <label for="zip-code">Zip code</label>
+                    <input type="text" id="zip-code" name="zip-code" value="94700">
+
+                    <label for="country">Country</label>
+                    <select id="country" name="country">
+                        <option value="France" selected>France</option>
+                    </select>
+                </div>
+
+                <div class="form-section">
+                    <h2>OTHER</h2>
+                    <label for="pin">Pin</label>
+                    <input type="text" id="pin" name="pin" value="2561">
+
+                    <label for="pool-month">Pool month</label>
+                    <input type="text" id="pool-month" name="pool-month" value="july">
+
+                    <label for="pool-year">Pool year</label>
+                    <input type="text" id="pool-year" name="pool-year" value="2022">
+                </div>
+
+                <div class="form-section">
+                    <h2>EMERGENCY CONTACT</h2>
+                    <label for="affiliation">Affiliation (Parent, Family, Friend...)</label>
+                    <input type="text" id="affiliation" name="affiliation" value="Père">
+
+                    <label for="emergency-first-name">First Name</label>
+                    <input type="text" id="emergency-first-name" name="emergency-first-name" value="Addid">
+
+                    <label for="emergency-last-name">Last Name</label>
+                    <input type="text" id="emergency-last-name" name="emergency-last-name" value="Anki">
+
+                    <label for="emergency-phone">Phone Number</label>
+                    <input type="text" id="emergency-phone" name="emergency-phone" value="0611276911">
+
+                    <label for="additional-phone">Additional Phone Number</label>
+                    <input type="text" id="additional-phone" name="additional-phone">
+
+                    <button type="submit">SAVE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    
+</div>

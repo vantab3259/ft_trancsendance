@@ -131,7 +131,7 @@ polygon {
     font-size: 18px;
     display: flex;
     justify-content: space-between;
-    width: 150px;
+    width: 100%;
 }
 
 .pseudo-container {
@@ -170,6 +170,11 @@ polygon {
 
 .link-edit-profile-dashboard a:hover {
     color: #00BABC !important;
+}
+
+.rank-container i {
+    font-size: 22px;
+    margin-right: 5px;
 }
 
 

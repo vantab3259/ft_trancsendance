@@ -1,131 +1,89 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+    // Fonction pour charger du contenu via fetch
+    function loadContent(url, title, scripts = []) {
+        document.getElementById('loader').style.display = 'unset';
+        history.pushState(null, '', url);
+        document.querySelector("title").innerHTML = title;
 
-    // dropdown header
+        fetch(url + '_content')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Erreur lors du chargement de ${title.toLowerCase()}`);
+                }
+                return response.text();
+            })
+            .then(html => {
+                // Arrêter le jeu Pong si nécessaire
+                if (typeof pongGame !== 'undefined' && pongGame.stopGame) {
+                    pongGame.stopGame();
+                }
 
+                // Supprimer les anciens scripts spécifiés
+                scripts.forEach(scriptSrc => {
+                    const existingScript = document.querySelector(`script[src="${scriptSrc}"]`);
+                    if (existingScript) {
+                        existingScript.remove();
+                    }
+                });
+
+                // Insérer le contenu HTML
+                pageContent.innerHTML = html;
+
+                // Ajouter les nouveaux scripts si spécifiés
+                scripts.forEach(scriptSrc => {
+                    const script = document.createElement('script');
+                    script.src = scriptSrc;
+                    document.body.appendChild(script);
+                });
+
+                document.getElementById('loader').style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                pageContent.innerHTML = '<p>Une erreur est survenue lors du chargement du contenu.</p>';
+                document.getElementById('loader').style.display = 'none';
+            });
+    }
+
+    // Gestionnaire pour le dropdown du profil
     let profileDropdownList = document.querySelector(".profile-dropdown-list");
     let btn = document.querySelector(".profile-dropdown-btn");
-    var pageContent = document.querySelector("div.content");
     let classList = profileDropdownList.classList;
 
-    const toggle = () => classList.toggle("active");
+    const toggleDropdown = () => classList.toggle("active");
 
-    btn.addEventListener("click", toggle);
+    btn.addEventListener("click", toggleDropdown);
 
     window.addEventListener("click", function (e) {
         if (!btn.contains(e.target)) classList.remove("active");
     });
 
-    // menu
-
+    // Sélecteurs pour les boutons de navigation
     let dashboardBtn = document.querySelector("#dashboard-link");
     let navbarLogo = document.querySelector("#navbar-logo");
     let pongLink = document.querySelector("#pong-link");
+    var pageContent = document.querySelector("div.content");
 
-    // dashboard
-
+    // Ajouter des gestionnaires d'événements
     dashboardBtn.addEventListener("click", function (e) {
         e.preventDefault();
-        document.getElementById('loader').style.display = 'unset';
-        history.pushState(null, '', '/dashboard');
-        document.querySelector("title").innerHTML = 'Dashboard';
-
-        fetch('/dashboard_content')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erreur lors du chargement du dashboard');
-                }
-                return response.text();
-            })
-            .then(html => {
-                pageContent.innerHTML = html;
-                document.getElementById('loader').style.display = 'none';
-
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                pageContent.innerHTML = '<p>Une erreur est survenue lors du chargement du contenu.</p>';
-                document.getElementById('loader').style.display = 'none';
-            });
+        loadContent('/dashboard', 'Dashboard', [
+            '/static/js/dashboard/dashboard.js',
+        ]);
     });
 
-    // navbar logo
     navbarLogo.addEventListener("click", function (e) {
         e.preventDefault();
-        document.getElementById('loader').style.display = 'unset';
-        history.pushState(null, '', '/');
-        document.querySelector("title").innerHTML = 'Home';
-
-
-        fetch('/home_content')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erreur lors du chargement du dashboard');
-                }
-                return response.text();
-            })
-            .then(html => {
-                pageContent.innerHTML = html;
-                document.getElementById('loader').style.display = 'none';
-
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                pageContent.innerHTML = '<p>Une erreur est survenue lors du chargement du contenu.</p>';
-                document.getElementById('loader').style.display = 'none';
-            });
+        loadContent('/home', 'Home');
     });
 
-    // pong
     pongLink.addEventListener("click", function (e) {
         e.preventDefault();
-        document.getElementById('loader').style.display = 'unset';
-        history.pushState(null, '', '/pong');
-        document.querySelector("title").innerHTML = 'Pong';
-
-
-        fetch('/pong_content')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erreur lors du chargement du dashboard');
-                }
-                return response.text();
-            })
-            .then(html => {
-                if (typeof pongGame !== 'undefined' && pongGame.stopGame) {
-                    pongGame.stopGame();
-                }
-
-                var existingScript = document.querySelector('script[src="/static/js/pong/pong.js"]');
-                if (existingScript) {
-                    existingScript.remove();
-                }
-
-                existingScript = document.querySelector('script[src="/static/js/pong/confirm_leave_pong_modal.js"]');
-                if (existingScript) {
-                    existingScript.remove();
-                }
-
-                pageContent.innerHTML = html;
-
-                // Créer et ajouter un nouveau script
-                var script = document.createElement('script');
-                script.src = "/static/js/pong/pong.js";
-                document.body.appendChild(script);
-
-                script = document.createElement('script');
-                script.src = "/static/js/pong/confirm_leave_pong_modal.js";
-                document.body.appendChild(script);
-
-                document.getElementById('loader').style.display = 'none';
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                pageContent.innerHTML = '<p>Une erreur est survenue lors du chargement du contenu.</p>';
-                document.getElementById('loader').style.display = 'none';
-            });
+        loadContent('/pong', 'Pong', [
+            '/static/js/pong/pong.js',
+            '/static/js/pong/confirm_leave_pong_modal.js'
+        ]);
     });
-
-
 
 });

@@ -21,3 +21,9 @@ def pong(request):
 
 def pong_content(request):
     return render(request, 'pong/pong_content.html')
+
+def profile_edit(request):
+    return render(request, 'profile/profile_edit.html')
+
+def profile_edit_content(request):
+    return render(request, 'profile/profile_edit_content.html')

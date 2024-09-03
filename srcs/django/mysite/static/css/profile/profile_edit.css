@@ -1,0 +1,85 @@
+.content-form-profile {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 20px;
+}
+
+.form-edit-profile.form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.form-edit-profile .form-section {
+    width: 30%;
+    margin-bottom: 20px;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-edit-profile h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #000;
+    padding-bottom: 5px;
+}
+
+.form-edit-profile label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-edit-profile input[type="text"],
+.form-edit-profile input[type="email"],
+.form-edit-profile select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-edit-profile input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.form-edit-profile button {
+    background-color: #00BABC;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.form-edit-profile button:hover {
+    background-color: #008889;
+}
+
+.form-edit-profile {
+    display: flex;
+    background-color: white;
+}
+
+.form-edit-profile .form-section {
+    margin: 20px;
+    border: none;
+    box-shadow: none;
+}
+
+.title-container-profile {
+    background-color: white;
+    padding: 20px;
+    font-size: 20px;
+}
+
+.main-profile-part {
+    background-color: white;
+}
+
+.title-container-profile span {
+    padding-left: 20px;
+}

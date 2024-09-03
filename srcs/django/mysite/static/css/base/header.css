@@ -164,9 +164,9 @@
   transition: transform 0.3s ease-in-out;
 }
 
-.navbar-list li:hover, .navbar-logo:hover {
-  transform: scale(1.1);
+.navbar-list li:hover, .navbar-logo:hover, .navbar-list a:hover , .profile-dropdown span:hover {
   font-weight: 800;
+  color: #00BABC !important;
   cursor: pointer !important;
 }
 
