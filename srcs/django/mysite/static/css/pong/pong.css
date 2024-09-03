@@ -25,3 +25,10 @@
 #quitModal {
     background-color: rgba(0, 0, 0, 0.3);
 }
+
+#quitModal {
+    font-family: 'FuturaPT', sans-serif !important;
+    font-style: normal !important;
+    font-weight: 500 !important;
+}
+

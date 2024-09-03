@@ -1,6 +1,6 @@
 .dashboard-header {
     background-image: url(https://cdn.intra.42.fr/coalition/cover/45/federation_background.jpg);
-    height: 400px;
+    height: 350px;
     background-size: cover;
     background-repeat: no-repeat;
     margin-top: -20px;
@@ -141,6 +141,35 @@ polygon {
     font-size: 22px;
     margin-top: 20px;
 
+}
+
+.left-polygon {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.link-edit-profile-dashboard {
+    color: white !important;
+    font-weight: 600;
+    font-style: normal;
+    background-color: rgb(0, 0, 0, 0.4);
+    height: 40px;
+    width: 40px;
+    border-radius: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    text-decoration: none;
+}
+
+.link-edit-profile-dashboard a {
+    color: white !important;
+}
+
+.link-edit-profile-dashboard a:hover {
+    color: #00BABC !important;
 }
 
 

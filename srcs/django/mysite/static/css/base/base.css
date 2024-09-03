@@ -176,3 +176,22 @@ body{
 .profile-dropdown-list {
   z-index: 3;
 }
+
+.d-flex {
+    display: flex;
+}
+
+.not-s {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.not-g {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+    cursor: default;
+}
