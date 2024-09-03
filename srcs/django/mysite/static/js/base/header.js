@@ -63,6 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let dashboardBtn = document.querySelector("#dashboard-link");
     let navbarLogo = document.querySelector("#navbar-logo");
     let pongLink = document.querySelector("#pong-link");
+    let rankingLink = document.querySelector("#ranking-link");
     var pageContent = document.querySelector("div.content");
 
     // Ajouter des gestionnaires d'événements
@@ -84,6 +85,11 @@ document.addEventListener("DOMContentLoaded", function () {
             '/static/js/pong/pong.js',
             '/static/js/pong/confirm_leave_pong_modal.js'
         ]);
+    });
+
+    rankingLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        loadContent('/ranking', 'Ranking');
     });
 
 });

@@ -1,0 +1,18 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Ranking{% endblock %}
+
+{% block overload_css %}
+    <link rel="stylesheet" href="{% static 'css/ranking/ranking.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    {% include 'ranking/ranking_content.html' %}
+
+    {% block overload_javascript %}
+        
+    {% endblock %}
+
+{% endblock %}

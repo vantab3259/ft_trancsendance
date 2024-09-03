@@ -27,3 +27,9 @@ def profile_edit(request):
 
 def profile_edit_content(request):
     return render(request, 'profile/profile_edit_content.html')
+
+def ranking(request):
+    return render(request, 'ranking/ranking.html')
+
+def ranking_content(request):
+    return render(request, 'ranking/ranking_content.html')
