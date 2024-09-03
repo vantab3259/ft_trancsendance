@@ -6,3 +6,10 @@
     text-align: center;
 	height: 80%;
 }
+
+
+
+.content:has(.content-pong) {
+
+}
+
