@@ -87,13 +87,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 return response.text();
             })
             .then(html => {
-                // Appeler stopGame pour arrêter le jeu et nettoyer les événements
                 if (typeof pongGame !== 'undefined' && pongGame.stopGame) {
                     pongGame.stopGame();
                 }
 
-                // Vérifier si le script est déjà chargé
                 var existingScript = document.querySelector('script[src="/static/js/pong/pong.js"]');
+                if (existingScript) {
+                    existingScript.remove();
+                }
+
+                existingScript = document.querySelector('script[src="/static/js/pong/confirm_leave_pong_modal.js"]');
                 if (existingScript) {
                     existingScript.remove();
                 }
@@ -103,6 +106,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Créer et ajouter un nouveau script
                 var script = document.createElement('script');
                 script.src = "/static/js/pong/pong.js";
+                document.body.appendChild(script);
+
+                script = document.createElement('script');
+                script.src = "/static/js/pong/confirm_leave_pong_modal.js";
                 document.body.appendChild(script);
 
                 document.getElementById('loader').style.display = 'none';

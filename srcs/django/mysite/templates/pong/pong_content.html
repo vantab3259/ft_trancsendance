@@ -2,7 +2,37 @@
 
 <link rel="stylesheet" href="{% static 'css/pong/pong.css' %}">
 
+<div class="header-pong">
+    <div class="left-header-pong">
+        
+    </div>
+
+    <div class="right-header-pong">
+        <button type="button" class="btn btn-danger" id="quitButton">Leave</button>
+
+        <div class="modal fade" id="quitModal" tabindex="-1" aria-labelledby="quitModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="quitModalLabel">Confirm Leave</h5>
+                        <button type="button" class="btn-close" id="closeModal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to leave the game?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="cancelButton">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="confirmQuit">Leave</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
 
 <div class="content-pong">
-    <canvas id="pong" width="600" height="400"></canvas>
+    <div class="pong-container">
+        <canvas id="pong" width="600" height="400"></canvas>
+    </div>
 </div>

@@ -5,11 +5,19 @@
     margin-right: auto;
     text-align: center;
 	height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#quitButton {
+    margin-right: 80px;
+}
+.header-pong {
+    display: flex;
+    justify-content: space-between;
 }
 
-
-
-.content:has(.content-pong) {
-
+.header-pong .modal-content {
+    position: absolute;
+    top: 50px;
 }
-
