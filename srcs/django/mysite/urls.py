@@ -20,9 +20,11 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-	path('', views.home, name='home'),
-	path('about/', views.about, name='about'),
-	path('dashboard/', views.dashboard, name='dashboard'),
-	path('dashboard_content/', views.dashboard_content, name='dashboard_content'),
-  path('home_content/', views.home_content, name='home_content'),
+    path('', views.home, name='home'),
+    path('about/', views.about, name='about'),
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('dashboard_content/', views.dashboard_content, name='dashboard_content'),
+    path('home_content/', views.home_content, name='home_content'),
+    path('pong/', views.pong, name='pong'),
+    path('pong_content/', views.pong_content, name='pong_content'),
 ]
