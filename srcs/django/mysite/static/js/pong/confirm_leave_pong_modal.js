@@ -27,6 +27,8 @@ document.getElementById('confirmQuit').addEventListener('click', function() {
 
         document.getElementById('loader').style.display = 'unset';
         history.pushState(null, '', '/');
+        document.querySelector("title").innerHTML = 'Home';
+
 
         fetch('/home_content')
             .then(response => {

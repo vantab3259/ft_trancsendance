@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         document.getElementById('loader').style.display = 'unset';
         history.pushState(null, '', '/dashboard');
+        document.querySelector("title").innerHTML = 'Dashboard';
 
         fetch('/dashboard_content')
             .then(response => {
@@ -53,6 +54,8 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         document.getElementById('loader').style.display = 'unset';
         history.pushState(null, '', '/');
+        document.querySelector("title").innerHTML = 'Home';
+
 
         fetch('/home_content')
             .then(response => {
@@ -78,6 +81,8 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         document.getElementById('loader').style.display = 'unset';
         history.pushState(null, '', '/pong');
+        document.querySelector("title").innerHTML = 'Pong';
+
 
         fetch('/pong_content')
             .then(response => {
