@@ -1,0 +1,146 @@
+.dashboard-header {
+    background-image: url(https://cdn.intra.42.fr/coalition/cover/45/federation_background.jpg);
+    height: 400px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin-top: -20px;
+    display: flex;
+}
+
+.dashboard-picture-header {
+    height: 190px;
+    border-radius: 50%;
+    margin: 0 40px;
+}
+
+.dashboard-picture-header-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.progress-bar {
+    width: 100%;
+    background-color: rgb(0, 0, 0, 0.4);;
+    border-radius: 5px;
+    position: relative;
+    height: 40px;
+    color: whitesmoke;
+}
+
+.progress-bar::before {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: bold;
+    text-align: center;
+}
+
+.progress {
+    height: 100%;
+    background-color: #4180DB;
+    border-radius: 5px;
+    width: 0;
+}
+
+.center-dashboard-header {
+    display: flex;
+    width: 200%;
+    padding: 20px;
+    flex-direction: column;
+    column-gap: unset;
+    justify-content: space-between;
+}
+
+.second-right-header {
+    width: 100%;
+}
+
+.end-header-dashboard {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    background-color: rgb(0, 0, 0, 0.4);
+}
+
+.information-dashboard-user-container .row-info {
+    color: white;
+    margin: 35px;
+}
+
+.information-dashboard-user-container .row-info .icon {
+    color: #ecf8f8;
+    margin-right: 10px;
+}
+
+.end-header-dashboard span, .end-header-dashboard a {
+    font-weight: 500;
+    font-size: 19px;
+}
+
+.label-experience {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 500;
+    font-style: normal;
+}
+
+.polygon-container {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    margin: 20px;
+    margin-top: 0;
+}
+
+svg.polygon {
+    width: 100%;
+    height: 100%;
+}
+
+svg.icon {
+    width: 50%;
+    height: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    fill: white;
+}
+
+polygon {
+    fill: #3498db;
+    stroke: #2980b9;
+    stroke-width: 0;
+}
+
+.first-right-header {
+    display: flex;
+}
+
+.rank-container {
+    color: whitesmoke;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+    width: 150px;
+}
+
+.pseudo-container {
+    color: whitesmoke;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 22px;
+    margin-top: 20px;
+
+}
+
+

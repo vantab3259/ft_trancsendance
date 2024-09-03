@@ -4,7 +4,7 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block overload_css %}
-
+    <link rel="stylesheet" href="{% static 'css/dashboard/dashboard.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -12,7 +12,7 @@
     {% include 'dashboard/dashboard_content.html' %}
     
     {% block overload_javascript %}
-
+        <script src="{% static 'js/dashboard/dashboard.js' %}"></script>
     {% endblock %}
 
 {% endblock %}
