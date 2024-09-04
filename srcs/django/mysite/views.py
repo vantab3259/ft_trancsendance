@@ -33,3 +33,9 @@ def ranking(request):
 
 def ranking_content(request):
     return render(request, 'ranking/ranking_content.html')
+
+def history_match(request):
+    return render(request, 'history_match/history_match.html')
+
+def history_match_content(request):
+    return render(request, 'history_match/history_match_content.html')

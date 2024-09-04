@@ -1,0 +1,17 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}History{% endblock %}
+
+{% block overload_css %}
+{% endblock %}
+
+{% block content %}
+
+    {% include 'history_match/history_match_content.html' %}
+
+    {% block overload_javascript %}
+        {#        <script src="{% static 'js/history_match/history_match.js' %}"></script>#}
+    {% endblock %}
+
+{% endblock %}

@@ -1,12 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     // Fonction pour charger du contenu via fetch
-    function loadContent(url, title, scripts = []) {
+    function loadContent(url, title, scripts = [], nameTemplate = url) {
         document.getElementById('loader').style.display = 'unset';
         history.pushState(null, '', url);
         document.querySelector("title").innerHTML = title;
 
-        fetch(url + '_content')
+
+        fetch(nameTemplate + '_content')
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Erreur lors du chargement de ${title.toLowerCase()}`);
@@ -64,6 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let navbarLogo = document.querySelector("#navbar-logo");
     let pongLink = document.querySelector("#pong-link");
     let rankingLink = document.querySelector("#ranking-link");
+    let historyLink = document.querySelector("#history-link");
     var pageContent = document.querySelector("div.content");
 
     // Ajouter des gestionnaires d'événements
@@ -90,6 +92,11 @@ document.addEventListener("DOMContentLoaded", function () {
     rankingLink.addEventListener("click", function (e) {
         e.preventDefault();
         loadContent('/ranking', 'Ranking');
+    });
+
+    historyLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        loadContent('/history', 'History', [], 'history_match');
     });
 
 });

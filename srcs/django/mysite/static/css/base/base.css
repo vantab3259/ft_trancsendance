@@ -195,3 +195,7 @@ body{
     user-select: none !important;
     cursor: default;
 }
+
+img {
+    max-width: 200px;
+}

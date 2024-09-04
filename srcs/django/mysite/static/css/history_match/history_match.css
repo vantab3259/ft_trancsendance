@@ -1,0 +1,90 @@
+.match-history-wrapper {
+    width: 600px;
+    margin: auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.match-history-title {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+    color: #333;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+}
+
+.match-history-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.match-history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.match-victory {
+    background-color: #d4edda; /* Vert pour victoire */
+    color: #155724;
+}
+
+.match-defeat {
+    background-color: #f8d7da; /* Rouge pour défaite */
+    color: #721c24;
+}
+
+.player-info-wrapper, .opponent-info-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.player-image, .opponent-image {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+
+.player-name, .opponent-name {
+    font-weight: bold;
+    color: #007bff;
+    width: 85px;
+}
+
+.match-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.match-date {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.match-score, .match-duration {
+    font-size: 0.9em;
+    color: #333;
+}
+
+.opponent-image {
+    margin-left: 10px;
+}
+
+.player-info-wrapper {
+    width: 40px;
+}
+
+.content-versus {
+    margin-right: -45px;
+}

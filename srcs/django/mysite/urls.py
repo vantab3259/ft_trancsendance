@@ -16,5 +16,7 @@ urlpatterns = [
     path('profile_edit_content', views.profile_edit_content, name='profile_edit'),
     path('ranking', views.ranking, name='ranking'),
     path('ranking_content', views.ranking_content, name='ranking_content'),
+    path('history', views.history_match, name='history_match'),
+    path('history_match_content', views.history_match_content, name='history_match_content'),
 
 ]
