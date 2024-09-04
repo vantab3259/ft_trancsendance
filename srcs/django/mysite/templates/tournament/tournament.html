@@ -1,0 +1,17 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Tournament{% endblock %}
+
+{% block overload_css %}
+{% endblock %}
+
+{% block content %}
+
+    {% include 'tournament/tournament_content.html' %}
+
+    {% block overload_javascript %}
+        
+    {% endblock %}
+
+{% endblock %}

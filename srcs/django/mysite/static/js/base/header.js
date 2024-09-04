@@ -66,6 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let pongLink = document.querySelector("#pong-link");
     let rankingLink = document.querySelector("#ranking-link");
     let historyLink = document.querySelector("#history-link");
+    let tournamentLink = document.querySelector("#tournament-link");
     var pageContent = document.querySelector("div.content");
 
     // Ajouter des gestionnaires d'événements
@@ -97,6 +98,11 @@ document.addEventListener("DOMContentLoaded", function () {
     historyLink.addEventListener("click", function (e) {
         e.preventDefault();
         loadContent('/history', 'History', [], 'history_match');
+    });
+
+    tournamentLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        loadContent('/tournament', 'Tournament');
     });
 
 });

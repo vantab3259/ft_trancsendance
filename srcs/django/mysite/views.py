@@ -39,3 +39,9 @@ def history_match(request):
 
 def history_match_content(request):
     return render(request, 'history_match/history_match_content.html')
+
+def tournament(request):
+    return render(request, 'tournament/tournament.html')
+
+def tournament_content(request):
+    return render(request, 'tournament/tournament_content.html')
