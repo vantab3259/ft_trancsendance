@@ -5,14 +5,16 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById('loader').style.display = 'unset';
         history.pushState(null, '', url);
         document.querySelector("title").innerHTML = title;
-
+        
 		let icons = document.querySelectorAll(".side-bar i");
 		icons.forEach(function (event) {
-			event.style.opacity = 0.3
+			event.style.opacity = 0.3;
 		});
 
 		let nameIcon = document.querySelector('#' + nameMenu + "-link" + " i");
-		nameIcon.style.opacity = 1
+        if (nameIcon !== undefined && nameIcon) {
+            nameIcon.style.opacity = 1;
+        }
 
 
         fetch(nameTemplate + '_content')
@@ -106,12 +108,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     historyLink.addEventListener("click", function (e) {
         e.preventDefault();
-        loadContent('/history', 'History', [], 'history_match', 'history');
+        loadContent('/history', 'History', 'history', [], 'history_match');
     });
 
     tournamentLink.addEventListener("click", function (e) {
         e.preventDefault();
-        loadContent('/tournament', 'Tournament', 'tournament');
+        loadContent('/tournament', 'Tournament', 'tournament', []);
     });
 	
 	lobbyLink.addEventListener("click", function (e) {
