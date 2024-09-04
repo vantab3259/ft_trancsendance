@@ -51,13 +51,30 @@
       {% endblock %}
       
     </header>
-    
-    <!-- Page -->
-    <div class="content">
-        {% block content %}
-        
-        {% endblock %}
-    </div>
+
+	<div class="main-content d-flex">
+		<div class="side-bar">
+
+		<li id="dashboard-link">
+			<i class="fa-regular fa-user"></i>
+		</li>
+		<li id="pong-link"><i class="fa-solid fa-house-laptop"></i>
+		</li>
+		<li id="lobby-link"><i class="fa-solid fa-users-between-lines"></i></li>
+		<li></li>
+		<li></li>
+
+		</div>
+    	<!-- Page -->
+		<div class="content">
+			{% block content %}
+			
+			{% endblock %}
+		</div>
+		
+	</div>
+
+
     
     <script src="{% static 'js/base/header.js' %}"></script>
     {% block overload_javascript %}{% endblock %}

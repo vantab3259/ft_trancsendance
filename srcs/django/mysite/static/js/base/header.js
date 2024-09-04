@@ -1,10 +1,18 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     // Fonction pour charger du contenu via fetch
-    function loadContent(url, title, scripts = [], nameTemplate = url) {
+    function loadContent(url, title, nameMenu, scripts = [], nameTemplate = url) {
         document.getElementById('loader').style.display = 'unset';
         history.pushState(null, '', url);
         document.querySelector("title").innerHTML = title;
+
+		let icons = document.querySelectorAll(".side-bar i");
+		icons.forEach(function (event) {
+			event.style.opacity = 0.3
+		});
+
+		let nameIcon = document.querySelector('#' + nameMenu + "-link" + " i");
+		nameIcon.style.opacity = 1
 
 
         fetch(nameTemplate + '_content')
@@ -67,24 +75,25 @@ document.addEventListener("DOMContentLoaded", function () {
     let rankingLink = document.querySelector("#ranking-link");
     let historyLink = document.querySelector("#history-link");
     let tournamentLink = document.querySelector("#tournament-link");
+    let lobbyLink = document.querySelector("#lobby-link");
     var pageContent = document.querySelector("div.content");
 
     // Ajouter des gestionnaires d'événements
     dashboardBtn.addEventListener("click", function (e) {
         e.preventDefault();
-        loadContent('/dashboard', 'Dashboard', [
+        loadContent('/dashboard', 'Dashboard', "dashboard", [
             '/static/js/dashboard/dashboard.js',
         ]);
     });
 
     navbarLogo.addEventListener("click", function (e) {
         e.preventDefault();
-        loadContent('/home', 'Home');
+        loadContent('/home', 'Home', "home");
     });
 
     pongLink.addEventListener("click", function (e) {
         e.preventDefault();
-        loadContent('/pong', 'Pong', [
+        loadContent('/pong', 'Pong', 'pong', [
             '/static/js/pong/pong.js',
             '/static/js/pong/confirm_leave_pong_modal.js'
         ]);
@@ -92,17 +101,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     rankingLink.addEventListener("click", function (e) {
         e.preventDefault();
-        loadContent('/ranking', 'Ranking');
+        loadContent('/ranking', 'Ranking', 'ranking');
     });
 
     historyLink.addEventListener("click", function (e) {
         e.preventDefault();
-        loadContent('/history', 'History', [], 'history_match');
+        loadContent('/history', 'History', [], 'history_match', 'history');
     });
 
     tournamentLink.addEventListener("click", function (e) {
         e.preventDefault();
-        loadContent('/tournament', 'Tournament');
+        loadContent('/tournament', 'Tournament', 'tournament');
+    });
+	
+	lobbyLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        loadContent('/lobby', 'Lobby', 'lobby');
     });
 
 });

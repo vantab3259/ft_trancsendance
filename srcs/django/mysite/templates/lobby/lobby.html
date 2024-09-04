@@ -1,0 +1,19 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Lobby{% endblock %}
+
+{% block overload_css %}
+
+
+{% endblock %}
+
+{% block content %}
+
+{% include 'lobby/lobby_content.html' %}
+
+    {% block overload_javascript %}
+        <script src="{% static 'js/lobby/lobby.js' %}"></script>
+    {% endblock %}
+
+{% endblock %}

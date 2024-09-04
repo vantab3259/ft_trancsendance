@@ -199,3 +199,22 @@ body{
 img {
     max-width: 200px;
 }
+
+
+.navbar{
+	padding-left: 0 !important;
+}
+.content{
+	width: 100%;
+}
+.side-bar{
+	width: 84px;
+    height: 100%;
+    background-color: #292D39;
+    margin-top: -20px;
+	padding-right: 0%;
+	margin-right: 0%;
+}
+.main-content{
+	height: 100%
+}

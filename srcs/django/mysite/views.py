@@ -45,3 +45,9 @@ def tournament(request):
 
 def tournament_content(request):
     return render(request, 'tournament/tournament_content.html')
+
+def lobby(request):
+    return render(request, 'lobby/lobby.html')
+
+def lobby_content(request):
+    return render(request, 'lobby/lobby_content.html')

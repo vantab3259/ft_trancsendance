@@ -20,5 +20,7 @@ urlpatterns = [
     path('history_match_content', views.history_match_content, name='history_match_content'),
     path('tournament', views.tournament, name='tournament'),
     path('tournament_content', views.tournament_content, name='tournament_content'),
+    path('lobby', views.lobby, name='lobby'),
+    path('lobby_content', views.lobby_content, name='lobby_content'),
 
 ]
