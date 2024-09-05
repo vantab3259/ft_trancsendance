@@ -234,3 +234,12 @@ img {
     border-radius: 10px;
     background: #6d6d6d;
 }
+
+
+.main-content {
+    height: auto;
+}
+
+.side-bar {
+    height: auto;
+}

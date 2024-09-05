@@ -83,8 +83,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let dashboardBtn = document.querySelector("#dashboard-link");
     let navbarLogo = document.querySelector("#navbar-logo");
     let pongLink = document.querySelector("#pong-link");
-    let rankingLink = document.querySelector("#ranking-link");
-    let historyLink = document.querySelector("#history-link");
     let tournamentLink = document.querySelector("#tournament-link");
     let lobbyLink = document.querySelector("#lobby-link");
     var pageContent = document.querySelector("div.content");
@@ -108,16 +106,6 @@ document.addEventListener("DOMContentLoaded", function () {
             '/static/js/pong/pong.js',
             '/static/js/pong/confirm_leave_pong_modal.js'
         ]);
-    });
-
-    rankingLink.addEventListener("click", function (e) {
-        e.preventDefault();
-        loadContent('/ranking', 'Ranking', 'ranking');
-    });
-
-    historyLink.addEventListener("click", function (e) {
-        e.preventDefault();
-        loadContent('/history', 'History', 'history', [], 'history_match');
     });
 
     tournamentLink.addEventListener("click", function (e) {

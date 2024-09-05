@@ -177,4 +177,61 @@ polygon {
     margin-right: 5px;
 }
 
+.sub-first-container-dashboard.container {
+    display: flex;
+}
 
+.leaderboard-container, .match-history-wrapper {
+    margin: 0;
+    padding: 0;
+}
+
+.sub-first-container-dashboard {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+    gap: 20px;
+}
+
+.leaderboard-container, .match-history-wrapper {
+    width: 500px;
+    height: 400px;
+    overflow-x: auto;
+    border-radius: 15px;
+}
+.leaderboard-container {
+    border-radius: 15px;
+    margin-left: 20px;
+}
+
+.match-history-title, .board-title {
+    padding-top: 15px;
+}
+
+.match-history-item {
+        margin-left: 5px;
+        margin-right: 5px;
+}
+
+.metric-row.first-line {
+    width: 100%;
+}
+
+.match-history-wrapper {
+    width: 100%;
+}
+
+.leaderboard-container {
+    width: 100%;
+}
+
+.opponent-name {
+    text-align: center;
+}
+
+
+.player-info-wrapper {
+    margin-right: -20px;
+}
