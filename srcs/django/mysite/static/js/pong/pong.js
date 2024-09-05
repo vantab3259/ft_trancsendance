@@ -217,9 +217,12 @@ function update() {
     // Simples computer AI
     com.y += ((ball.y - (com.y + com.height / 2))) * 0.1;
 
-    // When the ball collides with the bottom or top walls we inverse the y velocity.
-    if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) {
+    if (ball.y - ball.radius < 0) {
         ball.velocityY = -ball.velocityY;
+        ball.y = ball.radius; // Réajuste la position de la balle juste à l'intérieur du canvas
+    } else if (ball.y + ball.radius > canvas.height) {
+        ball.velocityY = -ball.velocityY;
+        ball.y = canvas.height - ball.radius; // Réajuste la position de la balle juste à l'intérieur du canvas
     }
 
     // Check if the paddle hit the user or the com paddle
