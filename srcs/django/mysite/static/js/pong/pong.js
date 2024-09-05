@@ -95,6 +95,9 @@ if (!window.net) {
     };
 }
 
+
+//change color 
+
 document.getElementById("ballColor").addEventListener("input", function() {
     window.ball.color = this.value;
 });
@@ -106,6 +109,34 @@ document.getElementById("userPaddleColor").addEventListener("input", function() 
 document.getElementById("comPaddleColor").addEventListener("input", function() {
     window.com.color = this.value;
 });
+
+document.getElementById("netColor").addEventListener("input", function() {
+    window.net.color = this.value;
+});
+
+document.getElementById("backgroundGame").addEventListener("input", function() {
+    window.backgroundColor = this.value;
+});
+
+document.querySelector(".reset-button-container i").addEventListener("click", function() {
+    window.backgroundColor = "#000000";
+    document.getElementById("backgroundGame").value = "#000000";
+    window.user.color = "#ffffff";
+    document.getElementById("userPaddleColor").value = "#ffffff";
+    window.com.color = "#ffffff";
+    document.getElementById("comPaddleColor").value = "#ffffff";
+    window.net.color = "#ffffff";
+    document.getElementById("netColor").value = "#ffffff";
+    window.ball.color = "#ffffff";
+    document.getElementById("ballColor").value = "#ffffff";
+
+});
+
+
+// Initialisation de la couleur de fond
+if (!window.backgroundColor) {
+    window.backgroundColor = "#000000"; // Couleur par défaut
+}
 
 // Draw Net
 function drawNet(){
@@ -225,7 +256,7 @@ function update(){
 // Render the Game
 function render(){
     // Clear the canvas
-    drawRect(0,0, canvas.clientWidth, canvas.clientHeight, "BLACK");
+    drawRect(0, 0, canvas.clientWidth, canvas.clientHeight, window.backgroundColor);
 
     // Draw the net
     drawNet();
@@ -263,11 +294,53 @@ if (playButton !== undefined) {
     const playButton = document.getElementById("playButton");
 }
 
+document.getElementById("pauseButton").addEventListener("click", function() {
+    if (window.gameInterval) {
+        clearInterval(window.gameInterval); // Arrête le jeu
+    }
+
+    this.style.display = "none"; // Cache le bouton Pause
+    document.getElementById("playButton").style.display = "block"; // Affiche le bouton Play
+});
+
+
 // Ajoute un événement au bouton pour lancer le jeu au clic
 playButton.addEventListener("click", function() {
     if (window.gameInterval) {
         clearInterval(window.gameInterval);
     }
 
+    this.style.display = "none";
+    document.getElementById("pauseButton").style.display = "block";
+
     window.gameInterval = setInterval(game, 1000 / window.framePerSecond);
+});
+
+
+if (window.keydownFlag === undefined) {
+    window.keydownFlag = false;
+}
+
+document.addEventListener("keydown", function(event) {
+    if (!window.keydownFlag && event.keyCode === 32) // 32 est le code pour la barre d'espace
+    {
+        event.preventDefault();
+        window.keydownFlag = true;
+        if (document.getElementById("pauseButton").style.display !== "none")
+        {
+            document.getElementById("pauseButton").click();
+        }
+        else
+        {
+            document.getElementById("playButton").click();
+        }
+    }
+});
+
+document.addEventListener("keyup", function(event) {
+    if (event.keyCode === 32)
+    {
+        event.preventDefault();
+        window.keydownFlag = false;
+    }
 });

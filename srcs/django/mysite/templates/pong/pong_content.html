@@ -37,29 +37,50 @@
     <div class="left-header-pong">
 
         <div class="title-options-game">
-            SETTINGS
+
+            <div class="title-options">
+                SETTINGS
+            </div>
+
+            <div class="reset-button-container">
+                <i class="fa-solid fa-arrow-rotate-left"></i>
+            </div>
         </div>
         <div class="options-games">
-            <label for="ballColor">Ball color: </label>
-            <input type="color" id="ballColor" value="#FFFFFF">
-            <br><br>
 
-            <label for="userPaddleColor">Player paddle color: </label>
-            <input type="color" id="userPaddleColor" value="#FFFFFF">
-            <br><br>
+            <div class="row-option-game">
+                <label for="ballColor">Ball : </label>
+                <input type="color" id="ballColor" value="#FFFFFF">
+            </div>
 
-            <label for="comPaddleColor">AI paddle color: </label>
-            <input type="color" id="comPaddleColor" value="#FFFFFF">
-            <br><br>
+            <div class="row-option-game">
+                <label for="userPaddleColor">Player paddle : </label>
+                <input type="color" id="userPaddleColor" value="#FFFFFF">
+            </div>
 
-            <label for="netColor">Net color: </label>
-            <input type="color" id="netColor" value="#FFFFFF">
-            <br><br>
+            <div class="row-option-game">
+                <label for="comPaddleColor">AI paddle : </label>
+                <input type="color" id="comPaddleColor" value="#FFFFFF">
+            </div>
+
+            <div class="row-option-game">
+                <label for="netColor">Net : </label>
+                <input type="color" id="netColor" value="#FFFFFF">
+            </div>
+
+            <div class="row-option-game">
+                <label for="backgroundGame">Background : </label>
+                <input type="color" id="backgroundGame" value="#000000">
+            </div>
+
         </div>
 
 
 
-        <button id="playButton">Play</button>
+        <div class="container-playButton">
+            <button id="playButton">Play</button>
+            <button id="pauseButton" style="display: none;">Pause</button>
+        </div>
     </div>
     
     <div class="pong-container">

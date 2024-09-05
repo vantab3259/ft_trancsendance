@@ -32,7 +32,7 @@
     font-weight: 500 !important;
 }
 
-#playButton {
+#playButton, #pauseButton {
     width: 100px;
     height: 40px;
     border-radius: 20px;
@@ -41,6 +41,63 @@
     border: 1px solid gray;
 }
 
-#playButton:hover {
+#playButton:hover, #pauseButton:hover {
     opacity: 0.8;
+}
+
+.left-header-pong {
+    display: block;
+    text-align: justify;
+    padding: 30px;
+    background-color: white;
+    border-radius: 20px;
+}
+
+.title-options-game {
+    text-align: center;
+    margin-bottom: 20px;
+    display: flex;
+}
+
+#playButton, #pauseButton {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.options-games {
+    font-weight: 600;
+    font-style: normal;
+}
+
+.row-option-game {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    width: 300px;
+}
+
+.container-playButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    margin-right: 8%;
+    flex-direction: column;
+}
+
+.title-options {
+    width: 90%;
+}
+
+.reset-button-container:hover {
+    color: #00BABC;
+    cursor: pointer;
+}
+
+.left-header-pong {
+    margin-right: 8%;
 }
