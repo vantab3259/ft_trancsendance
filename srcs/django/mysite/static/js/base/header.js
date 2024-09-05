@@ -1,11 +1,20 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+
+
+    let pathUrl  = window.location.pathname;
+    let nameCurrentPageIcon = document
+        .querySelector('#' + pathUrl.slice(1).replace(/\/$/, '') + "-link" + ' i');
+    if (nameCurrentPageIcon !== undefined && nameCurrentPageIcon) {
+        nameCurrentPageIcon.style.opacity = 1;
+    }
+
     // Fonction pour charger du contenu via fetch
     function loadContent(url, title, nameMenu, scripts = [], nameTemplate = url) {
         document.getElementById('loader').style.display = 'unset';
         history.pushState(null, '', url);
         document.querySelector("title").innerHTML = title;
-        
+
 		let icons = document.querySelectorAll(".side-bar i");
 		icons.forEach(function (event) {
 			event.style.opacity = 0.3;

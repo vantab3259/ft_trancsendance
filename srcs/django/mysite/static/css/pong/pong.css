@@ -32,3 +32,15 @@
     font-weight: 500 !important;
 }
 
+#playButton {
+    width: 100px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: #00BABC;
+    color: white;
+    border: 1px solid gray;
+}
+
+#playButton:hover {
+    opacity: 0.8;
+}

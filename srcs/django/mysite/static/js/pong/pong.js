@@ -23,7 +23,7 @@ if (!window.user) {
         y: canvas.height / 2 - 100 / 2,
         width: 20,
         height: 100,
-        color: "WHITE",
+        color: document.getElementById("userPaddleColor").value,
         score: 0
     };
     window.user = user;
@@ -36,7 +36,7 @@ if (!window.com) {
         y: canvas.height / 2 - 100 / 2,
         width: 20,
         height: 100,
-        color: "WHITE",
+        color: document.getElementById("comPaddleColor").value,
         score: 0
     };
     window.com = com;
@@ -46,7 +46,7 @@ if (!window.com) {
         y: canvas.height / 2 - 100 / 2,
         width: 20,
         height: 100,
-        color: "WHITE",
+        color: document.getElementById("comPaddleColor").value,
         score: 0
     };
 }
@@ -60,7 +60,7 @@ if (!window.ball) {
         speed: 5,
         velocityX: 5,
         velocityY: 5,
-        color: "WHITE"
+        color: document.getElementById("ballColor").value,
     };
     window.ball = ball;
 } else {
@@ -71,7 +71,7 @@ if (!window.ball) {
         speed: 5,
         velocityX: 5,
         velocityY: 5,
-        color: "WHITE"
+        color: document.getElementById("ballColor").value,
     };
 }
 
@@ -94,6 +94,18 @@ if (!window.net) {
         color: "WHITE"
     };
 }
+
+document.getElementById("ballColor").addEventListener("input", function() {
+    window.ball.color = this.value;
+});
+
+document.getElementById("userPaddleColor").addEventListener("input", function() {
+    window.user.color = this.value;
+});
+
+document.getElementById("comPaddleColor").addEventListener("input", function() {
+    window.com.color = this.value;
+});
 
 // Draw Net
 function drawNet(){
@@ -243,4 +255,19 @@ if (window.framePerSecond) {
     const framePerSecond = 60;
     window.framePerSecond = 60;
 }
-window.gameInterval = setInterval(game, 1000/framePerSecond);
+// Sélectionne le bouton Play
+
+if (playButton !== undefined) {
+    playButton = document.getElementById("playButton");
+} else {
+    const playButton = document.getElementById("playButton");
+}
+
+// Ajoute un événement au bouton pour lancer le jeu au clic
+playButton.addEventListener("click", function() {
+    if (window.gameInterval) {
+        clearInterval(window.gameInterval);
+    }
+
+    window.gameInterval = setInterval(game, 1000 / window.framePerSecond);
+});

@@ -3,10 +3,11 @@
 <link rel="stylesheet" href="{% static 'css/pong/pong.css' %}">
 
 <div class="header-pong">
-    <div class="left-header-pong">
+    
+    <div class="dummy">
         
     </div>
-
+    
     <div class="right-header-pong">
         <button type="button" class="btn btn-danger" id="quitButton">Leave</button>
 
@@ -32,6 +33,35 @@
 </div>
 
 <div class="content-pong">
+    
+    <div class="left-header-pong">
+
+        <div class="title-options-game">
+            SETTINGS
+        </div>
+        <div class="options-games">
+            <label for="ballColor">Ball color: </label>
+            <input type="color" id="ballColor" value="#FFFFFF">
+            <br><br>
+
+            <label for="userPaddleColor">Player paddle color: </label>
+            <input type="color" id="userPaddleColor" value="#FFFFFF">
+            <br><br>
+
+            <label for="comPaddleColor">AI paddle color: </label>
+            <input type="color" id="comPaddleColor" value="#FFFFFF">
+            <br><br>
+
+            <label for="netColor">Net color: </label>
+            <input type="color" id="netColor" value="#FFFFFF">
+            <br><br>
+        </div>
+
+
+
+        <button id="playButton">Play</button>
+    </div>
+    
     <div class="pong-container">
         <canvas id="pong" width="600" height="400"></canvas>
     </div>
