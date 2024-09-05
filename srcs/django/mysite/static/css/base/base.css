@@ -237,7 +237,7 @@ img {
 
 
 .main-content {
-    height: auto;
+    height: 100% !important;
 }
 
 .side-bar {
