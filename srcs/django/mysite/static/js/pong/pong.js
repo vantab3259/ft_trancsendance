@@ -306,6 +306,7 @@ document.getElementById("pauseButton").addEventListener("click", function() {
 
 // Ajoute un événement au bouton pour lancer le jeu au clic
 playButton.addEventListener("click", function() {
+    document.querySelector(".pong-container").style.display = "block";
     if (window.gameInterval) {
         clearInterval(window.gameInterval);
     }
