@@ -98,27 +98,27 @@ if (!window.net) {
 
 //change color 
 
-document.getElementById("ballColor").addEventListener("input", function() {
+document.getElementById("ballColor").addEventListener("input", function () {
     window.ball.color = this.value;
 });
 
-document.getElementById("userPaddleColor").addEventListener("input", function() {
+document.getElementById("userPaddleColor").addEventListener("input", function () {
     window.user.color = this.value;
 });
 
-document.getElementById("comPaddleColor").addEventListener("input", function() {
+document.getElementById("comPaddleColor").addEventListener("input", function () {
     window.com.color = this.value;
 });
 
-document.getElementById("netColor").addEventListener("input", function() {
+document.getElementById("netColor").addEventListener("input", function () {
     window.net.color = this.value;
 });
 
-document.getElementById("backgroundGame").addEventListener("input", function() {
+document.getElementById("backgroundGame").addEventListener("input", function () {
     window.backgroundColor = this.value;
 });
 
-document.querySelector(".reset-button-container i").addEventListener("click", function() {
+document.querySelector(".reset-button-container i").addEventListener("click", function () {
     window.backgroundColor = "#000000";
     document.getElementById("backgroundGame").value = "#000000";
     window.user.color = "#ffffff";
@@ -139,44 +139,44 @@ if (!window.backgroundColor) {
 }
 
 // Draw Net
-function drawNet(){
-    for(let i = 0; i <= canvas.height; i+=15){
+function drawNet() {
+    for (let i = 0; i <= canvas.height; i += 15) {
         drawRect(net.x, net.y + i, net.width, net.height, net.color);
     }
 }
 
 // Draw Rect Function
-function drawRect(x,y,w,h,color){
+function drawRect(x, y, w, h, color) {
     context.fillStyle = color;
-    context.fillRect(x,y,w,h);
+    context.fillRect(x, y, w, h);
 }
 
 //  Draw Circle
-function drawCircle(x,y,r,color){
+function drawCircle(x, y, r, color) {
     context.fillStyle = color;
     context.beginPath();
-    context.arc(x,y,r,0,Math.PI*2,false);
+    context.arc(x, y, r, 0, Math.PI * 2, false);
     context.closePath();
     context.fill();
 }
 
 // Draw Text
-function drawText(text,x,y,color){
+function drawText(text, x, y, color) {
     context.fillStyle = color;
     context.font = "45px Courier New";
-    context.fillText(text,x,y);
+    context.fillText(text, x, y);
 }
 
 // Control the user paddle
-canvas.addEventListener("mousemove",movePaddle);
+canvas.addEventListener("mousemove", movePaddle);
 
-function movePaddle(evt){
+function movePaddle(evt) {
     let rect = canvas.getBoundingClientRect();
-    user.y = evt.clientY - rect.top - user.height/2;
+    user.y = evt.clientY - rect.top - user.height / 2;
 }
 
 // Collision Detection ( b = ball , p = player)
-function collision(b,p){
+function collision(b, p) {
     b.top = b.y - b.radius;
     b.bottom = b.y + b.radius;
     b.left = b.x - b.radius;
@@ -191,21 +191,21 @@ function collision(b,p){
 }
 
 // Reset Ball
-function resetBall(){
-    ball.x = canvas.width/2;
-    ball.y = canvas.height/2;
+function resetBall() {
+    ball.x = canvas.width / 2;
+    ball.y = canvas.height / 2;
     ball.velocityX = -ball.velocityX;
     ball.speed = 5;
 }
 
 // Update : pos, mov, score, etc Game Logic
-function update(){
+function update() {
 
     // Change the score if the ball exceeds the canvas width and reset the ball
-    if( ball.x - ball.radius < 0 ){
+    if (ball.x - ball.radius < 0) {
         com.score++;
         resetBall();
-    }else if( ball.x + ball.radius > canvas.width){
+    } else if (ball.x + ball.radius > canvas.width) {
         user.score++;
         resetBall();
     }
@@ -215,31 +215,31 @@ function update(){
     ball.y += ball.velocityY;
 
     // Simples computer AI
-    com.y += ((ball.y - (com.y + com.height/2)))*0.1;
+    com.y += ((ball.y - (com.y + com.height / 2))) * 0.1;
 
     // When the ball collides with the bottom or top walls we inverse the y velocity.
-    if(ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height){
+    if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) {
         ball.velocityY = -ball.velocityY;
     }
 
     // Check if the paddle hit the user or the com paddle
-    let player = (ball.x + ball.radius < canvas.width/2) ? user : com;
+    let player = (ball.x + ball.radius < canvas.width / 2) ? user : com;
 
     // If the ball hits a paddle
-    if(collision(ball,player)){
+    if (collision(ball, player)) {
         // Check where the ball hits the paddle
-        let collidePoint = (ball.y - (player.y + player.height/2));
+        let collidePoint = (ball.y - (player.y + player.height / 2));
         // Normalize the value of collidePoint, to get numbers between -1 and 1.
-        collidePoint = collidePoint / (player.height/2);
+        collidePoint = collidePoint / (player.height / 2);
 
         // When the ball hits the top of a paddle we want the ball, to take a -45 degrees angle
         // When the ball hits the center of the paddle we want the ball to take a 0 degrees angle
         // When the ball hits the bottom of the paddle we want the ball to take a 45 degrees
         // Math.PI/4 = 45degrees
-        let angleRad = (Math.PI/4) * collidePoint;
+        let angleRad = (Math.PI / 4) * collidePoint;
 
         // Change the X and Y velocity direction
-        let direction = (ball.x + ball.radius < canvas.width/2) ? 1 : -1;
+        let direction = (ball.x + ball.radius < canvas.width / 2) ? 1 : -1;
         ball.velocityX = direction * ball.speed * Math.cos(angleRad);
         ball.velocityY = ball.speed * Math.sin(angleRad);
 
@@ -248,13 +248,13 @@ function update(){
     }
 
     // Limit the ball speed so that it doesn't go trough the paddles
-    if(ball.speed >= 30){
+    if (ball.speed >= 30) {
         ball.speed = 30;
     }
 }
 
 // Render the Game
-function render(){
+function render() {
     // Clear the canvas
     drawRect(0, 0, canvas.clientWidth, canvas.clientHeight, window.backgroundColor);
 
@@ -262,8 +262,8 @@ function render(){
     drawNet();
 
     //Draw the score
-    drawText(user.score, canvas.width/4, canvas.height/8, "WHITE");
-    drawText(com.score, 3*canvas.width/4, canvas.height/8, "WHITE");
+    drawText(user.score, canvas.width / 4, canvas.height / 8, "WHITE");
+    drawText(com.score, 3 * canvas.width / 4, canvas.height / 8, "WHITE");
 
     // Draw the user and computer paddle
     drawRect(user.x, user.y, user.width, user.height, user.color);
@@ -274,7 +274,7 @@ function render(){
 }
 
 // Game Init
-function game(){
+function game() {
     update();
     render();
 }
@@ -294,7 +294,7 @@ if (playButton !== undefined) {
     const playButton = document.getElementById("playButton");
 }
 
-document.getElementById("pauseButton").addEventListener("click", function() {
+document.getElementById("pauseButton").addEventListener("click", function () {
     if (window.gameInterval) {
         clearInterval(window.gameInterval); // Arrête le jeu
     }
@@ -305,7 +305,7 @@ document.getElementById("pauseButton").addEventListener("click", function() {
 
 
 // Ajoute un événement au bouton pour lancer le jeu au clic
-playButton.addEventListener("click", function() {
+playButton.addEventListener("click", function () {
     document.querySelector(".pong-container").style.display = "block";
     if (window.gameInterval) {
         clearInterval(window.gameInterval);
@@ -322,25 +322,21 @@ if (window.keydownFlag === undefined) {
     window.keydownFlag = false;
 }
 
-document.addEventListener("keydown", function(event) {
+document.addEventListener("keydown", function (event) {
     if (!window.keydownFlag && event.keyCode === 32) // 32 est le code pour la barre d'espace
     {
         event.preventDefault();
         window.keydownFlag = true;
-        if (document.getElementById("pauseButton").style.display !== "none")
-        {
+        if (document.getElementById("pauseButton").style.display !== "none") {
             document.getElementById("pauseButton").click();
-        }
-        else
-        {
+        } else {
             document.getElementById("playButton").click();
         }
     }
 });
 
-document.addEventListener("keyup", function(event) {
-    if (event.keyCode === 32)
-    {
+document.addEventListener("keyup", function (event) {
+    if (event.keyCode === 32) {
         event.preventDefault();
         window.keydownFlag = false;
     }

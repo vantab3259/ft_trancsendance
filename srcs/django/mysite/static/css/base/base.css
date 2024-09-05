@@ -209,7 +209,7 @@ img {
 }
 .side-bar{
 	width: 84px;
-    height: 100%;
+    height: auto;
     background-color: #292D39;
     margin-top: -20px;
 	padding-right: 0%;
@@ -237,9 +237,13 @@ img {
 
 
 .main-content {
-    height: 100% !important;
+    height: auto !important;
 }
 
 .side-bar {
     height: auto;
+}
+
+.main-content:has(.content-pong) {
+    height: 100% !important;
 }
