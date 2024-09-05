@@ -53,6 +53,8 @@
     </header>
 
 	<div class="main-content d-flex">
+    
+    {% block sideBar %}
 		<div class="side-bar">
 
 		<li id="dashboard-link">
@@ -65,6 +67,8 @@
 		<li></li>
 
 		</div>
+    {% endblock %}
+    
     	<!-- Page -->
 		<div class="content">
 			{% block content %}

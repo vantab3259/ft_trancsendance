@@ -160,6 +160,12 @@ function drawCircle(x, y, r, color) {
     context.fill();
 }
 
+function resetPadCenter() {
+    window.user.y = canvas.height / 2 - window.user.height / 2;
+    window.com.y = canvas.height / 2 - window.com.height / 2;
+}
+
+
 // Draw Text
 function drawText(text, x, y, color) {
     context.fillStyle = color;
@@ -192,7 +198,7 @@ function collision(b, p) {
 
 // Reset Ball
 function resetBall() {
-    ball.x = canvas.width / 2;
+    ball.x = canvas.width / 2 - 4;
     ball.y = canvas.height / 2;
     ball.velocityX = -ball.velocityX;
     ball.speed = 5;
@@ -204,10 +210,15 @@ function update() {
     // Change the score if the ball exceeds the canvas width and reset the ball
     if (ball.x - ball.radius < 0) {
         com.score++;
+        document.getElementById("pauseButton").click();
         resetBall();
+        resetPadCenter();
+
     } else if (ball.x + ball.radius > canvas.width) {
         user.score++;
+        document.getElementById("pauseButton").click();
         resetBall();
+        resetPadCenter();
     }
 
     // Increasing ball velocity

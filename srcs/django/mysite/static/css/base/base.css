@@ -244,6 +244,7 @@ img {
     height: auto;
 }
 
-.main-content:has(.content-pong) {
+.main-content:has(.content-pong), .main-content:has(.container-flex-login) {
     height: 100% !important;
 }
+

@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block title %}Connexion{% endblock %}
+{% block header %}{% endblock %}
+{% block sideBar %}{% endblock %}
 
 {% block overload_css %}
     <link rel="stylesheet" href="{% static 'css/login/login.css' %}">
@@ -10,7 +12,7 @@
 {% block content %}
 
 
-<div class="container-flex-login">
+<div class="container-flex-login" style="margin-top: 40px">
   <div class="container" id="container" style="scale: 1.3">
 
     <div class="form-container sign-up">
