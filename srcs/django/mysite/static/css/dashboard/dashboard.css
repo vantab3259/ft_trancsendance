@@ -276,3 +276,11 @@ polygon {
 .position-number {
     width: 25px;
 }
+
+.card.text-white {
+    border-radius: 0;
+}
+
+.main-content:has(.dashboard-header) {
+    height: auto !important;
+}
