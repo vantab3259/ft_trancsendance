@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
     let pathUrl  = window.location.pathname;
     let nameCurrentPageIcon = document
         .querySelector('#' + pathUrl.slice(1).replace(/\/$/, '') + "-link" + ' i');
@@ -11,6 +12,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Fonction pour charger du contenu via fetch
     function loadContent(url, title, nameMenu, scripts = [], nameTemplate = url) {
+
+
+        if (window.audioElements) {
+            window.audioElements.forEach(function(audio) {
+                if (audio && !audio.paused) {
+                    audio.pause();              // Stop the audio
+                    audio.currentTime = 0;      // Reset the audio to the start
+                }
+                audio.volume = 0;      // Reset the audio to the start
+
+            });
+        }
+
         document.getElementById('loader').style.display = 'unset';
         history.pushState(null, '', url);
         document.querySelector("title").innerHTML = title;
@@ -106,6 +120,7 @@ document.addEventListener("DOMContentLoaded", function () {
             '/static/js/pong/pong.js',
             '/static/js/pong/confirm_leave_pong_modal.js'
         ]);
+
     });
 
     tournamentLink.addEventListener("click", function (e) {
@@ -115,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	
 	lobbyLink.addEventListener("click", function (e) {
         e.preventDefault();
-        loadContent('/lobby', 'Lobby', 'lobby');
+        loadContent('/lobby', 'Lobby', 'lobby', ['/static/js/lobby/lobby.js']);
     });
 
 });

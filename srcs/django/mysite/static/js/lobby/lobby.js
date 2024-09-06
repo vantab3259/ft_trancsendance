@@ -1,8 +1,5 @@
-console.log("IS LOAD !")
-
 document.querySelector('.chat-close').addEventListener('click', function() {
 
-    console.log(document.querySelector('.messaging'))
     if (document.querySelector('.messaging').classList.contains('open')) {
         document.querySelector('.messaging').classList.remove('open');
         document.querySelector(".icon-chat-open-container").innerHTML = "<i class=\"fa-solid fa-plus\"></i>";

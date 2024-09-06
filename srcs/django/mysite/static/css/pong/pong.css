@@ -107,3 +107,7 @@
     display: none;
     margin-right: 8%;
 }
+
+#pong:hover {
+    cursor: pointer;
+}

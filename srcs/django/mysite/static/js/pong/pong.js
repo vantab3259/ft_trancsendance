@@ -2,6 +2,38 @@ if (window.gameInterval) {
     clearInterval(window.gameInterval);
 }
 
+
+
+if (!window.audioElements) {
+
+    window.hitSoundOne = new Audio('/static/sound/pong/ball_sound_1.mp3');
+    window.hitSoundTwo = new Audio('/static/sound/pong/ball_sound_2.mp3');
+    window.winPoint = new Audio('/static/sound/pong/win_point.mp3');
+    window.lostPoint = new Audio('/static/sound/pong/lose_point.mp3');
+    window.ostGame = new Audio('/static/sound/pong/ost_game_1.mp3');
+    window.startZelda = new Audio('/static/sound/pong/zelda_botw.mp3');
+
+    window.audioElements = [
+        window.hitSoundOne,
+        window.hitSoundTwo,
+        window.winPoint,
+        window.lostPoint,
+        window.ostGame,
+        window.startZelda,
+];
+}
+
+
+window.ostGame.volume = 0.2;
+window.hitSoundTwo.volume = 0.5;
+window.hitSoundOne.volume = 0.5;
+window.winPoint.volume = 1;
+window.lostPoint.volume = 1;
+window.startZelda = 1;
+window.sound_ball_choice = 0;
+window.lastHitTime = 0;
+window.soundCooldown = 100;
+
 if (window.canvas) {
     window.canvas = document.getElementById("pong");
 } else {
@@ -57,7 +89,7 @@ if (!window.ball) {
         x: canvas.width / 2,
         y: canvas.height / 2,
         radius: 10,
-        speed: 5,
+        speed: 8,
         velocityX: 5,
         velocityY: 5,
         color: document.getElementById("ballColor").value,
@@ -68,7 +100,7 @@ if (!window.ball) {
         x: canvas.width / 2,
         y: canvas.height / 2,
         radius: 10,
-        speed: 5,
+        speed: 8,
         velocityX: 5,
         velocityY: 5,
         color: document.getElementById("ballColor").value,
@@ -201,7 +233,7 @@ function resetBall() {
     ball.x = canvas.width / 2 - 4;
     ball.y = canvas.height / 2;
     ball.velocityX = -ball.velocityX;
-    ball.speed = 5;
+    ball.speed = 8;
 }
 
 // Update : pos, mov, score, etc Game Logic
@@ -210,13 +242,19 @@ function update() {
     // Change the score if the ball exceeds the canvas width and reset the ball
     if (ball.x - ball.radius < 0) {
         com.score++;
-        document.getElementById("pauseButton").click();
+        window.lostPoint.play();
+        if (document.getElementById("pauseButton")) {
+            document.getElementById("pauseButton").click();
+        }
         resetBall();
         resetPadCenter();
 
     } else if (ball.x + ball.radius > canvas.width) {
         user.score++;
-        document.getElementById("pauseButton").click();
+        window.winPoint.play();
+        if (document.getElementById("pauseButton")) {
+            document.getElementById("pauseButton").click();
+        }
         resetBall();
         resetPadCenter();
     }
@@ -241,6 +279,26 @@ function update() {
 
     // If the ball hits a paddle
     if (collision(ball, player)) {
+
+        window.currentTime = new Date().getTime();
+
+        // Only play the sound if enough time has passed since the last hit
+        if (currentTime - window.lastHitTime > window.soundCooldown) {
+            if (window.sound_ball_choice % 2) {
+                window.hitSoundOne.currentTime = 0;
+                window.hitSoundOne.play();
+            } else {
+                window.hitSoundTwo.currentTime = 0;
+                window.hitSoundTwo.play();
+            }
+
+            // Update the last hit time
+            window.lastHitTime = currentTime;
+
+            // Toggle sound choice for next hit
+            window.sound_ball_choice = (window.sound_ball_choice + 1) % 2;
+        }
+
         // Check where the ball hits the paddle
         let collidePoint = (ball.y - (player.y + player.height / 2));
         // Normalize the value of collidePoint, to get numbers between -1 and 1.
@@ -317,6 +375,7 @@ document.getElementById("pauseButton").addEventListener("click", function () {
     document.getElementById("playButton").style.display = "block"; // Affiche le bouton Play
 });
 
+window.launchFirstTimeGame = true;
 
 // Ajoute un événement au bouton pour lancer le jeu au clic
 playButton.addEventListener("click", function () {
@@ -329,6 +388,10 @@ playButton.addEventListener("click", function () {
     document.getElementById("pauseButton").style.display = "block";
 
     window.gameInterval = setInterval(game, 1000 / window.framePerSecond);
+    if (window.launchFirstTimeGame) {
+        window.launchFirstTimeGame = false;
+        window.ostGame.play();
+    }
 });
 
 
@@ -355,3 +418,11 @@ document.addEventListener("keyup", function (event) {
         window.keydownFlag = false;
     }
 });
+
+document.querySelector("#pong").addEventListener("click", function () {
+    if (document.getElementById("pauseButton").style.display !== "none") {
+        document.getElementById("pauseButton").click();
+    } else {
+        document.getElementById("playButton").click();
+    }
+})
