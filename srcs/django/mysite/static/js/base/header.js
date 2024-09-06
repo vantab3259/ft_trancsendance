@@ -88,54 +88,61 @@ document.addEventListener("DOMContentLoaded", function () {
     // Gestionnaire pour le dropdown du profil
     let profileDropdownList = document.querySelector(".profile-dropdown-list");
     let btn = document.querySelector(".profile-dropdown-btn");
-    let classList = profileDropdownList.classList;
+    if (profileDropdownList) {
+        let classList = profileDropdownList.classList;
+        const toggleDropdown = () => classList.toggle("active");
 
-    const toggleDropdown = () => classList.toggle("active");
+        btn.addEventListener("click", toggleDropdown);
 
-    btn.addEventListener("click", toggleDropdown);
+        window.addEventListener("click", function (e) {
+            if (!btn.contains(e.target)) classList.remove("active");
+        });
 
-    window.addEventListener("click", function (e) {
-        if (!btn.contains(e.target)) classList.remove("active");
-    });
+        // Sélecteurs pour les boutons de navigation
+        let dashboardBtn = document.querySelector("#dashboard-link");
+        let navbarLogo = document.querySelector("#navbar-logo");
+        let pongLink = document.querySelector("#pong-link");
+        let tournamentLink = document.querySelector("#tournament-link");
+        let lobbyLink = document.querySelector("#lobby-link");
+        var pageContent = document.querySelector("div.content");
 
-    // Sélecteurs pour les boutons de navigation
-    let dashboardBtn = document.querySelector("#dashboard-link");
-    let navbarLogo = document.querySelector("#navbar-logo");
-    let pongLink = document.querySelector("#pong-link");
-    let tournamentLink = document.querySelector("#tournament-link");
-    let lobbyLink = document.querySelector("#lobby-link");
-    var pageContent = document.querySelector("div.content");
+        // Ajouter des gestionnaires d'événements
+        dashboardBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            loadContent('/dashboard', 'Dashboard', "dashboard", [
+                '/static/js/dashboard/dashboard.js',
+            ]);
+        });
 
-    // Ajouter des gestionnaires d'événements
-    dashboardBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-        loadContent('/dashboard', 'Dashboard', "dashboard", [
-            '/static/js/dashboard/dashboard.js',
-        ]);
-    });
+        navbarLogo.addEventListener("click", function (e) {
+            e.preventDefault();
+            loadContent('/home', 'Home', "dashboard");
+        });
 
-    navbarLogo.addEventListener("click", function (e) {
-        e.preventDefault();
-        loadContent('/home', 'Home', "dashboard");
-    });
+        pongLink.addEventListener("click", function (e) {
+            e.preventDefault();
+            loadContent('/pong', 'Pong', 'pong', [
+                '/static/js/pong/pong.js',
+                '/static/js/pong/confirm_leave_pong_modal.js'
+            ]);
 
-    pongLink.addEventListener("click", function (e) {
-        e.preventDefault();
-        loadContent('/pong', 'Pong', 'pong', [
-            '/static/js/pong/pong.js',
-            '/static/js/pong/confirm_leave_pong_modal.js'
-        ]);
+        });
 
-    });
+        tournamentLink.addEventListener("click", function (e) {
+            e.preventDefault();
+            loadContent('/tournament', 'Tournament', 'tournament', []);
+        });
 
-    tournamentLink.addEventListener("click", function (e) {
-        e.preventDefault();
-        loadContent('/tournament', 'Tournament', 'tournament', []);
-    });
-	
-	lobbyLink.addEventListener("click", function (e) {
-        e.preventDefault();
-        loadContent('/lobby', 'Lobby', 'lobby', ['/static/js/lobby/lobby.js']);
-    });
+        lobbyLink.addEventListener("click", function (e) {
+            e.preventDefault();
+            loadContent('/lobby', 'Lobby', 'lobby', ['/static/js/lobby/lobby.js']);
+        });
+
+
+    }
+
+
+
+
 
 });

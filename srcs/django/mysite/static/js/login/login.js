@@ -1,4 +1,6 @@
 
+
+
 var containerLogin = document.getElementById('container');
 var registerBtn = document.getElementById('register');
 var loginBtn = document.getElementById('login');
