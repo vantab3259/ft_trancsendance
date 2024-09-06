@@ -59,3 +59,7 @@ document.querySelectorAll('.choose-mode').forEach(mode => {
 document.querySelector('.randon-button-avatar-lobby').addEventListener('click', () => {
     avatarContainer.src = `/static/images/avatar/avatar_${Math.floor(Math.random() * totalAvatars) + 1}.svg`;
 });
+
+if (document.querySelector('.avatar-content-lobby'))  {
+    document.querySelector('.avatar-content-lobby').src = `/static/images/avatar/avatar_${Math.floor(Math.random() * totalAvatars) + 1}.svg`;
+}
