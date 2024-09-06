@@ -4,8 +4,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     let pathUrl  = window.location.pathname;
+    let pathUrlArgument = pathUrl.slice(1).replace(/\/$/, '');
+
+    if (pathUrlArgument === "home") {
+        pathUrlArgument = "dashboard";
+    }
     let nameCurrentPageIcon = document
-        .querySelector('#' + pathUrl.slice(1).replace(/\/$/, '') + "-link" + ' i');
+        .querySelector('#' + pathUrlArgument + "-link" + ' i');
     if (nameCurrentPageIcon !== undefined && nameCurrentPageIcon) {
         nameCurrentPageIcon.style.opacity = 1;
     }
@@ -111,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     navbarLogo.addEventListener("click", function (e) {
         e.preventDefault();
-        loadContent('/home', 'Home', "home");
+        loadContent('/home', 'Home', "dashboard");
     });
 
     pongLink.addEventListener("click", function (e) {

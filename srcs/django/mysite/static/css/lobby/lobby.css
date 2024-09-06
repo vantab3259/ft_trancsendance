@@ -386,3 +386,156 @@
     outline: none;
     border: none;
 }
+
+.choose-options-lobby-container {
+    width: fit-content;
+    background-color: white;
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 2px;
+}
+
+.top-options-lobby {
+    display: flex;
+}
+
+.player-information-container {
+    display: flex;
+}
+
+.avatar-carousel-lobby {
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
+}
+
+.avatar-carousel-lobby button {
+    background-color: white;
+    height: 40px;
+}
+
+.avatar-carousel-lobby img {
+    border-radius: 50%;
+    height: 200px;
+    margin: 5px;
+}
+
+.first-part-top-options-lobby {
+    margin-right: 80px;
+    background-color: whitesmoke;
+    padding: 50px;
+    border-radius: 20px;
+}
+
+.second-part-top-options-lobby {
+    margin-right: 80px;
+    background-color: whitesmoke;
+    padding: 50px;
+    border-radius: 20px;
+}
+
+.choose-pseudo-lobby {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+.bottom-options-lobby {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+}
+
+.launch-button-game-content {
+    padding: 30px 30px;
+    background-color: #00BABC;
+    text-decoration: none;
+    font-weight: 500;
+    font-style: normal;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    transition: all 0.3s ease-in-out;
+}
+
+.launch-button-game-content:hover {
+    opacity: 0.9;
+    scale: 1.1;
+    color: black;
+
+}
+
+.avatar-carousel-lobby button {
+    text-decoration: none;
+    border: none;
+    background-color: whitesmoke;
+    transition: all 0.3s ease-in-out;
+    padding: 20px;
+}
+
+.avatar-carousel-lobby button:hover {
+    scale: 1.3;
+    color: #00BABC;
+}
+
+.choose-mode {
+    padding: 25px 40px;
+    background-color: #538888;
+    color: white;
+    font-style: normal;
+    font-weight: 500;
+    margin: 5px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+
+}
+
+.choose-mode.active-mode {
+    background-color: #00BABC;
+}
+
+.choose-mode:hover {
+    cursor: pointer;
+    color: black;
+    scale: 1.1;
+}
+
+.choose-mode-lobby {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+}
+
+.title-choose-mode , .title-edit-player-lobby {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 600;
+    font-style: normal;
+}
+
+.choose-pseudo-lobby input {
+    padding: 20px;
+    text-decoration: none;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.choose-pseudo-lobby input:focus {
+    outline: none;
+}
+
+.choose-pseudo-lobby input:active {
+    outline: none;
+}

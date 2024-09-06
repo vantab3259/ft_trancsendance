@@ -235,3 +235,15 @@ body{
     font-weight: 600;
     font-style: normal;
 }
+
+@media screen and (max-width: 1200px) {
+    .container-flex-login .container {
+        scale: 1.1 !important;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .container-flex-login .container {
+        scale: 0.9 !important;
+    }
+}

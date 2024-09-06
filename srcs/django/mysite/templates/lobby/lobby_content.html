@@ -4,6 +4,100 @@
 
 <div class="lobby-content">
 
-	{% include 'lobby/chat.html' %}
+    {% include 'lobby/chat.html' %}
+
+    <div class="choose-options-lobby-container">
+
+
+        <div class="top-options-lobby">
+
+            <div class="first-part-top-options-lobby">
+                <div class="title-edit-player-lobby">
+                    <span>EDIT</span>
+                    <span><i class="fa-solid fa-gear"></i></span>
+                </div>
+                    
+                <div class="player-information-container">
+                    
+                    <div class="avatar-carousel-lobby">
+                        <button id="prev">&#10094;</button>
+                        <div class="avatar-container-lobby">
+                            <img src="/static/images/avatar/avatar_1.svg" alt="Avatar" />
+
+                        </div>
+                        <button id="next" >&#10095;</button>
+                    </div>
+                    
+                    <div class="choose-pseudo-lobby">
+                        <input type="text" maxlength="8" placeholder="Pseudo">
+                    </div>
+                    
+                </div>
+                
+            </div>
+
+            <div class="second-part-top-options-lobby">
+                <div class="title-choose-mode">
+                    <span>MODE</span>
+                    <span><i class="fa-solid fa-user-gear"></i></span>
+                </div>
+                <div class="choose-mode-lobby">
+                    
+                    <div class="choose-mode-container">
+                        
+                        <div class="choose-mode solo-mode active-mode">
+                        
+                            <span class="label-choose-mode solo-mode">
+                                SOLO
+                            </span>
+                                
+                            <span class="icon-choose-mode solo-mode">
+                                <i class="fa-solid fa-wifi"></i>
+                            </span>
+
+                        </div>
+
+                        <div class="choose-mode solo-mode">
+                        
+                            <span class="label-choose-mode solo-mode">
+                                INVITE
+                            </span>
+    
+                            <span class="icon-choose-mode solo-mode">
+                                <i class="fa-solid fa-user-group"></i>
+                            </span>
+
+                        </div>
+                        
+                    </div>
+                    
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="bottom-options-lobby">
+
+            <div class="launch-button-game-lobby">
+                <button class="launch-button-game-content">
+                    <span class="label-launch-game-lobby">
+                        LAUNCH
+                    </span>
+                    <span class="icon-launch-game-lobby">
+                        <i class="fa-solid fa-play"></i>
+                    </span>
+                </button>
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
+
+<style>
+    .chat-content {
+        display: none;
+    }
+</style>
