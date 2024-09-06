@@ -67,12 +67,13 @@ if (document.querySelector('.avatar-content-lobby'))  {
 function openMatchmakingModal() {
     const modal = document.getElementById('matchmakingModal');
     modal.style.display = 'flex';
-    setInterval(changeAvatarRandomly, 2000);
+    window.intervalAvatarMatchmaking = setInterval(changeAvatarRandomly, 2000);
 }
 
 function closeMatchmakingModal() {
     const modal = document.getElementById('matchmakingModal');
-    modal.style.display = 'none'; // Cacher la modal
+    clearInterval(window.intervalAvatarMatchmaking);
+    modal.style.display = 'none';
 }
 
 document.querySelector(".launch-button-game-content").addEventListener("click", () => {
