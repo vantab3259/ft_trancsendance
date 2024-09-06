@@ -111,3 +111,34 @@
 #pong:hover {
     cursor: pointer;
 }
+
+.pre-config-color-pong {
+    display: flex;
+    justify-items: center;
+    justify-content: space-evenly;
+    align-content: center;
+    font-style: normal;
+    font-weight: 500;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.row-config {
+    background-color: whitesmoke;
+    border: 2px solid black;
+    padding: 20px 30px;
+    border-radius: 3px;
+    width: 120px;
+    text-align: center;
+    transition: scale 0.3s ease-in-out;
+}
+
+.row-config:hover {
+    cursor: pointer;
+    scale: 1.1;
+}
+
+.row-config.active {
+    background-color: #00BABC;
+    color: white;
+}

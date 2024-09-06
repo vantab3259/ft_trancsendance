@@ -2,6 +2,39 @@ if (window.gameInterval) {
     clearInterval(window.gameInterval);
 }
 
+window.configurationPongFun = {
+    "ball": "#f4a261", "paddleUser": "#2a9d8f", "paddleCom": "#e76f51", "background": "#e9c46a", "net": "#264653",
+};
+
+window.classicConfig = {
+    "ball": "#ffffff", "paddleUser": "#ffffff", "paddleCom": "#ffffff", "background": "#000000", "net": "#ffffff",
+};
+
+function applyConfig(config) {
+    document.getElementById("ballColor").value = config.ball;
+    document.getElementById("userPaddleColor").value = config.paddleUser;
+    document.getElementById("comPaddleColor").value = config.paddleCom;
+    document.getElementById("netColor").value = config.net;
+    document.getElementById("backgroundGame").value = config.background;
+
+    window.ball.color = config.ball;
+    window.user.color = config.paddleUser;
+    window.com.color = config.paddleCom;
+    window.net.color = config.net;
+    window.backgroundColor = config.background;
+}
+
+document.getElementById('funConfig').addEventListener('click', function () {
+    applyConfig(window.configurationPongFun);
+    document.querySelector('.active').classList.remove('active');
+    this.classList.add('active');
+});
+
+document.getElementById('classicConfig').addEventListener('click', function () {
+    applyConfig(window.classicConfig);
+    document.querySelector('.active').classList.remove('active');
+    this.classList.add('active');
+});
 
 
 if (!window.audioElements) {
@@ -13,14 +46,7 @@ if (!window.audioElements) {
     window.ostGame = new Audio('/static/sound/pong/ost_game_1.mp3');
     window.startZelda = new Audio('/static/sound/pong/zelda_botw.mp3');
 
-    window.audioElements = [
-        window.hitSoundOne,
-        window.hitSoundTwo,
-        window.winPoint,
-        window.lostPoint,
-        window.ostGame,
-        window.startZelda,
-];
+    window.audioElements = [window.hitSoundOne, window.hitSoundTwo, window.winPoint, window.lostPoint, window.ostGame, window.startZelda,];
 }
 
 
@@ -110,20 +136,12 @@ if (!window.ball) {
 // Create the net Object
 if (!window.net) {
     const net = {
-        x: canvas.width / 2 - 1,
-        y: 0,
-        width: 2,
-        height: 10,
-        color: "WHITE"
+        x: canvas.width / 2 - 1, y: 0, width: 2, height: 10, color: "WHITE"
     };
     window.net = net;
 } else {
     window.net = {
-        x: canvas.width / 2 - 1,
-        y: 0,
-        width: 2,
-        height: 10,
-        color: "WHITE"
+        x: canvas.width / 2 - 1, y: 0, width: 2, height: 10, color: "WHITE"
     };
 }
 
