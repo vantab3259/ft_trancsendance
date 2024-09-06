@@ -63,3 +63,43 @@ document.querySelector('.randon-button-avatar-lobby').addEventListener('click', 
 if (document.querySelector('.avatar-content-lobby'))  {
     document.querySelector('.avatar-content-lobby').src = `/static/images/avatar/avatar_${Math.floor(Math.random() * totalAvatars) + 1}.svg`;
 }
+
+function openMatchmakingModal() {
+    const modal = document.getElementById('matchmakingModal');
+    modal.style.display = 'flex';
+    setInterval(changeAvatarRandomly, 2000);
+}
+
+function closeMatchmakingModal() {
+    const modal = document.getElementById('matchmakingModal');
+    modal.style.display = 'none'; // Cacher la modal
+}
+
+document.querySelector(".launch-button-game-content").addEventListener("click", () => {
+    openMatchmakingModal();
+});
+
+if (typeof totalAvatarsMatchmaking === undefined) {
+    const totalAvatarsMatchmaking = 45;
+}
+
+if (typeof currentAvatarIndexMatchmaking === undefined) {
+    let currentAvatarIndexMatchmaking = 1;
+} else {
+    currentAvatarIndexMatchmaking = 1;
+}
+
+
+function changeAvatarRandomly() {
+
+    document.getElementById('matchmakingAvatar').classList.add('fade-out');
+
+    setTimeout(() => {
+        const randomIndex = Math.floor(Math.random() * totalAvatars) + 1;
+        document.getElementById('matchmakingAvatar').src = `/static/images/avatar/avatar_${randomIndex}.svg`;
+        document.getElementById('matchmakingAvatar').classList.remove('fade-out');
+    }, 500);
+}
+
+
+
