@@ -195,8 +195,7 @@ polygon {
     gap: 20px;
 }
 
-.leaderboard-container, .match-history-wrapper {
-    width: 500px;
+.contributor-list, .match-history-list {
     height: 400px;
     overflow-x: auto;
     border-radius: 15px;
@@ -263,4 +262,17 @@ polygon {
 .content ::-webkit-scrollbar-track {
     margin-top: 50px;
     margin-bottom: 50px;
+}
+
+.leaderboard-container {
+    border-radius: 0;
+}
+
+.board-title, .match-history-title {
+    font-weight: 500;
+    font-style: normal;
+}
+
+.position-number {
+    width: 25px;
 }
