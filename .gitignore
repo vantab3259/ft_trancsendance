@@ -2,3 +2,7 @@ srcs/django/mysite/__pycache__/
 .ideal/
 srcs/nginx/certs/*.crt
 srcs/nginx/certs/*.key
+*.pyc
+__pycache__/
+srcs/django/mysite/migrations/*.py
+!srcs/django/mysite/migrations/__init__.py 
