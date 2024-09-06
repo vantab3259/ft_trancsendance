@@ -539,3 +539,18 @@
 .choose-pseudo-lobby input:active {
     outline: none;
 }
+
+.randon-button-avatar-lobby {
+    padding: 20px;
+    border-radius: 50%;
+    background-color: white;
+    position: relative;
+    bottom: 20px;
+    right: 55px;
+    border: 2px solid black;
+}
+
+.randon-button-avatar-lobby:hover {
+    cursor: pointer;
+    color: #00BABC;
+}

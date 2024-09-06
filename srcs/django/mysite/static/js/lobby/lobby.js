@@ -21,9 +21,23 @@ document.querySelector('.close-button-container').addEventListener('click', func
 //*****************************************************************************************************
 
 // Avatar Carousel
-let avatarIndex = 1;
-const avatarContainer = document.querySelector('.avatar-container-lobby img');
-const totalAvatars = 45; // Nombre total d'avatars disponibles
+if (typeof avatarIndex === undefined) {
+    let avatarIndex = 1;
+} else {
+    avatarIndex = 1;
+}
+
+if (typeof avatarContainer === undefined) {
+    let avatarContainer = document.querySelector('.avatar-container-lobby img');
+} else {
+    avatarContainer = document.querySelector('.avatar-container-lobby img');
+}
+
+if (typeof totalAvatars === undefined) {
+    let totalAvatars = 45;
+} else {
+    totalAvatars = 45;
+}
 
 document.getElementById('next').addEventListener('click', () => {
     avatarIndex = (avatarIndex % totalAvatars) + 1; // Passe au suivant
@@ -35,14 +49,13 @@ document.getElementById('prev').addEventListener('click', () => {
     avatarContainer.src = `/static/images/avatar/avatar_${avatarIndex}.svg`; // Change l'avatar
 });
 
-// Mode Selection
-const modes = document.querySelectorAll('.choose-mode');
-
-modes.forEach(mode => {
+document.querySelectorAll('.choose-mode').forEach(mode => {
     mode.addEventListener('click', () => {
-        // Retirer la classe active-mode des autres modes
-        modes.forEach(m => m.classList.remove('active-mode'));
-        // Ajouter la classe active-mode au mode cliqué
+        document.querySelectorAll('.choose-mode').forEach(m => m.classList.remove('active-mode'));
         mode.classList.add('active-mode');
     });
+});
+
+document.querySelector('.randon-button-avatar-lobby').addEventListener('click', () => {
+    avatarContainer.src = `/static/images/avatar/avatar_${Math.floor(Math.random() * totalAvatars) + 1}.svg`;
 });
