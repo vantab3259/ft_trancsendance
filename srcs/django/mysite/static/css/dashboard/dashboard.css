@@ -257,7 +257,14 @@ polygon {
 
 }
 
-
+.data-card-dashboard {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
 
 .content ::-webkit-scrollbar-track {
     margin-top: 50px;
@@ -283,4 +290,20 @@ polygon {
 
 .main-content:has(.dashboard-header) {
     height: auto !important;
+}
+
+.content-dashboard {
+    margin-top: 20px;
+}
+
+.content-dashboard .col-md-4 {
+    width: 30%;
+}
+
+.row {
+    justify-content: space-around;
+}
+
+.content {
+    overflow: hidden;
 }
