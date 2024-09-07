@@ -2,6 +2,9 @@
     font-family: Arial, sans-serif;
     background-color: #f9f9f9;
     margin: 20px;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .form-edit-profile.form {
@@ -83,3 +86,4 @@
 .title-container-profile span {
     padding-left: 20px;
 }
+

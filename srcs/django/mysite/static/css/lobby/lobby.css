@@ -634,3 +634,7 @@
 .lobby-matchmaking-modal-content button:hover {
     scale: 1.3;
 }
+
+.lobby-content {
+    margin-top: 20px;
+}

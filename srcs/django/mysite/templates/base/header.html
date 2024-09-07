@@ -8,34 +8,27 @@
 			/>
 		</div>
 
-
-      <ul class="navbar-list">
-        <li><a href="" id="tournament-link">Tournament</a></li>
-      </ul>
-
       <div class="profile-dropdown">
         <div class="profile-dropdown-btn">
-          <div class="profile-img" style="background-image: url('{% static 'images/base/ranki.png' %}');">          
-            <i class="fa-solid fa-circle">
-            </i>
-          </div>
-
+            
           <span
             >ranki
-            <i class="fa-solid fa-angle-down" style="color: gray !important;"></i>
           </span>
+
+            <div class="profile-img" style="background-image: url('{% static 'images/base/ranki.png' %}');">
+            </div>
         </div>
 
         <ul class="profile-dropdown-list">
           <li class="profile-dropdown-list-item">
-            <a href="#">
+            <a href="#" id="edit-header-link">
               <i class="fa-regular fa-user"></i>
               Edit Profile
             </a>
           </li>
 
           <li class="profile-dropdown-list-item">
-            <a href="#">
+            <a href="#" id="logout-header-link">
               <i class="fa-solid fa-arrow-right-from-bracket"></i>
               Log out
             </a>

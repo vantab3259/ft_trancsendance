@@ -3,7 +3,6 @@
     height: 350px;
     background-size: cover;
     background-repeat: no-repeat;
-    margin-top: -20px;
     display: flex;
 }
 
@@ -292,7 +291,7 @@ polygon {
     height: auto !important;
 }
 
-.content-dashboard {
+.content .content-dashboard {
     margin-top: 20px;
 }
 

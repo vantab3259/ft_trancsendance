@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let pathUrl  = window.location.pathname;
     let pathUrlArgument = pathUrl.slice(1).replace(/\/$/, '');
 
-    if (pathUrlArgument === "home") {
+    if (pathUrlArgument === "home" || pathUrlArgument === "profile/edit") {
         pathUrlArgument = "dashboard";
     }
     let nameCurrentPageIcon = document
@@ -104,6 +104,9 @@ document.addEventListener("DOMContentLoaded", function () {
         let pongLink = document.querySelector("#pong-link");
         let tournamentLink = document.querySelector("#tournament-link");
         let lobbyLink = document.querySelector("#lobby-link");
+        let editHeaderLink = document.querySelector("#edit-header-link");
+        let logoutNavBarLink = document.querySelector("#logout-header-link");
+
         var pageContent = document.querySelector("div.content");
 
         // Ajouter des gestionnaires d'événements
@@ -137,6 +140,16 @@ document.addEventListener("DOMContentLoaded", function () {
             e.preventDefault();
             loadContent('/lobby', 'Lobby', 'lobby', ['/static/js/lobby/lobby.js']);
         });
+
+        editHeaderLink.addEventListener("click", function (e) {
+            e.preventDefault();
+            loadContent('/profile/edit', 'Edit', 'home', [], 'profile_edit');
+        });
+
+        // logoutNavBarLink.addEventListener("click", function (e) {
+        //     e.preventDefault();
+        //     loadContent('/login', 'Login', null, [], 'login');
+        // });
 
 
     }

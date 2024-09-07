@@ -14,6 +14,7 @@ urlpatterns = [
     path('pong_content/', views.pong_content, name='pong_content'),
     path('profile/edit', views.profile_edit, name='profile_edit'),
     path('profile_edit_content', views.profile_edit_content, name='profile_edit'),
+    path('profile/profile_edit_content', views.profile_edit_content, name='profile_edit'),
     path('ranking', views.ranking, name='ranking'),
     path('ranking_content', views.ranking_content, name='ranking_content'),
     path('history', views.history_match, name='history_match'),
