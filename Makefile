@@ -24,4 +24,14 @@ revolume: down
 	sudo rm -rf $(SSL_FOLDER)
 	$(MAKE) build
 
-.PHONY: up build down clean re revolume logs
+fclean: down
+	if [ -n "$(CONTAINERS)" ]; then docker rm -f $(CONTAINERS); fi
+	if [ -n "$(VOLUMES)" ]; then docker volume rm -f $(VOLUMES); fi
+	if [ -n "$(IMAGES)" ]; then docker image rm -f $(IMAGES); fi
+	if [ -n "$(NETWORKS)" ]; then docker network rm $(NETWORKS); fi
+	docker system prune -a --volumes -f
+	rm -rf srcs/nginx/certs
+	rm -f srcs/django/mysite/migrations/0*.py
+	rm -rf srcs/django/mysite/migrations/__pycache__
+
+.PHONY: up build down clean re revolume logs fclean
