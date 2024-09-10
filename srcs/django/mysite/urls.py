@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from . import views
+from .controllers import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,7 +26,6 @@ urlpatterns = [
     path('lobby', views.lobby, name='lobby'),
     path('login', views.login, name='login'),
     path('lobby_content', views.lobby_content, name='lobby_content'),
-    
-    path('signup/', views.signup, name='signup'),
+    path('signup/', user_controller.signup, name='signup'),
 
 ]

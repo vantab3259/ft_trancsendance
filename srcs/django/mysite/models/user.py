@@ -8,12 +8,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
     is_active = models.BooleanField(_('active'), default=True)
-    is_active_2 = models.BooleanField(_('active'), default=True)
 
     # USERNAME_FIELD indique à Django quel champ utiliser pour identifier les utilisateurs
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'id'
     
-    # REQUIRED_FIELDS sont les champs obligatoires lors de la création d'un superuser
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
     class Meta:
