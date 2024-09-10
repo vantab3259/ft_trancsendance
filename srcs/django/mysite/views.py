@@ -54,3 +54,19 @@ def lobby(request):
 
 def lobby_content(request):
     return render(request, 'lobby/lobby_content.html')
+
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def signup(request):
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        return JsonResponse({'message': 'Utilisateur créé avec succès !'})
+    else:
+        return render(request, 'signup.html')

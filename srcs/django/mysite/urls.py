@@ -25,5 +25,7 @@ urlpatterns = [
     path('lobby', views.lobby, name='lobby'),
     path('login', views.login, name='login'),
     path('lobby_content', views.lobby_content, name='lobby_content'),
+    
+    path('signup/', views.signup, name='signup'),
 
 ]

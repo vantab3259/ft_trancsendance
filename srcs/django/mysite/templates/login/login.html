@@ -16,7 +16,9 @@
   <div class="container" id="container" style="scale: 1.3">
 
     <div class="form-container sign-up">
-        <form>
+        <form id="signup-form">
+{% csrf_token %}
+
             <h1>Create Account</h1>
 
             <a 
@@ -73,8 +75,7 @@
   </div>
 </div>
 
-  {% block overload_javascript %}
-    <script src="{% static 'js/login/login.js' %}"></script>
-  {% endblock %}
+  <script src="{% static 'js/login/login.js' %}"></script>
+
 
 {% endblock %}
