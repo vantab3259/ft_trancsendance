@@ -4,7 +4,7 @@
 {% block title %}Connexion{% endblock %}
 {% block header %}{% endblock %}
 {% block sideBar %}{% endblock %}
-
+{% block header_js %}{% endblock %}
 {% block overload_css %}
     <link rel="stylesheet" href="{% static 'css/login/login.css' %}">
 {% endblock %}
@@ -30,15 +30,15 @@
               </a>
 
             <span>or use your email for registeration</span>
-            <input type="text" placeholder="Name" name="name">
-            <input type="email" placeholder="Email" name="email">
-            <input type="password" placeholder="Password" name="password">
+            <input type="text" placeholder="Name" name="name" required>
+            <input type="email" placeholder="Email" name="email" required>
+            <input type="password" placeholder="Password" name="password" required>
             <button>Sign Up</button>
         </form>
     </div>
 
     <div class="form-container sign-in">
-        <form>
+        <form id="signin-form">
             <h1>Sign In</h1>
 
             <div class="social-icons">
@@ -52,8 +52,8 @@
             </div>
 
             <span>or use your email password</span>
-            <input type="email" placeholder="Email">
-            <input type="password" placeholder="Password">
+            <input type="email" placeholder="Email" name="email" required>
+            <input type="password" placeholder="Password" name="password" required>
             <a href="#">Forget Your Password?</a>
             <button>Sign In</button>
         </form>

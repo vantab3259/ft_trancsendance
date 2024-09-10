@@ -24,8 +24,11 @@ urlpatterns = [
     path('tournament', views.tournament, name='tournament'),
     path('tournament_content', views.tournament_content, name='tournament_content'),
     path('lobby', views.lobby, name='lobby'),
-    path('login', views.login, name='login'),
+    path('login/', views.login, name='login'),
     path('lobby_content', views.lobby_content, name='lobby_content'),
+
     path('signup/', user_controller.signup, name='signup'),
+    path('signin/', user_controller.signin, name='signin'),
+    path('logout/', user_controller.logout_view, name='logout_view'),
 
 ]

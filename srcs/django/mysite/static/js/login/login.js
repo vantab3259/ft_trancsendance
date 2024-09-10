@@ -10,15 +10,16 @@ loginBtn.addEventListener('click', () => {
     containerLogin.classList.remove("active");
 });
 
-var form = document.querySelector("#signup-form");
+var signUpForm = document.querySelector("#signup-form");
+var signInForm = document.querySelector("#signin-form");
 
-form.addEventListener("submit", function (event) {
+signUpForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
-    const formData = new FormData(form);
+    let formDataSignUp = new FormData(signUpForm);
 
     fetch("/signup/", {
-        method: "POST", body: formData, headers: {
+        method: "POST", body: formDataSignUp, headers: {
             "X-CSRFToken": getCookie("csrftoken")
         }
     })
@@ -33,7 +34,32 @@ form.addEventListener("submit", function (event) {
             console.log("Succès :", data);
         })
         .catch(error => {
-            console.log("response => ", error);
+            console.error("Erreur :", error);
+        });
+});
+
+signInForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    let formDataSignIn = new FormData(signInForm);
+
+    fetch("/signin/", {
+        method: "POST", body: formDataSignIn, headers: {
+            "X-CSRFToken": getCookie("csrftoken")
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error("Erreur lors de l'envoi du formulaire.");
+            }
+        })
+        .then(data => {
+            goToNextPage();
+            console.log("Succès :", data);
+        })
+        .catch(error => {
             console.error("Erreur :", error);
         });
 });
@@ -53,3 +79,42 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+function goToNextPage(page = "dashboard", scripts = ["/static/js/base/header.js", '/static/js/dashboard/dashboard.js']) {
+
+    // Construire l'URL complète en fonction de la page
+    const url = `/${page}/`;
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erreur lors du chargement de ${page}`);
+            }
+            return response.text();
+        })
+        .then(html => {
+
+            // Supprimer les anciens scripts spécifiés
+            scripts.forEach(scriptSrc => {
+                const existingScript = document.querySelector(`script[src="${scriptSrc}"]`);
+                if (existingScript) {
+                    existingScript.remove();
+                }
+            });
+
+            document.documentElement.innerHTML = html;
+            history.pushState(null, '', url);
+
+            scripts.forEach(scriptSrc => {
+                const script = document.createElement('script');
+                script.src = scriptSrc;
+                document.body.appendChild(script);
+            });
+
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            document.body.innerHTML = '<p>Une erreur est survenue lors du chargement de la page.</p>';
+        });
+}
+

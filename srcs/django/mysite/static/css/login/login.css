@@ -247,3 +247,12 @@ body{
         scale: 0.9 !important;
     }
 }
+
+.toggle-container {
+    color: white !important;
+}
+.toggle-container p, .toggle-container h1 {
+    color: white !important;
+    font-style: normal;
+    font-weight: 600;
+}

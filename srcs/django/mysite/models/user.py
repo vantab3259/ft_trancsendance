@@ -1,6 +1,10 @@
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+class CustomUserManager(BaseUserManager):
+    def get_by_natural_key(self, email):
+        return self.get(email=email)
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)
@@ -9,9 +13,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
     is_active = models.BooleanField(_('active'), default=True)
 
-    # USERNAME_FIELD indique à Django quel champ utiliser pour identifier les utilisateurs
-    USERNAME_FIELD = 'id'
-    
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
     class Meta:
