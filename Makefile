@@ -31,7 +31,6 @@ fclean: down
 	if [ -n "$(NETWORKS)" ]; then docker network rm $(NETWORKS); fi
 	docker system prune -a --volumes -f
 	rm -rf srcs/nginx/certs
-	rm -f srcs/django/mysite/migrations/0*.py
-	rm -rf srcs/django/mysite/migrations/__pycache__
+
 
 .PHONY: up build down clean re revolume logs fclean
