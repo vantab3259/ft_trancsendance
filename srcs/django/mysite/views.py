@@ -58,14 +58,24 @@ def lobby_content(request):
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from .models import CustomUser
+
 
 @csrf_exempt
 def signup(request):
 
+    print("\n\n\n\n\n\n\nttttttttttttttttttsdfpijsdfosdoifgsopigh[sifg[sfdg[sjg]ipsdg]is]idj]hsdh]dskhjgj]ttt\n\n\n\n\n\n\n")
     if request.method == 'POST':
         name = request.POST.get('name')
         email = request.POST.get('email')
         password = request.POST.get('password')
+
+        user = CustomUser()
+        user.first_name = name
+        user.email = email
+        user.set_password(password)
+
+        user.save()
 
         return JsonResponse({'message': 'Utilisateur créé avec succès !'})
     else:

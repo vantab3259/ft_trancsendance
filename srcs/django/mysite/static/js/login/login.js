@@ -18,10 +18,8 @@ var form = document.querySelector("#signup-form");
 form.addEventListener("submit", function(event) {
     event.preventDefault();  // Empêche l'envoi classique du formulaire
 
-    // Crée une instance de FormData pour récupérer les données du formulaire
     const formData = new FormData(form);
 
-    // Envoie la requête POST au serveur Django
     fetch("/signup/", {  // L'URL où Django traite le formulaire (ton view signup)
         method: "POST",
         body: formData,
