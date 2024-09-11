@@ -2,10 +2,10 @@
 
 
 <div class="dashboard-header">
-    
+
     <div class="dashboard-picture-header-container not-s not-g ">
          <img class="dashboard-picture-header not-s not-g "
-              src="{% static 'images/base/ranki.png' %}"
+              src="{{ request.user.get_profile_picture_url }}"
               alt="picture image"
          >
     </div>

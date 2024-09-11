@@ -15,7 +15,7 @@
             >ranki
           </span>
 
-            <div class="profile-img" style="background-image: url('{% static 'images/base/ranki.png' %}');">
+            <div class="profile-img" style="background-image: url('{{ request.user.get_profile_picture_url }}');">
             </div>
         </div>
 

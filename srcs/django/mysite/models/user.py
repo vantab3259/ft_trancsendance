@@ -1,3 +1,6 @@
+import os
+import random
+
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -12,6 +15,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
     is_active = models.BooleanField(_('active'), default=True)
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True, default='')
 
     objects = CustomUserManager()
 
@@ -34,3 +38,19 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         """
         from django.core.mail import send_mail
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    def save(self, *args, **kwargs):
+        if not self.profile_picture:
+            self.profile_picture = self.get_random_default_avatar()
+
+        super().save(*args, **kwargs)
+
+    def get_random_default_avatar(self):
+        avatars = [f'avatar_{i}.svg' for i in range(1, 46)]
+        return f'/static/images/avatar/{random.choice(avatars)}'
+
+    def get_profile_picture_url(self):
+        if self.profile_picture:
+            return self.profile_picture.url
+        else:
+            return self.get_random_default_avatar()
