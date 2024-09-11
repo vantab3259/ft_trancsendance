@@ -34,6 +34,10 @@ function loadContent(url, title, nameMenu, scripts = [], nameTemplate = url) {
         event.style.opacity = 0.3;
     });
 
+    if (nameMenu === "home" || nameMenu === "profile/edit") {
+        nameMenu = "dashboard";
+    }
+
     var nameIcon = document.querySelector('#' + nameMenu + "-link" + " i");
     if (nameIcon !== undefined && nameIcon) {
         nameIcon.style.opacity = 1;
