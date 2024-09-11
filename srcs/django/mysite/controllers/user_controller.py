@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from mysite.models import CustomUser
 from django.utils.html import escape
 from django.contrib.auth import *
+import os
 
 
 
@@ -73,7 +74,8 @@ def profile_edit_form(request):
 
         if 'profile-picture' in request.FILES:
             if user.profile_picture:
-                user.profile_picture.delete(save=False)
+              if os.path.exists(user.profile_picture.path):
+                  user.profile_picture.delete(save=False)
 
             ext = request.FILES['profile-picture'].name.split('.')[-1]
             unique_filename = f"profile_{uuid.uuid4().hex}.{ext}"
