@@ -16,9 +16,13 @@ document.querySelector("#form-edit-profile").addEventListener("submit", function
             }
         })
         .then(data => {
-            console.log("Succès :", data);
+            showFlashMessage('success', '✅ Your profile was updated successfully.');
+            document.querySelector(".profile-dropdown-btn span").innerHTML = document.querySelector("input#pseudo").value;
+            document.querySelector("#profile-img").style = "background-image: url('" + document.querySelector("#profile-pic-preview").src + "');";
+
         })
         .catch(error => {
+            showFlashMessage('error', '❌ There was an error updating your profile.');
             console.error("Erreur :", error);
         });
 });

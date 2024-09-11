@@ -7,3 +7,7 @@ __pycache__/
 srcs/django/mysite/migrations/*.py
 !srcs/django/mysite/migrations/__init__.py
 .env
+srcs/django/media/*
+srcs/django/media
+srcs/django/media/profile_pics/
+srcs/django/media/profile_pics/*

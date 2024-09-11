@@ -15,8 +15,9 @@
             >{{ request.user.pseudo|lower }}
           </span>
 
-            <div class="profile-img" style="background-image: url('{{ request.user.get_profile_picture_url }}');">
+            <div class="profile-img" id="profile-img" style="background-image: url('{{ request.user.get_profile_picture_url }}');">
             </div>
+
         </div>
 
         <ul class="profile-dropdown-list">
