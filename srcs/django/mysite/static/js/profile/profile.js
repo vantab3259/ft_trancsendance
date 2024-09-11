@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.querySelector("#form-edit-profile").addEventListener("submit", function (event) {
+    document.getElementById('loader').style.display = 'unset';
     event.preventDefault();
 
     let formDataEditProfile = new FormData(document.querySelector("#form-edit-profile"));
@@ -28,12 +29,14 @@ document.querySelector("#form-edit-profile").addEventListener("submit", function
             }
         })
         .then(data => {
-            showFlashMessage('success', '✅ Your profile was updated successfully.');
             document.querySelector(".profile-dropdown-btn span").innerHTML = document.querySelector("input#pseudo").value;
             document.querySelector("#profile-img").style = "background-image: url('" + document.querySelector("#profile-pic-preview").src + "');";
+            document.getElementById('loader').style.display = 'none';
+            showFlashMessage('success', '✅ Your profile was updated successfully.');
 
         })
         .catch(error => {
+            document.getElementById('loader').style.display = 'none';
             showFlashMessage('error', '❌ There was an error updating your profile.');
             console.error("Erreur :", error);
         });

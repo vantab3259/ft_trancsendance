@@ -154,3 +154,13 @@
 .form-edit-profile #submitBtn {
     margin-top: 20px;
 }
+
+#submitBtn {
+    transition: transform 0.1s ease, opacity 0.1s ease;
+    opacity: 1;
+}
+
+#submitBtn:active {
+    transform: scale(1.2);
+    opacity: 0.8;
+}
