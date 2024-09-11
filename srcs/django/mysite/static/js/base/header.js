@@ -138,7 +138,7 @@ if (profileDropdownList) {
 
     editHeaderLink.addEventListener("click", function (e) {
         e.preventDefault();
-        loadContent('/profile/edit', 'Edit', 'home', [], 'profile_edit');
+        loadContent('/profile/edit', 'Edit', 'home', ['/static/js/profile/profile.js'], 'profile_edit');
     });
 
     logoutNavBarLink.addEventListener("click", function (e) {
