@@ -270,6 +270,8 @@ button.flash-message-btn:hover {
     flex-direction: column;
     gap: 10px;
     width: 300px; /* Set a fixed width for the container */
+    font-weight: 500;
+    font-style: normal;
 }
 
 .flash-message {

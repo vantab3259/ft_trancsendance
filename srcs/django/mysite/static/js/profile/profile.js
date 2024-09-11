@@ -1,3 +1,15 @@
+// Initialisation de Flatpickr sur le champ avec l'ID "birth-date"
+document.addEventListener('DOMContentLoaded', function() {
+    flatpickr("#birth-date", {
+        dateFormat: "Y-m-d",
+        maxDate: "today",
+        allowInput: true,
+        defaultDate: document.querySelector("#birth-date").value || "2000-01-01",
+        altInput: true,
+        altFormat: "F j, Y",
+    });
+});
+
 document.querySelector("#form-edit-profile").addEventListener("submit", function (event) {
     event.preventDefault();
 

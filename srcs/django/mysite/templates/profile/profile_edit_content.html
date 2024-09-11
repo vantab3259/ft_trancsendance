@@ -18,7 +18,7 @@
                     <h2>PERSONAL INFORMATION</h2>
 
                     <label for="pseudo">Pseudo</label>
-                    <input type="text" id="pseudo" name="pseudo" value="{{ request.user.pseudo|lower }}">
+                    <input type="text" id="pseudo" name="pseudo" value="{{ request.user.pseudo|lower }}" required>
 
                     <label for="first-name">First name</label>
                     <input type="text" id="first-name" name="first-name" value="{{ request.user.first_name|lower|capfirst }}">
@@ -27,7 +27,8 @@
                     <input type="text" id="last-name" name="last-name" value="{{ request.user.last_name|lower|capfirst  }}">
 
                     <label for="birth-date">Birth date</label>
-                    <input type="text" id="birth-date" name="birth-date" value="{{ request.user.birth_city }}">
+                    <input type="text" id="birth-date" name="birth-date" value="{{ request.user.birth_date|date:'Y-m-d' }}" placeholder="Select your birth date">
+
 
                     <label for="birth-city">Birth city</label>
                     <input type="text" id="birth-city" name="birth-city" value="{{ request.user.birth_city }}">
@@ -36,7 +37,7 @@
                 <div class="form-section">
                     <h2>CONTACT</h2>
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="{{ request.user.email }}">
+                    <input type="email" id="email" name="email" value="{{ request.user.email }}" required>
 
                     <label for="phone">Phone</label>
                     <input type="text" id="phone" name="phone" value="{{ request.user.phone_number }}">

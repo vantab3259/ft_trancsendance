@@ -19,7 +19,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True, default='')
     phone_number = models.CharField(_('phone_number'), max_length=30, blank=True)
     birth_city = models.CharField(_('birth_city'), blank=True)
-    birth_date= models.DateTimeField(_('birth_date'), null=True, blank=True)
+    birth_date = models.DateField(_('birth_date'), null=True, blank=True)
+
 
 
     objects = CustomUserManager()

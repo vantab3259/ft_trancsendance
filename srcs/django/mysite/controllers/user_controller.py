@@ -65,20 +65,18 @@ def profile_edit_form(request):
         user.last_name = escape(request.POST.get('last-name'))
         user.pseudo = escape(request.POST.get('pseudo'))
         user.birth_city = escape(request.POST.get('birth-city'))
-
         birth_date = request.POST.get('birth-date')
-        # if birth_date:
-        #     user.birth_date = datetime.datetime.strptime(birth_date, '%Y-%m-%d')
+
+        if birth_date:
+            user.birth_date = datetime.datetime.strptime(birth_date, '%Y-%m-%d').date()
+            user.save()
 
         if 'profile-picture' in request.FILES:
-
-            # Supprimer l'ancienne image si elle existe
             if user.profile_picture:
                 user.profile_picture.delete(save=False)
 
             ext = request.FILES['profile-picture'].name.split('.')[-1]
             unique_filename = f"profile_{uuid.uuid4().hex}.{ext}"
-
             user.profile_picture.save(unique_filename, request.FILES['profile-picture'], save=False)
 
 

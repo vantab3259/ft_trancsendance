@@ -88,7 +88,8 @@
                 <span><i class="icon fa-solid fa-phone"></i></span>
                 <span>
                     {% if request.user.phone_number %}
-                        <a href="tel:{{ request.user.phone_number }}">{{ request.user.phone_number }}</a>
+                        {% load custom_filters %}
+                        <a href="tel:{{ request.user.phone_number }}">{{ request.user.phone_number|format_phone  }}</a>
                     {% else %}
                         <span>Not Provided</span>
                     {% endif %}
@@ -98,7 +99,7 @@
 
             <div class="row-info mail">
                 <span><i class="icon fa-regular fa-envelope" style="font-weight: lighter"></i></span>
-                <span><a href="mailto:{{ request.user.email }}">{{ request.user.email }}</a></span>
+                <span><a href="mailto:{{ request.user.email }}">{{ request.user.email}}</a></span>
             </div>
 
 
