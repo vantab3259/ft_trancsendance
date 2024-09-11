@@ -13,8 +13,8 @@
                 <div class="match-top team bracket-victory">
                     <span class="image"></span>
                     <span class="seed">1</span>
-                    <img src="{{ request.user.get_profile_picture_url }}" alt="ranki">
-                    <span class="name">ranki</span>
+                    <img src="{{ request.user.get_profile_picture_url }}" alt="{{ request.user.pseudo }}">
+                    <span class="name">{{ request.user.pseudo }}</span>
                     <span class="score">2</span>
                 </div>
                 <div class="match-bottom team bracket-defeat">

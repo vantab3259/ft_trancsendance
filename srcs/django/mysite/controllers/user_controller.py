@@ -11,12 +11,12 @@ from django.contrib.auth import *
 def signup(request):
 
     if request.method == 'POST':
-        name = escape(request.POST.get('name'))
+        pseudo = escape(request.POST.get('name'))
         email = escape(request.POST.get('email'))
         password = escape(request.POST.get('password'))
 
         user = CustomUser()
-        user.first_name = name
+        user.pseudo = pseudo
         user.email = email
         user.set_password(password)
 

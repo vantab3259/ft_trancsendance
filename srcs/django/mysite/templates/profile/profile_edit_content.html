@@ -17,27 +17,39 @@
                 <div class="form-section">
                     <h2>PERSONAL INFORMATION</h2>
                     <label for="first-name">First name</label>
-                    <input type="text" id="first-name" name="first-name" value="Rayan">
+                    <input type="text" id="first-name" name="first-name" value="{{ request.user.first_name }}">
 
                     <label for="last-name">Last name</label>
-                    <input type="text" id="last-name" name="last-name" value="Anki">
+                    <input type="text" id="last-name" name="last-name" value="{{ request.user.last_name }}">
 
                     <label for="birth-date">Birth date</label>
-                    <input type="text" id="birth-date" name="birth-date" value="01/09/2002">
+                    <input type="text" id="birth-date" name="birth-date" value="{{ request.user.birth_city }}">
 
                     <label for="birth-city">Birth city</label>
-                    <input type="text" id="birth-city" name="birth-city" value="Charenton-le-Pont">
+                    <input type="text" id="birth-city" name="birth-city" value="{{ request.user.birth_city }}">
                 </div>
 
                 <div class="form-section">
                     <h2>CONTACT</h2>
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="rabalone94@gmail.com">
+                    <input type="email" id="email" name="email" value="{{ request.user.email }}">
 
                     <label for="phone">Phone</label>
-                    <input type="text" id="phone" name="phone" value="0664353863">
-                    
-                    <button type="submit">SAVE</button>
+                    <input type="text" id="phone" name="phone" value="{{ request.user.phone_number }}">
+
+                    <label for="">Profile Picture</label>
+
+                    <div class="profile-pic">
+                        <label class="-label" for="file-input">
+                            <span>Change Picture</span>
+                        </label>
+                        <input id="file-input" type="file" name="profile-picture" />
+
+                        <img src="{{ request.user.get_profile_picture_url }}" alt="Current profile picture" width="100">
+                    </div>
+
+
+                    <button id="submitBtn" type="submit">SAVE</button>
                     
                 </div>
 

@@ -1,8 +1,3 @@
-if (typeof editProfileBtn !== 'undefined' && editProfileBtn) {
-    editProfileBtn = document.querySelector("#link-edit");
-} else {
-    editProfileBtn = document.querySelector("#link-edit");
-}
 
 if (typeof pageContent !== 'undefined' && pageContent) {
     pageContent = document.querySelector("div.content");
@@ -11,7 +6,7 @@ if (typeof pageContent !== 'undefined' && pageContent) {
 }
 
 
-editProfileBtn.addEventListener("click", function (e) {
+document.querySelector("#link-edit").addEventListener("click", function (e) {
         e.preventDefault();
         document.getElementById('loader').style.display = 'unset';
         history.pushState(null, '', '/profile/edit');

@@ -12,7 +12,7 @@
         <div class="profile-dropdown-btn">
             
           <span
-            >ranki
+            >{{ request.user.pseudo }}
           </span>
 
             <div class="profile-img" style="background-image: url('{{ request.user.get_profile_picture_url }}');">

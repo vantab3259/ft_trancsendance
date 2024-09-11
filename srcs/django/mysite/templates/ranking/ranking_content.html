@@ -36,8 +36,8 @@
                 <span class="position-number">3</span>
                 <img src="{{ request.user.get_profile_picture_url }}" alt="David Brown">
                 <div class="contributor-details">
-                    <span class="contributor-name">Rayan Anki</span>
-                    <span class="contributor-username">ranki</span>
+                    <span class="contributor-name">{{ request.user.first_name }} {{ request.user.last_name }}</span>
+                    <span class="contributor-username">{{ request.user.pseudo }}</span>
                 </div>
                 <div class="performance-stats">
                     <span class="matches-won">Matches Won: 25</span>
@@ -102,7 +102,7 @@
                 <img src="{{ request.user.get_profile_picture_url }}" alt="David Brown">
                 <div class="contributor-details">
                     <span class="contributor-name">Rayan Anki</span>
-                    <span class="contributor-username">ranki</span>
+                    <span class="contributor-username">{{ request.user.pseudo }}</span>
                 </div>
                 <div class="performance-stats">
                     <span class="matches-won">Matches Won: 25</span>

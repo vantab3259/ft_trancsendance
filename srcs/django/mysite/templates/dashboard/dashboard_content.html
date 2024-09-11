@@ -52,7 +52,14 @@
 
                     <div class="pseudo-container">
                         <div class="row-pseudo">
-                            <span>Rayan Anki</span>
+                            <span>
+                                {% if request.user.first_name and request.user.last_name %}
+                                    {{ request.user.first_name }} {{ request.user.last_name }}
+                                {% else %}
+                                    {{ request.user.pseudo }}
+                                {% endif %}
+
+                            </span>
                         </div>
                     </div>
 
@@ -79,12 +86,19 @@
         <div class="information-dashboard-user-container">
             <div class="row-info phone">
                 <span><i class="icon fa-solid fa-phone"></i></span>
-                <span><a href="tel:+33664353863">+33 6 64 35 38 63</a></span>
+                <span>
+                    {% if request.user.phone_number %}
+                        <a href="tel:{{ request.user.phone_number }}">{{ request.user.phone_number }}</a>
+                    {% else %}
+                        <span>Not Provided</span>
+                    {% endif %}
+
+                </span>
             </div>
 
             <div class="row-info mail">
                 <span><i class="icon fa-regular fa-envelope" style="font-weight: lighter"></i></span>
-                <span><a href="mailto:ranki@student.42.fr">ranki@student.42.fr</a></span>
+                <span><a href="mailto:{{ request.user.email }}">{{ request.user.email }}</a></span>
             </div>
 
 
@@ -196,5 +210,7 @@
 </div>
 
 <link rel="stylesheet" href="{% static 'css/dashboard/dashboard.css' %}">
+<script src="{% static 'js/dashboard/dashboard.js' %}"></script>
+
 
 
