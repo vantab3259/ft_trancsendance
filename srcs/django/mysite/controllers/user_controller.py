@@ -21,10 +21,8 @@ def signup(request):
         user.set_password(password)
 
         user.save()
-
+        login(request, user)
         return JsonResponse({'message': 'Utilisateur créé avec succès !'})
-    else:
-        return render(request, 'signup.html')
 
 @csrf_exempt
 def signin(request):

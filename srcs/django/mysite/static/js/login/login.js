@@ -31,6 +31,7 @@ signUpForm.addEventListener("submit", function (event) {
             }
         })
         .then(data => {
+            goToNextPage();
             console.log("Succès :", data);
         })
         .catch(error => {
