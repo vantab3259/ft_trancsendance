@@ -20,7 +20,23 @@ document.querySelector("#link-edit").addEventListener("click", function (e) {
                 return response.text();
             })
             .then(html => {
+
+                let scriptsEdit = ["/static/js/profile/profile.js"]
+                scriptsEdit.forEach(scriptSrc => {
+                    const existingScript = document.querySelector(`script[src="${scriptSrc}"]`);
+                    if (existingScript) {
+                        existingScript.remove();
+                    }
+                });
+
                 pageContent.innerHTML = html;
+
+                scriptsEdit.forEach(scriptSrc => {
+                    const script = document.createElement('script');
+                    script.src = scriptSrc;
+                    document.body.appendChild(script);
+                });
+
                 document.getElementById('loader').style.display = 'none';
 
             })

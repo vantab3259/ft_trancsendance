@@ -54,9 +54,9 @@
                         <div class="row-pseudo">
                             <span>
                                 {% if request.user.first_name and request.user.last_name %}
-                                    {{ request.user.first_name }} {{ request.user.last_name }}
+                                    {{ request.user.first_name|lower|capfirst }} {{ request.user.last_name|lower|capfirst  }}
                                 {% else %}
-                                    {{ request.user.pseudo }}
+                                    {{ request.user.pseudo|lower }}
                                 {% endif %}
 
                             </span>

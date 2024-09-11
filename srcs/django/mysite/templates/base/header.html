@@ -1,7 +1,7 @@
 {% load static %}
 <nav class="navbar">
 		<div class="navbar-logo-container">
-			<img src='https://profile.intra.42.fr/assets/42_logo-7dfc9110a5319a308863b96bda33cea995046d1731cebb735e41b16255106c12.svg'
+			<img src='/static/images/logo/42_logo_white.svg'
 				class="navbar-logo"
 				id="navbar-logo"
 				alt="logo"
@@ -12,7 +12,7 @@
         <div class="profile-dropdown-btn">
             
           <span
-            >{{ request.user.pseudo }}
+            >{{ request.user.pseudo|lower }}
           </span>
 
             <div class="profile-img" style="background-image: url('{{ request.user.get_profile_picture_url }}');">

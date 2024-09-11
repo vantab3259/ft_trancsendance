@@ -13,14 +13,18 @@
         </div>
 
         <div class="right-profile-container">
-            <form class="form-edit-profile">
+            <form id="form-edit-profile" class="form-edit-profile">
                 <div class="form-section">
                     <h2>PERSONAL INFORMATION</h2>
+
+                    <label for="pseudo">Pseudo</label>
+                    <input type="text" id="pseudo" name="pseudo" value="{{ request.user.pseudo|lower }}">
+
                     <label for="first-name">First name</label>
-                    <input type="text" id="first-name" name="first-name" value="{{ request.user.first_name }}">
+                    <input type="text" id="first-name" name="first-name" value="{{ request.user.first_name|lower|capfirst }}">
 
                     <label for="last-name">Last name</label>
-                    <input type="text" id="last-name" name="last-name" value="{{ request.user.last_name }}">
+                    <input type="text" id="last-name" name="last-name" value="{{ request.user.last_name|lower|capfirst  }}">
 
                     <label for="birth-date">Birth date</label>
                     <input type="text" id="birth-date" name="birth-date" value="{{ request.user.birth_city }}">
@@ -45,7 +49,7 @@
                         </label>
                         <input id="file-input" type="file" name="profile-picture" />
 
-                        <img src="{{ request.user.get_profile_picture_url }}" alt="Current profile picture" width="100">
+                        <img id="profile-pic-preview" src="{{ request.user.get_profile_picture_url }}" alt="Current profile picture" width="100">
                     </div>
 
 
@@ -59,3 +63,5 @@
     
     
 </div>
+
+<script src="{% static 'js/profile/profile.js' %}"></script>
