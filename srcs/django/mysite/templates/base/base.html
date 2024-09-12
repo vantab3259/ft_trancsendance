@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="{% static 'images/login/42_logo.png' %}">
+{#    <link rel="icon" type="image/png" href="{% static 'images/login/42_logo.png' %}">#}
     <title>{% block title %}Ft-Transcendence{% endblock %}</title>
 
     <!-- BOOTSTRAP CSS -->
@@ -18,15 +18,14 @@
     <!-- FONT ICONS AWESOME  -->
 
     <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
-        />
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    />
 
     <!-- BASE CSS -->
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
 
 
     <link rel="stylesheet" href="{% static 'css/base/base.css' %}">
@@ -38,63 +37,96 @@
 <!-- loader -->
 <div class="loader" id="loader">
 
-  <div class="spinner-border text-primary" id="" role="status">
-    <span class="sr-only">Loading...</span>
-  </div>
+    <div class="spinner-border text-primary" id="" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
 
-  <div class="bg-loader"></div>
+    <div class="bg-loader"></div>
 
 </div>
 
 
 <body>
-  <!-- Header -->
-    <header>
+<!-- Header -->
+<header>
 
-      {% block header %}
+    {% block header %}
         {% include 'base/header.html' %}
-      {% endblock %}
-
-    </header>
-
-	<div class="main-content d-flex">
-
-    {% block sideBar %}
-		<div class="side-bar">
-
-		<li id="dashboard-link">
-			<i class="fa-regular fa-user"></i>
-		</li>
-		<li id="pong-link"><i class="fa-solid fa-house-laptop"></i>
-		</li>
-		<li id="lobby-link"><i class="fa-solid fa-users-between-lines"></i></li>
-		<li id="tournament-link" ><i class="fa-solid fa-trophy"></i></li>
-		<li></li>
-
-		</div>
     {% endblock %}
 
-    	<!-- Page -->
-		<div class="content">
-			{% block content %}
+</header>
 
-			{% endblock %}
-		</div>
+<div class="main-content d-flex">
 
-	</div>
+    {% block sideBar %}
+        <div class="side-bar">
 
+            <li id="dashboard-link">
+                <i class="fa-regular fa-user"></i>
+            </li>
+            <li id="pong-link"><i class="fa-solid fa-house-laptop"></i>
+            </li>
+            <li id="lobby-link"><i class="fa-solid fa-users-between-lines"></i></li>
+            <li id="tournament-link"><i class="fa-solid fa-trophy"></i></li>
+            <li></li>
 
+        </div>
+    {% endblock %}
 
-  <script src="{% static 'js/base/header.js' %}"></script>
+    <!-- Page -->
+    <div class="content">
+        {% block content %}
 
-  <div class="flash-container" id="flash-container">
-  </div>
-{#  <button class="flash-message-btn" onclick="showFlashMessage('success', '✅  Your action was successful.')">Show Success</button>#}
-{#  <button class="flash-message-btn" onclick="showFlashMessage('error', '❌  Something went wrong.')">Show Error</button>#}
-{#  <button class="flash-message-btn" onclick="showFlashMessage('warning', '⚠️  Check this out.')">Show Warning</button>#}
-{#  <button class="flash-message-btn" onclick="showFlashMessage('info', '💡  Here is some information.')">Show Info</button>#}
+        {% endblock %}
 
-    {% block overload_javascript %}{% endblock %}
+        <style>
+            .dashboard-include, .lobby-include, .pong-include, .profile-include, .tournament-include {
+                display: none;
+            }
+
+            .navbar {
+                display: none;
+            }
+
+            .side-bar {
+                display: none;
+            }
+        </style>
+
+        <div class="login-include">
+            {% include 'login/login.html' %}
+        </div>
+
+        <div class="dashboard-include">
+            {% include 'dashboard/dashboard_content.html' %}
+        </div>
+
+        <div class="lobby-include">
+            {% include 'lobby/lobby_content.html' %}
+        </div>
+
+        <div class="pong-include">
+            {% include 'pong/pong_content.html' %}
+        </div>
+
+        <div class="profile-include">
+            {% include 'profile/profile_edit_content.html' %}
+        </div>
+
+        <div class="tournament-include">
+            {% include 'tournament/tournament_content.html' %}
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{% static 'js/base/header.js' %}"></script>
+
+<div class="flash-container" id="flash-container">
+</div>
+
+{% block overload_javascript %}{% endblock %}
 </body>
 </html>
 

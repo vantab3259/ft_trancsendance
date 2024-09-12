@@ -1,7 +1,5 @@
 {% load static %}
 
-<link rel="stylesheet" href="static/css/lobby/lobby.css">
-
 <div class="lobby-content">
 
     {% include 'lobby/chat.html' %}
@@ -97,6 +95,8 @@
 </div>
 
 {% include "lobby/modal/matchmaking.html" %}
+<link rel="stylesheet" href="/static/css/lobby/lobby.css">
+<script src="{% static 'js/lobby/lobby.js' %}"></script>
 
 <style>
     .chat-content {
