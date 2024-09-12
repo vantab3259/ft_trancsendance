@@ -5,7 +5,7 @@
 
 
 
-<div class="container-flex-login" style="margin-top: 40px">
+<div class="container-flex-login">
   <div class="container" id="container" style="scale: 1.3">
 
     <div class="form-container sign-up">
@@ -23,10 +23,11 @@
               </a>
 
             <span>or use your email for registeration</span>
-            <input type="text" placeholder="Name" name="name" required>
-            <input type="email" placeholder="Email" name="email" required>
-            <input type="password" placeholder="Password" name="password" required>
+            <input type="text" placeholder="Name" name="name" required minlength="4">
+            <input type="email" placeholder="Email" name="email" required minlength="4">
+            <input type="password" placeholder="Password" name="password" required minlength="4">
             <button>Sign Up</button>
+            <span id="invalid-signup"></span>
         </form>
     </div>
 
@@ -49,6 +50,7 @@
             <input type="password" placeholder="Password" name="password" required>
             <a href="#">Forget Your Password?</a>
             <button>Sign In</button>
+            <span id="invalid-signin"></span>
         </form>
     </div>
     <div class="toggle-container">
@@ -56,12 +58,12 @@
             <div class="toggle-panel toggle-left">
                 <h1>Welcome Back!</h1>
                 <p>Enter your personal details to use all of site features</p>
-                <button class="hidden" id="login">Sign In</button>
+                <button class="toggle-button" id="login">Sign In</button>
             </div>
             <div class="toggle-panel toggle-right">
                 <h1>Hello, Friend!</h1>
                 <p>Register with your personal details to use all of site features</p>
-                <button class="hidden" id="register">Sign Up</button>
+                <button class="toggle-button" id="register">Sign Up</button>
             </div>
         </div>
     </div>
@@ -69,3 +71,15 @@
 </div>
 
   <script src="{% static 'js/login/login.js' %}"></script>
+
+<style>
+    .container-flex-login {
+        margin-top: 10%;
+    }
+
+    #invalid-signin, #invalid-signup {
+        color: red;
+        text-align: start;
+        margin-top: 10px;
+    }
+</style>

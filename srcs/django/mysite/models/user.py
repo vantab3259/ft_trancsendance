@@ -1,9 +1,13 @@
-import os
-import random
-
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+import os
+import random
+import uuid
+from django.conf import settings
+from shutil import copyfile
+import json
+from django.core.serializers import serialize
 
 class CustomUserManager(BaseUserManager):
     def get_by_natural_key(self, email):
@@ -47,9 +51,33 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def save(self, *args, **kwargs):
         if not self.profile_picture:
-            self.profile_picture = self.get_random_default_avatar()
+            self.profile_picture = self.create_unique_profile_picture()
 
         super().save(*args, **kwargs)
+
+    def create_unique_profile_picture(self):
+        # Sélectionne un avatar par défaut
+        avatar_path = self.get_random_default_avatar()
+
+        # Génère un nom de fichier unique
+        unique_filename = f'{uuid.uuid4()}.svg'
+
+        # Définir le chemin final dans le dossier 'media/profile_pics/'
+        final_path = os.path.join(settings.MEDIA_ROOT, 'profile_pics', unique_filename)
+
+        # Chemin complet de l'avatar statique (en dur)
+        avatar_full_path = os.path.join('/usr/src/app/mysite/static/images/avatar/', avatar_path.split('/')[-1])
+
+        # Vérifie si le fichier existe avant de copier
+        if not os.path.exists(avatar_full_path):
+            raise FileNotFoundError(f"L'avatar {avatar_full_path} n'existe pas.")
+
+        # Copier l'avatar par défaut dans le dossier des photos de profil
+        copyfile(avatar_full_path, final_path)
+
+        # Retourner le chemin relatif à MEDIA_ROOT pour l'attribuer à 'profile_picture'
+        return f'profile_pics/{unique_filename}'
+
 
     def get_random_default_avatar(self):
         avatars = [f'avatar_{i}.svg' for i in range(1, 46)]
@@ -60,3 +88,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             return self.profile_picture.url
         else:
             return self.get_random_default_avatar()
+
+    def getJson(self):
+        return json.loads(serialize('json', [self]))

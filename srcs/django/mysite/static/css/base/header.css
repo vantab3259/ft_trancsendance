@@ -58,11 +58,11 @@
 .profile-dropdown-btn {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
   padding-right: 1rem;
   font-size: 0.9rem;
   font-weight: 500;
-  width: 150px;
+  width: 300px;
   color: var(--black);
   /* background-color: white;
   box-shadow: var(--shadow); */
@@ -75,11 +75,11 @@
 
 .profile-img {
   position: relative;
-  width: 3rem;
   height: 3rem;
   border-radius: 50%;
   background-size: cover;
   margin: 4px;
+  width: 50px;
 }
 
 .profile-img i {

@@ -23,19 +23,18 @@ signUpForm.addEventListener("submit", function (event) {
             "X-CSRFToken": getCookie("csrftoken")
         }
     })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
+        .then(response => response.json())
+        .then(data => {
+            if (data['status'] === "success") {
+                initDashboard(data['data']['user'][0]['fields']);
+                goToNextPage();
+                return data;
             } else {
-                throw new Error("Erreur lors de l'envoi du formulaire.");
+                document.getElementById("invalid-signup").innerHTML = data['errors'];
             }
         })
-        .then(data => {
-            goToNextPage();
-            console.log("Succès :", data);
-        })
         .catch(error => {
-            console.error("Erreur :", error);
+            console.error("Erreur lors de l'envoi du formulaire :", error);
         });
 });
 
@@ -45,25 +44,36 @@ signInForm.addEventListener("submit", function (event) {
     let formDataSignIn = new FormData(signInForm);
 
     fetch("/signin/", {
-        method: "POST", body: formDataSignIn, headers: {
+        method: "POST",
+        body: formDataSignIn,
+        headers: {
             "X-CSRFToken": getCookie("csrftoken")
         }
     })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
+        .then(response => response.json())
+        .then(data => {
+            if (data['status'] === "success") {
+                initDashboard(data['data']['user'][0]['fields']);
+                goToNextPage();
+                return data;
             } else {
-                throw new Error("Erreur lors de l'envoi du formulaire.");
+                document.getElementById("invalid-signin").innerHTML = data['errors'];
             }
         })
-        .then(data => {
-            goToNextPage();
-            console.log("Succès :", data);
-        })
         .catch(error => {
-            console.error("Erreur :", error);
+            console.error("Erreur lors de l'envoi du formulaire :", error);
         });
+
 });
+
+function initDashboard(userData) {
+    document.querySelector(".profile-dropdown-btn span").innerHTML = userData['pseudo']
+    document.querySelector(".pseudo-container span").innerHTML = userData['pseudo']
+    document.querySelector(".row-info.mail a").innerHTML = userData['email']
+    document.querySelector("#profile-img").style = "background-image: url('/media/" + userData['profile_picture'] + "');";
+    document.querySelector("img.dashboard-picture-header.not-s.not-g").src = "/media/" + userData['profile_picture'];
+
+}
 
 
 function getCookie(name) {

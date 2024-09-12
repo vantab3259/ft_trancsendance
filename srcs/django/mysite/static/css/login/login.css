@@ -11,7 +11,7 @@ body{
     background-color: #c9d6ff;
     background: linear-gradient(to right, #e2e2e2, #c9d6ff);
 
-    height: 100vh;
+    height: 110vh;
 }
 
 .container{
@@ -255,4 +255,10 @@ body{
     color: white !important;
     font-style: normal;
     font-weight: 600;
+}
+
+
+button.toggle-button {
+    background-color: white;
+    color: #512da8;
 }
