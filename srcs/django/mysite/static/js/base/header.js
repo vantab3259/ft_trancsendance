@@ -10,6 +10,46 @@ if (nameCurrentPageIcon !== undefined && nameCurrentPageIcon) {
     nameCurrentPageIcon.style.opacity = 1;
 }
 
+var currentPageClick = pathUrl.slice(1).replace(/\/$/, '');
+
+function displayPage() {
+
+    if (currentPageClick !== "login" && currentPageClick !== "login/") {
+            document.querySelector(".navbar" ).style.display = "flex";
+            document.querySelector(".side-bar" ).style.display = "block";
+    } else {
+            document.querySelector(".navbar" ).style.display = "none";
+            document.querySelector(".side-bar" ).style.display = "none";
+    }
+
+    let mapPage = {
+            "base": "dashboard",
+            "/": "dashboard",
+            "": "dashboard",
+            "/home": "dashboard",
+            "home": "dashboard",
+            "home/": "dashboard",
+            "profile/edit": "profile",
+
+        };
+
+    if (currentPageClick in mapPage) {
+        currentPageClick = mapPage[currentPageClick];
+    }
+
+    document.querySelectorAll("div[class$='-include']").forEach(function(element) {
+        element.style.display = 'none';
+
+    });
+
+    document.querySelector("div." + currentPageClick + "-include" ).style.display = "block";
+
+
+}
+
+ displayPage();
+
+
 // Fonction pour charger du contenu via fetch
 function loadContent(url, title, nameMenu, scripts = [], nameTemplate = url) {
 
@@ -28,11 +68,13 @@ function loadContent(url, title, nameMenu, scripts = [], nameTemplate = url) {
     document.getElementById('loader').style.display = 'unset';
     history.pushState(null, '', url);
     document.querySelector("title").innerHTML = title;
+     displayPage();
 
     var icons = document.querySelectorAll(".side-bar i");
     icons.forEach(function (event) {
         event.style.opacity = 0.3;
     });
+
 
     if (nameMenu === "home" || nameMenu === "profile/edit") {
         nameMenu = "dashboard";
@@ -42,46 +84,7 @@ function loadContent(url, title, nameMenu, scripts = [], nameTemplate = url) {
     if (nameIcon !== undefined && nameIcon) {
         nameIcon.style.opacity = 1;
     }
-
-
-    fetch(nameTemplate + '_content')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Erreur lors du chargement de ${title.toLowerCase()}`);
-            }
-            return response.text();
-        })
-        .then(html => {
-            // Arrêter le jeu Pong si nécessaire
-            if (typeof pongGame !== 'undefined' && pongGame.stopGame) {
-                pongGame.stopGame();
-            }
-
-            // Supprimer les anciens scripts spécifiés
-            scripts.forEach(scriptSrc => {
-                const existingScript = document.querySelector(`script[src="${scriptSrc}"]`);
-                if (existingScript) {
-                    existingScript.remove();
-                }
-            });
-
-            // Insérer le contenu HTML
-            pageContent.innerHTML = html;
-
-            // Ajouter les nouveaux scripts si spécifiés
-            scripts.forEach(scriptSrc => {
-                const script = document.createElement('script');
-                script.src = scriptSrc;
-                document.body.appendChild(script);
-            });
-
-            document.getElementById('loader').style.display = 'none';
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            pageContent.innerHTML = '<p>Une erreur est survenue lors du chargement du contenu.</p>';
-            document.getElementById('loader').style.display = 'none';
-        });
+    document.getElementById('loader').style.display = 'none';
 }
 
 // Gestionnaire pour le dropdown du profil
@@ -111,6 +114,7 @@ if (profileDropdownList) {
     // Ajouter des gestionnaires d'événements
     dashboardBtn.addEventListener("click", function (e) {
         e.preventDefault();
+        currentPageClick = "dashboard"
         loadContent('/dashboard', 'Dashboard', "dashboard", [
             '/static/js/dashboard/dashboard.js',
         ]);
@@ -118,11 +122,13 @@ if (profileDropdownList) {
 
     navbarLogo.addEventListener("click", function (e) {
         e.preventDefault();
+        currentPageClick = "dashboard"
         loadContent('/home', 'Home', "dashboard", [ '/static/js/dashboard/dashboard.js']);
     });
 
     pongLink.addEventListener("click", function (e) {
         e.preventDefault();
+        currentPageClick = "pong"
         loadContent('/pong', 'Pong', 'pong', [
             '/static/js/pong/pong.js',
             '/static/js/pong/confirm_leave_pong_modal.js'
@@ -132,16 +138,19 @@ if (profileDropdownList) {
 
     tournamentLink.addEventListener("click", function (e) {
         e.preventDefault();
+        currentPageClick = "tournament"
         loadContent('/tournament', 'Tournament', 'tournament', []);
     });
 
     lobbyLink.addEventListener("click", function (e) {
         e.preventDefault();
+        currentPageClick = "lobby"
         loadContent('/lobby', 'Lobby', 'lobby', ['/static/js/lobby/lobby.js']);
     });
 
     editHeaderLink.addEventListener("click", function (e) {
         e.preventDefault();
+        currentPageClick = "profile"
         loadContent('/profile/edit', 'Edit', 'home', ['/static/js/profile/profile.js'], 'profile_edit');
     });
 
@@ -159,22 +168,9 @@ if (profileDropdownList) {
             })
             .then(html => {
 
-                // Supprimer les anciens scripts spécifiés
-                scripts.forEach(scriptSrc => {
-                    const existingScript = document.querySelector(`script[src="${scriptSrc}"]`);
-                    if (existingScript) {
-                        existingScript.remove();
-                    }
-                });
-
-                document.documentElement.innerHTML = html;
                 history.pushState(null, '', "/login");
-
-                scripts.forEach(scriptSrc => {
-                    const script = document.createElement('script');
-                    script.src = scriptSrc;
-                    document.body.appendChild(script);
-                });
+                currentPageClick = "login"
+                displayPage();
 
             })
             .catch(error => {

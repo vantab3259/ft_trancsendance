@@ -18,9 +18,13 @@ def not_logged_in_required(view_func):
 def home(request):
 	return render(request, 'login/login.html')
 
+@login_required(login_url='/login/')
+def base(request):
+	return render(request, 'base/base.html')
+
 @not_logged_in_required
 def login(request):
-	return render(request, 'login/login.html')
+	return render(request, 'base/base.html')
 
 @login_required(login_url='/login/')
 def about(request):

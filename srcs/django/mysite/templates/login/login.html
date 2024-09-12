@@ -1,15 +1,8 @@
-{% extends 'base/base.html' %}
+
 {% load static %}
 
-{% block title %}Connexion{% endblock %}
-{% block header %}{% endblock %}
-{% block sideBar %}{% endblock %}
-{% block header_js %}{% endblock %}
-{% block overload_css %}
-    <link rel="stylesheet" href="{% static 'css/login/login.css' %}">
-{% endblock %}
+<link rel="stylesheet" href="{% static 'css/login/login.css' %}">
 
-{% block content %}
 
 
 <div class="container-flex-login" style="margin-top: 40px">
@@ -76,6 +69,3 @@
 </div>
 
   <script src="{% static 'js/login/login.js' %}"></script>
-
-
-{% endblock %}

@@ -51,7 +51,7 @@ def signin(request):
 @csrf_exempt
 def logout_view(request):
     logout(request)
-    return render(request, 'login/login.html')
+    return JsonResponse({'message': 'Déconnexion réussie !'})
 
 @login_required(login_url='/login/')
 @csrf_exempt
@@ -73,9 +73,9 @@ def profile_edit_form(request):
             user.save()
 
         if 'profile-picture' in request.FILES:
-            if user.profile_picture:
-              if os.path.exists(user.profile_picture.path):
-                  user.profile_picture.delete(save=False)
+            # if user.profile_picture:
+            #   if os.path.exists(user.profile_picture.path):
+            #       user.profile_picture.delete(save=False)
 
             ext = request.FILES['profile-picture'].name.split('.')[-1]
             unique_filename = f"profile_{uuid.uuid4().hex}.{ext}"

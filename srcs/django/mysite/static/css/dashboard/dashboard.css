@@ -287,7 +287,7 @@ polygon {
     border-radius: 0;
 }
 
-.main-content:has(.dashboard-header) {
+.main-content {
     height: auto !important;
 }
 
@@ -305,4 +305,16 @@ polygon {
 
 .content {
     overflow: hidden;
+}
+
+.main-content {
+    height: 100% !important;
+}
+
+.navbar {
+    display: none;
+}
+
+.side-bar {
+    display: none;
 }

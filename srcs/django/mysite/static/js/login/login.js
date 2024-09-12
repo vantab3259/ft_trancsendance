@@ -84,38 +84,8 @@ function getCookie(name) {
 function goToNextPage(page = "dashboard", scripts = ["/static/js/base/header.js", '/static/js/dashboard/dashboard.js']) {
 
     // Construire l'URL complète en fonction de la page
-    const url = `/${page}/`;
 
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Erreur lors du chargement de ${page}`);
-            }
-            return response.text();
-        })
-        .then(html => {
-
-            // Supprimer les anciens scripts spécifiés
-            scripts.forEach(scriptSrc => {
-                const existingScript = document.querySelector(`script[src="${scriptSrc}"]`);
-                if (existingScript) {
-                    existingScript.remove();
-                }
-            });
-
-            document.documentElement.innerHTML = html;
-            history.pushState(null, '', url);
-
-            scripts.forEach(scriptSrc => {
-                const script = document.createElement('script');
-                script.src = scriptSrc;
-                document.body.appendChild(script);
-            });
-
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            document.body.innerHTML = '<p>Une erreur est survenue lors du chargement de la page.</p>';
-        });
+    currentPageClick = "dashboard"
+     displayPage();
 }
 
