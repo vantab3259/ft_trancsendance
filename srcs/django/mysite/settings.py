@@ -40,8 +40,22 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 	'mysite',
+    'channels',
 
 ]
+
+ASGI_APPLICATION = 'mysite.asgi.application'
+
+REDIS_HOST = os.environ.get('REDIS_HOST', 'redis')
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [(REDIS_HOST, 6379)],
+        },
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
