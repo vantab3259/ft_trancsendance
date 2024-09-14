@@ -76,8 +76,26 @@ function closeMatchmakingModal() {
     modal.style.display = 'none';
 }
 
+var socket = null;
+
 document.querySelector(".launch-button-game-content").addEventListener("click", () => {
+    console.log("Connection local socket ");
     openMatchmakingModal();
+    console.log("Connection local socket ");
+    socket = new WebSocket('ws://localhost:4443/ws/pong/');
+
+    socket.onopen = function(event) {
+        console.log("Connexion établie avec le serveur WebSocket");
+    };
+
+    socket.onmessage = function(event) {
+        console.log("Message reçu du serveur : ", event.data);
+    };
+
+    socket.onclose = function(event) {
+        console.log("Connexion fermée");
+    };
+
 });
 
 if (typeof totalAvatarsMatchmaking === undefined) {

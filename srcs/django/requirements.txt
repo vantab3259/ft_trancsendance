@@ -4,3 +4,4 @@ Pillow
 channels
 channels_redis
 daphne
+watchdog
