@@ -1,7 +1,7 @@
 var pathUrl = window.location.pathname;
 var pathUrlArgument = pathUrl.slice(1).replace(/\/$/, '');
 
-if (pathUrlArgument === "home" || pathUrlArgument === "profile/edit") {
+if (pathUrlArgument === "home" || pathUrlArgument === "profile/edit" || pathUrlArgument === "" || pathUrlArgument === "/") {
     pathUrlArgument = "dashboard";
 }
 var nameCurrentPageIcon = document
@@ -43,6 +43,7 @@ function displayPage() {
     });
 
     document.querySelector("div." + currentPageClick + "-include" ).style.display = "block";
+    document.getElementById('loader').style.display = 'none';
 
 
 }
@@ -76,7 +77,7 @@ function loadContent(url, title, nameMenu, scripts = [], nameTemplate = url) {
     });
 
 
-    if (nameMenu === "home" || nameMenu === "profile/edit") {
+    if (nameMenu === "home" || nameMenu === "profile/edit" || nameMenu === "" || nameMenu === "/") {
         nameMenu = "dashboard";
     }
 

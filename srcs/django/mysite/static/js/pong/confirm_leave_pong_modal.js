@@ -21,32 +21,14 @@ document.getElementById('confirmQuit').addEventListener('click', function() {
     }
     closeModal();
 
-    // navbar logo
-    let navbarLogo = document.querySelector("#navbar-logo");
-    var pageContent = document.querySelector("div.content");
-
         document.getElementById('loader').style.display = 'unset';
         history.pushState(null, '', '/');
-        document.querySelector("title").innerHTML = 'Home';
+        document.querySelector("title").innerHTML = 'Dashboard';
+        currentPageClick = "dashboard";
+        displayPage();
+        document.getElementById('loader').style.display = 'none';
 
 
-        fetch('/home_content')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erreur lors du chargement du dashboard');
-                }
-                return response.text();
-            })
-            .then(html => {
-                pageContent.innerHTML = html;
-                document.getElementById('loader').style.display = 'none';
-
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                pageContent.innerHTML = '<p>Une erreur est survenue lors du chargement du contenu.</p>';
-                document.getElementById('loader').style.display = 'none';
-            });
 });
 
 function closeModal() {
