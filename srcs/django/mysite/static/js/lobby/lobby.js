@@ -79,10 +79,9 @@ function closeMatchmakingModal() {
 var socket = null;
 
 document.querySelector(".launch-button-game-content").addEventListener("click", () => {
-    console.log("Connection local socket");
     openMatchmakingModal();
     console.log("Connection local socket ");
-    socket = new WebSocket('wss://localhost:4443/ws/pong/');
+    socket = new WebSocket('wss://127.0.0.1:4443/ws/pong/');
 
     socket.onopen = function(event) {
         console.log("Connexion établie avec le serveur WebSocket");

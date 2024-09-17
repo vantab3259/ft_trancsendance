@@ -11,6 +11,14 @@ class PongConsumer(AsyncWebsocketConsumer):
         # Accepter la connexion WebSocket
         await self.accept()
 
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'game_message',
+                'message': 'Envoyer a tous le monde '
+            }
+        )
+
         # Vous pouvez envoyer un message de bienvenue
         await self.send(text_data=json.dumps({
             'message': 'Connexion établie. En attente d’un autre joueur...'
@@ -36,4 +44,9 @@ class PongConsumer(AsyncWebsocketConsumer):
         # Répondre au client avec une mise à jour
         await self.send(text_data=json.dumps({
             'message': 'Action reçue : ' + action
+        }))
+
+    async def game_message(self, event):
+        await self.send(text_data=json.dumps({
+            'message': event['message']
         }))
