@@ -11,3 +11,4 @@ srcs/django/media/*
 srcs/django/media
 srcs/django/media/profile_pics/
 srcs/django/media/profile_pics/*
+wscat/

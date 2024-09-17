@@ -1,2 +1,7 @@
 Django>=4.2
 psycopg2-binary
+Pillow
+channels
+channels_redis
+daphne
+watchdog

@@ -81,7 +81,7 @@
         {% endblock %}
 
         <style>
-            .dashboard-include, .lobby-include, .pong-include, .profile-include, .tournament-include {
+            .dashboard-include, .lobby-include, .pong-include, .profile-include, .tournament-include, pong-online-include {
                 display: none;
             }
 
@@ -93,6 +93,10 @@
                 display: none;
             }
         </style>
+
+        <div class="pong-online-include">
+            {% include 'pong_online/pong_online_content.html' %}
+        </div>
 
         <div class="login-include">
             {% include 'login/login.html' %}

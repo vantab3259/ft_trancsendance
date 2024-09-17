@@ -1,9 +1,13 @@
 #!/bin/bash
 
-python -m pip install Pillow
 python manage.py makemigrations
 python manage.py migrate
-python manage.py runserver 0.0.0.0:8000
+watchmedo auto-restart \
+  --patterns="*.py;*.html;*.css;*.js" \
+  --recursive \
+  --directory=./ \
+  -- daphne -b 0.0.0.0 -p 8000 mysite.asgi:application
+
 
 
 
