@@ -88,7 +88,22 @@ document.querySelector(".launch-button-game-content").addEventListener("click", 
     };
 
     socket.onmessage = function(event) {
-        console.log("Message reçu du serveur : ", event.data);
+        let data;
+        try {
+            data = JSON.parse(event.data);
+        } catch (error) {
+            console.error("Erreur lors du parsing des données JSON :", error);
+            return;
+        }
+
+        console.log("Message reçu du serveur : ", event);
+        if (data.hasOwnProperty('code') && data['code'] === 4000) {
+            closeMatchmakingModal();
+            goToPagePongOnline();
+        } else if (data.hasOwnProperty('code') && data['code'] === 4001) {
+            // réception d'un message envoyé par un autre utilisateur dans la room
+            injectIncomingMessage(data.username, data.date, data.userImage, data.message);
+        }
     };
 
     socket.onclose = function(event) {
@@ -98,8 +113,92 @@ document.querySelector(".launch-button-game-content").addEventListener("click", 
     socket.onerror = function(error) {
         console.error("Erreur WebSocket : ", error);
     };
-
 });
+
+// Fonction d'envoi de message
+function sendMessage() {
+    const inputMessage = document.getElementById('input-message');
+    const message = inputMessage.value;
+
+    if (message.trim() !== '') {
+        const date = new Date().toLocaleTimeString();  // Obtenir l'heure actuelle
+        const username = "Me";  // À personnaliser avec le nom de l'utilisateur connecté
+        
+        // Injecter le message dans l'interface
+        injectOutgoingMessage(username, date, message);
+
+        // Envoyer le message au serveur via le WebSocket
+        const data = JSON.stringify({
+            code: 4002,
+            message: message,
+            date: date,
+            username: username
+        });
+        socket.send(data);
+
+        // Effacer le champ de saisie
+        inputMessage.value = '';
+    }
+}
+
+// Ajouter l'événement "click" sur l'icône d'envoi
+document.querySelector('.icon-send').addEventListener('click', sendMessage);
+
+// Ajouter l'événement "Enter" pour envoyer le message
+document.getElementById('input-message').addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+        sendMessage();
+    }
+
+    console.log("key => ", event.key);
+
+    if (event.key === ' ') {
+        document.querySelector("#input-message").value = document.querySelector("#input-message").value + ' ';
+    }
+});
+
+function goToPagePongOnline()
+{
+    document.querySelector('.lobby-include').style.display = "none";
+    document.querySelector('.pong-online-include').style.display = "block";
+}
+
+function injectOutgoingMessage(username, date, message) {
+    const chatContainer = document.querySelector(".msg_history");
+
+    const outgoingMessageHTML = `
+        <div class="outgoing_msg">
+            <div class="sent_msg">
+                <p>${message}</p>
+                <span class="time_date"> ${date}</span>
+            </div>
+        </div>
+    `;
+
+    chatContainer.innerHTML += outgoingMessageHTML;
+}
+
+function injectIncomingMessage(username, date, userImage, message) {
+    const chatContainer = document.querySelector(".msg_history");
+
+    const incomingMessageHTML = `
+        <div class="incoming_msg">
+            <div class="incoming_msg_img">
+                <img src="${userImage}" alt="${username}"> ${username}
+            </div>
+            <div class="received_msg">
+                <div class="received_withd_msg">
+                    <p>${message}</p>
+                    <span class="time_date"> ${date}</span>
+                </div>
+            </div>
+        </div>
+    `;
+
+    chatContainer.innerHTML += incomingMessageHTML;
+}
+
+
 
 if (typeof totalAvatarsMatchmaking === undefined) {
     const totalAvatarsMatchmaking = 45;

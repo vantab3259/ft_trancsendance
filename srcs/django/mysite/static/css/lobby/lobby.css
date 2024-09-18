@@ -109,6 +109,8 @@
     margin: 0;
     padding: 5px 10px 5px 12px;
     width: 100%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .time_date {
@@ -211,6 +213,9 @@
 
 .received_withd_msg p, .sent_msg p {
     border-radius: 15px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 
