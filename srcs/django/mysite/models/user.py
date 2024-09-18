@@ -62,6 +62,18 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         # Génère un nom de fichier unique
         unique_filename = f'{uuid.uuid4()}.svg'
 
+        # Chemin absolu du répertoire media et profile_pics
+        media_dir = '/usr/src/app/media'
+        profile_pics_dir = os.path.join(media_dir, 'profile_pics')
+
+        # Vérifie si le répertoire media existe, sinon le créer
+        if not os.path.exists(media_dir):
+            os.makedirs(media_dir)
+
+        # Vérifie si le répertoire profile_pics existe, sinon le créer
+        if not os.path.exists(profile_pics_dir):
+            os.makedirs(profile_pics_dir)
+
         # Définir le chemin final dans le dossier 'media/profile_pics/'
         final_path = os.path.join(settings.MEDIA_ROOT, 'profile_pics', unique_filename)
 
