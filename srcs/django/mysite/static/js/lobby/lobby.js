@@ -150,8 +150,6 @@ document.getElementById('input-message').addEventListener('keydown', function (e
         sendMessage();
     }
 
-    console.log("key => ", event.key);
-
     if (event.key === ' ') {
         document.querySelector("#input-message").value = document.querySelector("#input-message").value + ' ';
     }
