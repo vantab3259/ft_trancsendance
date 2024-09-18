@@ -638,3 +638,45 @@
 .lobby-content {
     margin-top: 20px;
 }
+
+@media screen and (max-width: 1300px) {
+
+    .top-options-lobby {
+        display: block;
+    }
+
+    .second-part-top-options-lobby {
+        margin-top: 20px;
+    }
+
+    .first-part-top-options-lobby, .second-part-top-options-lobby {
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .choose-options-lobby-container {
+        width : 90%;
+    }
+
+    .bottom-options-lobby {
+        height: 110px;
+    }
+
+    .launch-button-game-content {
+        padding: 30px 50px;
+    }
+}
+
+@media screen and (max-width: 850px) {
+
+    .player-information-container{
+        display: block;
+    }
+
+    .choose-pseudo-lobby {
+        margin-top: 20px;
+    }
+
+
+
+}

@@ -171,3 +171,17 @@
 }
 
 
+@media screen and (max-width: 1200px) {
+
+    .tournament-container {
+        scale: 0.7;
+    }
+}
+
+
+@media screen and (max-width: 700px) {
+
+    .tournament-container {
+        scale: 0.5;
+    }
+}

@@ -384,4 +384,25 @@ polygon {
     .dashboard-picture-header-container {
         display: none;
     }
+
+}
+
+
+.main-content {
+    min-height: inherit;
+}
+
+.theme {
+    width: 90% !important;
+}
+
+@media screen and (max-width: 700px) {
+
+    .theme {
+        width: 90% !important;
+    }
+}
+
+.card-body.inversed-text {
+    text-align: end;
 }
