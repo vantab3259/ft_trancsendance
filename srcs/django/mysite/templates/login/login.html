@@ -16,7 +16,7 @@
 
             <a 
               class="icon ft-oth-link"
-              href="">
+              href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-58755512bb9e40650382861e1729c878e37e9c8eef7dca1d8ee39ea9442c45d9&redirect_uri=https%3A%2F%2Flocalhost%3A4443%2Fhome&response_type=code">
                 
               <img class="logo-42-login" src="{% static 'images/login/42_logo.png' %}" alt="logo 42">
 
@@ -38,7 +38,7 @@
             <div class="social-icons">
               <a 
               class="icon ft-oth-link"
-              href="">
+              href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-58755512bb9e40650382861e1729c878e37e9c8eef7dca1d8ee39ea9442c45d9&redirect_uri=https%3A%2F%2Flocalhost%3A4443%2Fhome&response_type=code">
                 
               <img class="logo-42-login" src="{% static 'images/login/42_logo.png' %}" alt="logo 42">
 
@@ -84,3 +84,57 @@
         margin-top: 10px;
     }
 </style>
+
+<script>
+    let ftOthLink = document.querySelector("a.ft-oth-link");
+
+    // avoir le token d'autorisation de 42
+    document.addEventListener('DOMContentLoaded', () => {
+        let currentUrl = window.location.href;
+        if (currentUrl.search("code") <= -1) {
+             // hasn't a token
+             console.log("Without Token !");
+             return ;
+        } else {
+            console.log("Token !");
+            document.getElementById('loader').style.display = 'unset';
+        }
+        let splitUrl = currentUrl.split("/");
+        let codePart = splitUrl[splitUrl.length - 1];
+        let code = codePart.split("%3D")[1];
+
+        fetch('/get-oth-autorization/', {
+             method: "POST",
+             mode: "cors",
+             headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({
+                code: code,
+                sign_method: "signin"
+            }),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Erreur`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data)
+                if (data['login']) {
+                    initDashboard(data['user'][0]['fields']);
+                    goToNextPage();
+                }
+
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                document.body.innerHTML = '<p>Une erreur est survenue lors du chargement de la page.</p>';
+            });
+
+
+    });
+
+</script>

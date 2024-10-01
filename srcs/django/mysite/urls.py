@@ -35,5 +35,6 @@ urlpatterns = [
     path('signin/', user_controller.signin, name='signin'),
     path('logout/', user_controller.logout_view, name='logout_view'),
     path('profile-edit-form/', user_controller.profile_edit_form, name='profile_edit_form'),
+    path('get-oth-autorization/', user_controller.get_oth_autorization, name='get_oth_autorization'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

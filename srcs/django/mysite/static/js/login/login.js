@@ -1,3 +1,5 @@
+
+
 var containerLogin = document.getElementById('container');
 var registerBtn = document.getElementById('register');
 var loginBtn = document.getElementById('login');
@@ -66,10 +68,27 @@ signInForm.addEventListener("submit", function (event) {
 
 });
 
+function isEmpty(str) {
+    return (!str || str.length === 0 );
+}
+
 function initDashboard(userData) {
+
+    if (!isEmpty(userData['coalition_cover_url'])) {
+        document.querySelector(".dashboard-header").style.backgroundImage = 'url (' + userData['coalition_cover_url'] + ')';
+        document.querySelector(".progress").style.backgroundColor = userData['coalition_color'];
+        document.querySelector(".row-info.mail .data a").style.color = userData['coalition_color'];
+        document.querySelector("polygon").style.fill = userData['coalition_color'];
+        document.querySelector("polygon").style.stroke = userData['coalition_color'];
+        document.querySelector(".dashboard-picture-header.not-s.not-g.icon").setAttribute('src', userData['coalition_image_url']);
+    }
+
+    
     document.querySelector(".profile-dropdown-btn span").innerHTML = userData['pseudo']
     document.querySelector(".pseudo-container span").innerHTML = userData['pseudo']
     document.querySelector(".row-info.mail a").innerHTML = userData['email']
+
+
     document.querySelector("#profile-img").style = "background-image: url('/media/" + userData['profile_picture'] + "');";
     document.querySelector("img.dashboard-picture-header.not-s.not-g").src = "/media/" + userData['profile_picture'];
 
@@ -98,4 +117,3 @@ function goToNextPage(page = "dashboard", scripts = ["/static/js/base/header.js"
     currentPageClick = "dashboard"
      displayPage();
 }
-
