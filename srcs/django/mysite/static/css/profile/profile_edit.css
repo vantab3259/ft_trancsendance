@@ -180,3 +180,53 @@
     }
 
 }
+
+.switch-2fa-log {
+    display: inline-block;
+    height: 34px;
+    position: relative;
+    width: 60px;
+  }
+  
+  .switch-2fa-log input {
+    display:none;
+  }
+  
+  .slider-2fa-log {
+    background-color: #ccc;
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: .4s;
+  }
+  
+  .slider-2fa-log:before {
+    background-color: #fff;
+    bottom: 4px;
+    content: "";
+    height: 26px;
+    left: 4px;
+    position: absolute;
+    transition: .4s;
+    width: 26px;
+  }
+  
+  input:checked + .slider-2fa-log {
+    background-color: #66bb6a;
+  }
+  
+  input:checked + .slider-2fa-log:before {
+    transform: translateX(26px);
+  }
+  
+  .slider-2fa-log.round-2fa-log {
+    border-radius: 34px;
+  }
+  
+  .slider-2fa-log.round-2fa-log:before {
+    border-radius: 50%;
+  }
+  

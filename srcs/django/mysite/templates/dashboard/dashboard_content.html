@@ -19,10 +19,18 @@
                     <svg viewBox="0 0 68 104" class="polygon">
                         <polygon points="0,0 0,80.5 34.3,104 68,80.5 68,0" />
                     </svg>
-                    <img class="dashboard-picture-header not-s not-g icon "
-                        src="https://cdn.intra.42.fr/coalition/image/45/federation.svg"
-                        alt="picture image"
-                    >
+
+                    {% if request.user.coalition_cover_url %}
+                            <img class="dashboard-picture-header not-s not-g icon "
+                            src="{{ request.user.coalition_image_url}}"
+                            alt="picture image"
+                            >
+                    {% else %}
+                        <img class="dashboard-picture-header not-s not-g icon "
+                            src="https://cdn.intra.42.fr/coalition/image/45/federation.svg"
+                            alt="picture image"
+                            >
+                    {% endif%}
 
             </div>
 
@@ -205,4 +213,24 @@
 <script src="{% static 'js/dashboard/dashboard.js' %}"></script>
 
 
+{% if request.user.coalition_cover_url %}
+    <style>
+        .dashboard-header {
+            background-image: url({{ request.user.coalition_cover_url }});
+        }
 
+        .progress {
+            background-color: {{ request.user.coalition_color }};
+        }
+
+        .row-info.mail .data a {
+            color: {{ request.user.coalition_color }};
+        }
+
+        polygon {
+            fill: {{ request.user.coalition_color }};
+            stroke: {{ request.user.coalition_color }};
+        }
+
+    </style>
+{% endif %}

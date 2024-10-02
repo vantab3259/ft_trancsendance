@@ -32,6 +32,14 @@
 
                     <label for="birth-city">Birth city</label>
                     <input type="text" id="birth-city" name="birth-city" value="{{ request.user.birth_city }}">
+
+                    <div class="container-2fa-log">
+                        <span>Connexion 2FA</span>
+                        <label class="switch-2fa-log" for="checkbox-2fa-log">
+                          <input type="checkbox" id="checkbox-2fa-log" />
+                          <div class="slider-2fa-log round-2fa-log"></div>
+                        </label>
+                      </div>
                 </div>
 
                 <div class="form-section">

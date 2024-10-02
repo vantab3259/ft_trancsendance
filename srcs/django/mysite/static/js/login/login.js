@@ -75,7 +75,7 @@ function isEmpty(str) {
 function initDashboard(userData) {
 
     if (!isEmpty(userData['coalition_cover_url'])) {
-        document.querySelector(".dashboard-header").style.backgroundImage = 'url (' + userData['coalition_cover_url'] + ')';
+        document.querySelector(".dashboard-header").style.backgroundImage = 'url(' + userData['coalition_cover_url'] + ')';
         document.querySelector(".progress").style.backgroundColor = userData['coalition_color'];
         document.querySelector(".row-info.mail .data a").style.color = userData['coalition_color'];
         document.querySelector("polygon").style.fill = userData['coalition_color'];
