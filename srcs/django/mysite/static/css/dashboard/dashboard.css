@@ -103,14 +103,18 @@ svg.polygon {
     height: 100%;
 }
 
-svg.icon {
-    width: 50%;
-    height: 50%;
+svg.icon, .dashboard-picture-header.not-s.not-g.icon {
+    width: 70%;
+    height: 70%;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     fill: white;
+    color: white;
+    margin: 0;
+    padding: 0;
+    filter: invert(1) brightness(1000%);
 }
 
 polygon {

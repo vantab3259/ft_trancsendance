@@ -5,3 +5,6 @@ channels
 channels_redis
 daphne
 watchdog
+Authlib
+requests>=2.25.1
+python-dotenv

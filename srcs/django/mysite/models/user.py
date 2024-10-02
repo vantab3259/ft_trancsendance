@@ -24,6 +24,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     phone_number = models.CharField(_('phone_number'), max_length=30, blank=True)
     birth_city = models.CharField(_('birth_city'), blank=True)
     birth_date = models.DateField(_('birth_date'), null=True, blank=True)
+    access_token = models.CharField(_('access_token'), blank=True)
+    access_code = models.CharField(_('access_code'), blank=True)
+    coalition_color = models.CharField(_('coalition_color'), blank=True)
+    coalition_cover_url = models.CharField(_('coalition_cover_url'), blank=True)
+    coalition_image_url = models.CharField(_('coalition_image_url'), blank=True)
+    coalition_name = models.CharField(_('coalition_name'), blank=True)
+    coalition_slug = models.CharField(_('coalition_slug'), blank=True)
+    coalition_id = models.CharField(_('coalition_id'), blank=True)
+
 
 
 
