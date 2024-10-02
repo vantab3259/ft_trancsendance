@@ -231,7 +231,7 @@ def get_oth_autorization(request):
 
 
 def download_and_save_profile_picture(image_url):
-    response = requests.get(image_url, stream=True)
+    response = requests.get(image_url, stream=True, verify=False)
     if response.status_code == 200:
         unique_filename = f'{uuid.uuid4()}.jpg'
         
