@@ -52,3 +52,46 @@ document.getElementById('file-input').addEventListener('change', function(event)
         reader.readAsDataURL(file);
     }
 });
+
+
+document.querySelector("#checkbox-2fa-log").addEventListener('click', function () {
+
+
+    fetch('/get-qr-code/', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("load qr code");
+        const qrCodeImage = document.getElementById('qr-code');
+        qrCodeImage.src = `data:image/png;base64,${data.qr_code}`;
+    })
+    .catch(error => {
+        console.error('Erreur lors de la récupération du QR code:', error);
+    });
+
+    let qrCheckInterval = setInterval(function () {
+        fetch('/check-qr-scanned/', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.scanned) {
+                showFlashMessage('success', '✅ QR CODE SCANNED !');
+                clearInterval(qrCheckInterval);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la vérification du scan du QR code:', error);
+        });
+    }, 5000);
+
+});

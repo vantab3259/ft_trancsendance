@@ -16,6 +16,10 @@ from shutil import copyfile
 from django.core.files import File
 import requests
 from dotenv import load_dotenv
+import base64
+from io import BytesIO
+from django_otp.plugins.otp_totp.models import TOTPDevice
+from qrcode import make as make_qr
 
 
 
@@ -245,3 +249,33 @@ def download_and_save_profile_picture(image_url):
         return f'profile_pics/{unique_filename}'
     else:
         raise Exception(f"Impossible de télécharger l'image. Statut du serveur : {response.status_code}")
+
+@login_required
+def get_qr_code(request):
+    # Créer ou obtenir le dispositif TOTP de l'utilisateur
+    device, created = TOTPDevice.objects.get_or_create(user=request.user, confirmed=False)
+    
+    # Générer l'URI pour le QR code
+    otp_uri = device.config_url
+
+    # Créer le QR code à partir de cet URI
+    qr_img = make_qr(otp_uri)
+
+    # Convertir l'image en base64
+    buffer = BytesIO()
+    qr_img.save(buffer, format='PNG')
+    qr_code_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+
+    # Renvoyer le QR code encodé en base64 dans une réponse JSON
+    return JsonResponse({'qr_code': qr_code_base64})
+
+@login_required
+def check_qr_scanned(request):
+    try:
+        device = TOTPDevice.objects.get(user=request.user)
+        if device.last_t:
+            return JsonResponse({'scanned': True})
+        else:
+            return JsonResponse({'scanned': False})
+    except TOTPDevice.DoesNotExist:
+        return JsonResponse({'scanned': False})

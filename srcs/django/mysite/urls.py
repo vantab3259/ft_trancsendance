@@ -4,8 +4,11 @@ from . import views
 from .controllers import *
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import path, include
+from two_factor.urls import urlpatterns as tf_urls
 
 urlpatterns = [
+    # old route 
     path('admin/', admin.site.urls),
     path('', views.base, name='home'),
     path('base/', views.base, name='base'),
@@ -31,10 +34,18 @@ urlpatterns = [
     path('lobby_content', views.base, name='lobby_content'),
     path('pong-online/', views.base, name='pong_online'),
 
+    # connexion
     path('signup/', user_controller.signup, name='signup'),
     path('signin/', user_controller.signin, name='signin'),
     path('logout/', user_controller.logout_view, name='logout_view'),
     path('profile-edit-form/', user_controller.profile_edit_form, name='profile_edit_form'),
+
+    # connexion api 42
     path('get-oth-autorization/', user_controller.get_oth_autorization, name='get_oth_autorization'),
+
+    # 2fa
+    path('account/', include(tf_urls)),
+    path('get-qr-code/', user_controller.get_qr_code, name='get_qr_code'),
+    path('check-qr-scanned/', user_controller.check_qr_scanned, name='check_qr_scanned'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

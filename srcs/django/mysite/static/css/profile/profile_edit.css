@@ -230,3 +230,12 @@
     border-radius: 50%;
   }
   
+
+  .container-2fa-log {
+    display: flex;
+    align-items: center;
+  }
+
+  .container-2fa-log span {
+    margin-right: 15px;
+  }

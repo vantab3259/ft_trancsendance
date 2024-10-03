@@ -8,3 +8,7 @@ watchdog
 Authlib
 requests>=2.25.1
 python-dotenv
+django-otp
+django-two-factor-auth
+qrcode[pil]
+phonenumbers
