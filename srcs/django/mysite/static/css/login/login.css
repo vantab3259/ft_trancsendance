@@ -263,3 +263,23 @@ button.toggle-button {
     background-color: white;
     color: #512da8;
 }
+
+.ft-oth-link-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #512DA8;
+    color: white;
+    padding: 5px 40px;
+    border-radius: 10px;
+    transition: all 0.3s ease-in-out;
+}
+
+.logo-42-login-v2 {
+    height: 15px;
+}
+
+.ft-oth-link-container:hover {
+    scale: 1.2;
+    cursor: pointer;
+}

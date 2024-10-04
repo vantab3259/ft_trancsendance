@@ -14,13 +14,23 @@
 
             <h1>Create Account</h1>
 
-            <a 
-              class="icon ft-oth-link"
-              href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-58755512bb9e40650382861e1729c878e37e9c8eef7dca1d8ee39ea9442c45d9&redirect_uri=https%3A%2F%2Flocalhost%3A4443%2Fhome&response_type=code">
-                
-              <img class="logo-42-login" src="{% static 'images/login/42_logo.png' %}" alt="logo 42">
+                <a 
+                class="icon ft-oth-link"
+                href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-58755512bb9e40650382861e1729c878e37e9c8eef7dca1d8ee39ea9442c45d9&redirect_uri=https%3A%2F%2Flocalhost%3A4443%2Fhome&response_type=code">
+                    
+                    <div class="ft-oth-link-container">
+                        
+                        <span>
+                            register with &nbsp;&nbsp;
+                        </span>
+        
+                    <img class="logo-42-login-v2" src="/static/images/logo/42_logo_white.svg" alt="logo 42">
 
-              </a>
+                    </div>
+
+                </a>
+
+
 
             <span>or use your email for registeration</span>
             <input type="text" placeholder="Name" name="name" required minlength="4">
@@ -35,15 +45,20 @@
         <form id="signin-form">
             <h1>Sign In</h1>
 
-            <div class="social-icons">
               <a 
               class="icon ft-oth-link"
               href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-58755512bb9e40650382861e1729c878e37e9c8eef7dca1d8ee39ea9442c45d9&redirect_uri=https%3A%2F%2Flocalhost%3A4443%2Fhome&response_type=code">
                 
-              <img class="logo-42-login" src="{% static 'images/login/42_logo.png' %}" alt="logo 42">
+              <div class="ft-oth-link-container">
+                    <span>
+                        connect with &nbsp;&nbsp;
+                    </span>
+                <img class="logo-42-login-v2" src="/static/images/logo/42_logo_white.svg" alt="logo 42">
+              </div>
+              
+              
 
               </a>
-            </div>
 
             <span>or use your email password</span>
             <input type="email" placeholder="Email" name="email" required>

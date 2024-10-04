@@ -16,6 +16,9 @@ from shutil import copyfile
 from django.core.files import File
 import requests
 from dotenv import load_dotenv
+from django.core.mail import send_mail
+from django.http import JsonResponse
+
 
 
 
@@ -143,6 +146,9 @@ def get_oth_autorization(request):
         redirect_uri = os.getenv('API_42_REDIRECT_URI')
         scope = os.getenv('API_42_SCOPE')
 
+        if not all([client_id, client_secret, redirect_uri, scope]):
+            return JsonResponse({'error': 'Missing client configuration'}, status=500)
+
         api_ft = OAuth2Session(
             client_id=client_id,
             client_secret=client_secret,
@@ -150,11 +156,15 @@ def get_oth_autorization(request):
             redirect_uri=redirect_uri
         )
 
-        token = api_ft.fetch_token(
-            'https://api.intra.42.fr/oauth/token',
-            code=code,
-            client_secret=client_secret
-        )
+        try:
+            token = api_ft.fetch_token(
+                'https://api.intra.42.fr/oauth/token',
+                code=code,
+                client_secret=client_secret,
+                include_client_id=True
+            )
+        except Exception as e:
+            return JsonResponse({'error co ': str(e), 'code': code, 'clientsecret' : client_secret}, status=400)
 
         user_info = api_ft.get('https://api.intra.42.fr/v2/me').json()
 
@@ -190,8 +200,6 @@ def get_oth_autorization(request):
             user.coalition_name = coalition_name
             user.coalition_slug = coalition_slug
             user.coalition_id = coalition_id
-            user.save()
-            login(request, user)
             message = "Connexion réussie"
         else:
             user = CustomUser.objects.create(
@@ -209,10 +217,12 @@ def get_oth_autorization(request):
                 coalition_slug = coalition_slug,
                 coalition_id = coalition_id
             )
+
+
+
             user.save()
             login(request, user)
             message = "Utilisateur créé et connecté"
-
         return JsonResponse({
             'message': message,
             'login': True,
@@ -245,3 +255,29 @@ def download_and_save_profile_picture(image_url):
         return f'profile_pics/{unique_filename}'
     else:
         raise Exception(f"Impossible de télécharger l'image. Statut du serveur : {response.status_code}")
+
+def  two_fa_code_gen(user):
+    two_fa_code = ""
+
+    if user.two_fa_code_is_active:
+        two_fa_code = str(uuid.uuid4().int)[:6]
+        user.two_fa_code = two_fa_code
+        user.save()
+
+    return two_fa_code
+
+def send_code_mail(code, mailTo):
+    subject = "Ft-Transcendence CODE : " + str(code)
+    message = "Bonjour,\n\nVoici votre code : " + str(code) + ".\n\n\nCordialement,\nl'equipe 42.\n"
+    email_from = os.getenv('EMAIL_HOST_USER')
+    tos = ["rabalone94@gmail.com"]
+
+    send_mail(
+        subject,
+        message,
+        email_from,
+        tos,
+        fail_silently=False,
+    )
+    return JsonResponse({'message': 'Email envoyé avec succès !'}, status=200)
+
