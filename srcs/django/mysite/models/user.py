@@ -38,6 +38,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     two_fa_code = models.CharField(max_length=6, blank=True, verbose_name=_('Two Factor Code'))
     last_two_fa_code = models.DateTimeField(auto_now=True, verbose_name=_('Last Two Factor Code'))
     two_fa_code_is_active = models.BooleanField(_('active'), default=False)
+    two_fa_code_is_checked = models.BooleanField(_('active'), default=False)
 
 
 

@@ -18,6 +18,8 @@ import requests
 from dotenv import load_dotenv
 from django.core.mail import send_mail
 from django.http import JsonResponse
+from datetime import datetime, timedelta
+from django.utils import timezone
 
 
 
@@ -164,7 +166,7 @@ def get_oth_autorization(request):
                 include_client_id=True
             )
         except Exception as e:
-            return JsonResponse({'error co ': str(e), 'code': code, 'clientsecret' : client_secret}, status=400)
+            return JsonResponse({'error co ': str(e)}, status=400)
 
         user_info = api_ft.get('https://api.intra.42.fr/v2/me').json()
 
@@ -184,6 +186,7 @@ def get_oth_autorization(request):
 
         if CustomUser.objects.filter(email=email).exists():
             user = CustomUser.objects.get(email=email)
+
             user.access_token = token['access_token']
             user.access_code = code
             if not user.first_name:
@@ -218,11 +221,18 @@ def get_oth_autorization(request):
                 coalition_id = coalition_id
             )
 
+        user.save()
+        login(request, user)
 
 
-            user.save()
-            login(request, user)
-            message = "Utilisateur créé et connecté"
+        if user.two_fa_code_is_active:
+                user.two_fa_code_is_checked = False
+                user.save()
+                code = two_fa_code_gen(user)
+                send_code_mail(code, user.email)
+                return JsonResponse({'wait-two-fa': True}, status=200)
+
+        message = "Utilisateur créé et connecté"
         return JsonResponse({
             'message': message,
             'login': True,
@@ -262,6 +272,7 @@ def  two_fa_code_gen(user):
     if user.two_fa_code_is_active:
         two_fa_code = str(uuid.uuid4().int)[:6]
         user.two_fa_code = two_fa_code
+        user.last_two_fa_code = timezone.now()
         user.save()
 
     return two_fa_code
@@ -281,3 +292,39 @@ def send_code_mail(code, mailTo):
     )
     return JsonResponse({'message': 'Email envoyé avec succès !'}, status=200)
 
+@csrf_exempt 
+def set_two_fa_code(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        checked = data.get('checked', False)
+        user = request.user
+        user.two_fa_code_is_active = checked
+        user.save()
+        return JsonResponse({'message': 'Profil Updated !'}, status=200)
+    return JsonResponse({'error': 'POST ONLY'}, status=400)
+
+@csrf_exempt
+def check_two_fa_code(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        codeInput = data.get('codeInput', "")
+        codeInput = codeInput.replace(' ', '')
+        user = request.user
+
+        if user.two_fa_code_is_active and user.two_fa_code == codeInput:
+            now = timezone.now()
+            time_difference = now - user.last_two_fa_code
+
+            if time_difference < timedelta(minutes=5):
+                user.last_two_fa_code = None
+                user.two_fa_code = ""
+                user.two_fa_code_is_checked = True
+                user.save()
+
+                return JsonResponse({'message': 'Code validé et profil mis à jour !', 'check' : True, 'user': user.getJson()}, status=200)
+            else:
+                return JsonResponse({'message': 'Le code a expiré !', 'check' : False}, status=400)
+        else:
+            return JsonResponse({'message': 'Code incorrect !', 'check' : False}, status=400)
+
+    return JsonResponse({'error': 'POST uniquement'}, status=400)

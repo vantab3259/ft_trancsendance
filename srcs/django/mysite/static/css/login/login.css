@@ -279,7 +279,14 @@ button.toggle-button {
     height: 15px;
 }
 
-.ft-oth-link-container:hover {
+.twoFa-button:hover {
+    transition: all 0.3s ease-in-out;
+}
+
+.ft-oth-link-container:hover, .twoFa-button:hover {
     scale: 1.2;
     cursor: pointer;
+}
+.twoFa-container {
+    margin-top: 20%;
 }

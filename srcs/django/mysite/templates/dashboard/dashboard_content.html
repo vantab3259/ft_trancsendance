@@ -129,84 +129,47 @@
     <div class="sub-first-content-dashboard" >
         {% include 'history_match/history_match_content.html' %}
     </div>
-    
-    <div class="data-card-dashboard sub-first-content-dashboard">
-        <div class="col-md-4 metric-row first-line" >
-          <div class="card text-white bg-primary mb-3">
-              <div class="card-body">
-                  <h5 class="card-title">
-                      <i class="fas fa-gamepad"></i> Number of Games Played
-                  </h5>
-                  <p class="card-text display-4">124</p>
-              </div>
-          </div>
-      </div>
 
-      <!-- Number of Games Won -->
-      <div class="col-md-4 metric-row first-line">
-          <div class="card text-white bg-success mb-3">
-              <div class="card-body inversed-text">
-                  <h5 class="card-title">
-                      <i class="fas fa-trophy"></i> Number of Games Won
-                  </h5>
-                  <p class="card-text display-4">87</p>
-              </div>
-          </div>
-      </div>
-
-      <!-- Number of Games Lost -->
-      <div class="col-md-4 metric-row first-line">
-          <div class="card text-white bg-danger mb-3">
-              <div class="card-body">
-                  <h5 class="card-title">
-                      <i class="fas fa-times-circle"></i> Number of Games Lost
-                  </h5>
-                  <p class="card-text display-4">37</p>
-              </div>
-          </div>
-      </div>
+    <div class="sub-first-content-dashboard" >
+        <div class="achievements">
+            <div class="achievements-header">
+                <h2 class="board-title">My page</h2>
+            </div>
+            
+            <div class="achievement-item">
+                <div class="achievement-info">
+                    <h3>Bonus Hunter 3</h3>
+                    <p>Validated 10 projects with the maximum score.</p>
+                </div>
+                <div class="achievement-icon">
+                    <img src="https://cdn.intra.42.fr/achievement/image/19/PRO005.svg" alt="Bonus Hunter Icon">
+                </div>
+            </div>
+            
+            <div class="achievement-item">
+                <div class="achievement-info">
+                    <h3>It's a rich man's world 1</h3>
+                    <p>Collected 100 wallet points.</p>
+                </div>
+                <div class="achievement-icon">
+                    <img src="https://cdn.intra.42.fr/achievement/image/36/SOC004.svg" alt="Rich Man's World Icon">
+                </div>
+            </div>
+            
+            <div class="achievement-item">
+                <div class="achievement-info">
+                    <h3>Code Explorer 4</h3>
+                    <p>Validated 21 projects.</p>
+                </div>
+                <div class="achievement-icon">
+                    <img src="https://cdn.intra.42.fr/achievement/image/7/PRO002.svg" alt="Code Explorer Icon">
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-
-<div class="content-dashboard">
     
-  <div class="row">
-      <!-- Level (lvl) -->
-      <div class="col-md-4">
-          <div class="card text-white bg-info mb-3">
-              <div class="card-body inversed-text">
-                  <h5 class="card-title">
-                      <i class="fas fa-level-up-alt"></i> Level (lvl)
-                  </h5>
-                  <p class="card-text display-4">15</p>
-              </div>
-          </div>
-      </div>
-
-      <!-- Average Game Duration -->
-      <div class="col-md-4">
-          <div class="card text-white bg-warning mb-3">
-              <div class="card-body">
-                  <h5 class="card-title">
-                      <i class="fas fa-clock"></i> Average Game Duration
-                  </h5>
-                  <p class="card-text display-4">45 min</p>
-              </div>
-          </div>
-      </div>
-
-      <!-- Win Percentage -->
-      <div class="col-md-4">
-          <div class="card text-white bg-secondary mb-3">
-              <div class="card-body inversed-text">
-                  <h5 class="card-title">
-                      <i class="fas fa-percentage"></i> Win Percentage
-                  </h5>
-                  <p class="card-text display-4">70%</p>
-              </div>
-          </div>
-      </div>
-  </div>
+    
+    
 </div>
 
 <link rel="stylesheet" href="{% static 'css/dashboard/dashboard.css' %}">
@@ -234,3 +197,4 @@
 
     </style>
 {% endif %}
+

@@ -230,3 +230,8 @@
     border-radius: 50%;
   }
   
+  .container-2fa-log {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }

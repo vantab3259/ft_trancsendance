@@ -52,3 +52,34 @@ document.getElementById('file-input').addEventListener('change', function(event)
         reader.readAsDataURL(file);
     }
 });
+
+document.querySelector("input#checkbox-2fa-log").addEventListener("change", (e) => {
+    document.getElementById('loader').style.display = 'unset';
+
+    fetch('/set-two-fa-code/', {
+        method: "POST",
+        mode: "cors",
+        headers: {
+           "Content-Type": "application/json",
+           "Accept": "application/json"
+        },
+        body: JSON.stringify({
+            checked: e.target.checked
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erreur lors de la mise à jour.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        showFlashMessage('success', '✅ Your profile was updated successfully.');
+        document.getElementById('loader').style.display = 'none';
+    })
+    .catch(error => {
+        console.error(error);
+        showFlashMessage('error', '❌ Erreur lors de la mise à jour.');
+        document.getElementById('loader').style.display = 'none';
+    });
+});

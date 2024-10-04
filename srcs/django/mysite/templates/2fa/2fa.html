@@ -1,0 +1,236 @@
+<div class="2fa-container twoFa-container child">
+	<form id="2fa-form twoFa-form">
+	  <h1>TWO-FACTOR AUTHENTICATION</h1>
+	  <div class="form__group form__pincode">
+		<label>Enter 6-digit code from your authenticator application</label>
+		<input type="tel" name="pincode-1" maxlength="1" pattern="[\d]*" tabindex="1" placeholder="·" autocomplete="off">
+		<input type="tel" name="pincode-2" maxlength="1" pattern="[\d]*" tabindex="2" placeholder="·" autocomplete="off">
+		<input type="tel" name="pincode-3" maxlength="1" pattern="[\d]*" tabindex="3" placeholder="·" autocomplete="off">
+		<input type="tel" name="pincode-4" maxlength="1" pattern="[\d]*" tabindex="4" placeholder="·" autocomplete="off">
+		<input type="tel" name="pincode-5" maxlength="1" pattern="[\d]*" tabindex="5" placeholder="·" autocomplete="off">
+		<input type="tel" name="pincode-6" maxlength="1" pattern="[\d]*" tabindex="6" placeholder="·" autocomplete="off">
+	  </div>
+	  <div class="2fa-form__buttons twoFa-button">
+		<a href="" class="button button--primary" id="check-two-fa-code-btn" disabled>Continue</a>
+	  </div>
+	</form>
+  </div>
+
+
+  <style>
+
+
+		.form__group {
+		margin: 10px 0 0;
+		}
+
+		.form__group--error .form__pincode > input {
+		background-color: #eb3b3b;
+		}
+
+		.form__group--error .form__pincode > input[disabled] {
+		background-color: #eb3b3b;
+		color: #fff;
+		opacity: 1;
+		}
+
+		.form__group--success .form__pincode > input {
+		background-color: #32c832;
+		}
+
+		.form__group--success .form__pincode > input[disabled] {
+		background-color: #32c832;
+		color: #fff;
+		opacity: 1;
+		}
+
+		.form__pincode {
+		display: block;
+		width: 100%;
+		margin: 10px auto 20px;
+		clear: both;
+		}
+
+		.form__pincode > label {
+		display: block;
+		text-align: center;
+		margin: 10px 0;
+		}
+
+		.form__pincode > input[type="number"] {
+		-moz-appearance: none;
+		-webkit-appearance: none;
+		appearance: none;
+		}
+
+		.form__pincode > input {
+		display: inline-block;
+		float: left;
+		width: 15%;
+		height: 50px;
+		line-height: 48px;
+		text-align: center;
+		font-size: 2em;
+		color: #181819;
+		border: 0;
+		border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+		border-radius: 2px 2px 0 0;
+		transition: background-color .3s, color .3s, opacity .3s;
+		cursor: default;
+		user-select: none;
+		margin: 0;
+		margin-top: 10px;
+		margin-right: 2%;
+		padding: 0;
+		}
+
+		.form__pincode > input:focus {
+		outline: 0;
+		box-shadow: none;
+		border-color: #1486f0;
+		animation: border-pulsate 1.5s infinite;
+		-webkit-tap-highlight-color: transparent;
+		}
+
+		.form__pincode > input:last-child {
+		margin-right: 0;
+		}
+
+		.form__pincode > input[disabled] {
+		background: #eee;
+		opacity: 1;
+		}
+
+		.form__buttons {
+		text-align: center;
+		margin: 0 auto;
+		padding: 10px 0 0;
+		}
+
+
+
+		/* Animations */
+		@keyframes border-pulsate {
+		0% {
+			border-color: rgba(20, 134, 240, 1);
+		}
+		50% {
+			border-color: rgba(0, 0, 0, 0.3);
+		}
+		100% {
+			border-color: rgba(20, 134, 240, 1);
+		}
+		}
+
+		div.twoFa-include {
+			display: block !important;
+		}
+
+		.twoFa-container {
+			width: 20%;
+			min-width: 400px;
+			display: flex;
+			justify-items: center;
+			justify-content: center;
+			align-items: center;
+			align-content: center;
+			text-align: center;
+			background: #5234AB;
+			color: whitesmoke;
+			padding: 40px;
+			border-radius: 20px;
+			font-weight: 500;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		.twoFa-container.parrent {
+			display: none;
+		}
+
+		.twoFa-form {
+			height: 100%;
+			min-height: 300px;
+			font-size: 23px !important;
+		}
+
+		.twoFa-button {
+			margin-top: 120px;
+			background-color: #FFFFFF;
+			border-radius: 20px;
+			width: 140px;
+			height: 50px;
+			display: flex;
+			justify-items: center;
+			justify-items: center;
+			align-items: center;
+			justify-content: center;
+			margin-left: auto;
+			margin-right: auto;
+			
+		}
+
+		.twoFa-button a {
+			color: #512DA8;
+			text-decoration: none;
+			font-size: 25px !important;
+		}
+  </style>
+
+  <script>
+
+	document.querySelector("#check-two-fa-code-btn").addEventListener("click", function(e) {
+
+		e.preventDefault();
+		document.getElementById('loader').style.display = 'unset';
+
+		let codeInput = '';
+		for (let i = 1; i <= 6; i++) {
+			codeInput += document.querySelector(`input[name="pincode-${i}"]`).value;
+		}
+
+		fetch('/check-two-fa-code/', {
+			method: "POST",
+			mode: "cors",
+			headers: {
+			"Content-Type": "application/json",
+			"Accept": "application/json"
+			},
+			body: JSON.stringify({
+				codeInput: codeInput
+			}),
+		})
+		.then(response => {
+			return response.json();
+		})
+		.then(data => {
+			if (data['check']) {
+				showFlashMessage('success', '✅ Your are connected.');
+				history.pushState(null, '', "/dashboard");
+				initDashboard(data['user'][0]['fields']);
+				goToNextPage();
+			}
+
+			if (data['check'] === false) {
+				showFlashMessage('error', '❌ Code is not valid.');
+
+			}
+		})
+	});
+
+	const inputs = document.querySelectorAll('.form__pincode input');
+
+	inputs.forEach((input, index) => {
+				input.addEventListener('input', (e) => {
+					if (input.value.length === 1 && index < inputs.length - 1) {
+						inputs[index + 1].focus();  // Déplacer vers l'input suivant
+					}
+				});
+
+				input.addEventListener('keydown', (e) => {
+					if (e.key === 'Backspace' && input.value === '' && index > 0) {
+						inputs[index - 1].focus();  // Déplacer vers l'input précédent
+					}
+				});
+	});
+  </script>

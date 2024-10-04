@@ -410,3 +410,85 @@ polygon {
 .card-body.inversed-text {
     text-align: end;
 }
+
+.achievements {
+    background-color: #ffffff;
+    width: 100%;
+    padding-bottom: 5px;
+}
+
+.achievements-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.achievements-header h2 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.see-all {
+    font-size: 14px;
+    color: #00bcd4;
+    text-decoration: none;
+    border: 1px solid #00bcd4;
+    padding: 6px 12px;
+    transition: background-color 0.3s ease;
+}
+
+.see-all:hover {
+    background-color: #00bcd4;
+    color: #fff;
+}
+
+.achievement-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+.achievement-info h3 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.achievement-info p {
+    font-size: 14px;
+    color: #777;
+}
+
+.achievement-icon img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 50%;
+    background-color: #ffffff;
+    padding: 8px;
+}
+
+
+.achievements .board-title {
+    width: 100%;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 1.5em;
+}
+
+.match-history-wrapper, .top-contributors {
+    padding-bottom: 5px;
+}
