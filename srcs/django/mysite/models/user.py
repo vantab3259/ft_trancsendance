@@ -9,15 +9,26 @@ from shutil import copyfile
 import json
 from django.core.serializers import serialize
 from django.db.models import Q
+from django.shortcuts import render
 
 class CustomUserManager(BaseUserManager):
     def get_by_natural_key(self, email):
         return self.get(email=email)
 
-    def search_by_pseudo_or_email(self, query):
-        return self.filter(
-            Q(pseudo__icontains=query) | Q(email__icontains=query)
-        )
+    def search_by_pseudo_or_email(self, query, user, mode):
+        if not query:
+            users = self.all()
+        else:
+            users = self.filter(Q(pseudo__icontains=query) | Q(email__icontains=query))
+        if mode == 'add':
+            users = users.exclude(id__in=user.friends.all())
+            users = users.exclude(id__in=user.friends_request.all())
+        elif mode == 'friends':
+            users = users.filter(id__in=user.friends.all())
+        elif mode == 'pending':
+            users = users.filter(id__in=user.friends_request.all())
+        return users
+
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)

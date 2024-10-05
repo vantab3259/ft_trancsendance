@@ -17,45 +17,44 @@ document.querySelector("#link-edit").addEventListener("click", function (e) {
     });
 
 
+	function injectFriends() {
+		let value = document.querySelector("#search-bar-friends").value;
+
+		fetch('/search-users/', {
+			method: "POST",
+			mode: "cors",
+			headers: {
+			"Content-Type": "application/json",
+			"Accept": "application/json"
+			},
+			body: JSON.stringify({
+				query: value,
+				'mode': document.querySelector(".option-friend-button.active span").getAttribute("data-mode")
+			}),
+		})
+		.then(response => {
+			return response.json();
+		})
+		.then(data => {
+			console.log("response => ", data);
+			
+			if (data.status === 'success') {
+				injectUsersIntoList(data.users);
+			} else {
+				console.error("Error: ", data.error);
+			}
+
+		})
+
+	}
+
 
 let timeoutId;
 document.querySelector("#search-bar-friends").addEventListener("keyup", function (e) {
 
 		clearTimeout(timeoutId);
 
-        timeoutId = setTimeout(() => {
-			let value = document.querySelector("#search-bar-friends").value;
-			
-			if (!value)
-				return ;
-
-			fetch('/search-users/', {
-				method: "POST",
-				mode: "cors",
-				headers: {
-				"Content-Type": "application/json",
-				"Accept": "application/json"
-				},
-				body: JSON.stringify({
-					query: value,
-					'mode': 'add'
-				}),
-			})
-			.then(response => {
-				return response.json();
-			})
-			.then(data => {
-				console.log("response => ", data);
-				
-				if (data.status === 'success') {
-					injectUsersIntoList(data.users);
-				} else {
-					console.error("Error: ", data.error);
-				}
-
-			})
-
-		}, 500)
+        timeoutId = setTimeout(injectFriends, 500)
 
 });
 
@@ -97,7 +96,7 @@ function injectUsersIntoList(users) {
 
 document.querySelectorAll(".option-friend-button").forEach( (e) => {
 
-	e.addEventListener("click", function (e){
+	e.addEventListener("click", function (e) {
 
 		let oldActiveButton = document.querySelector(".option-friend-button.active");
 			oldActiveButton.classList.remove("active");
@@ -110,6 +109,9 @@ document.querySelectorAll(".option-friend-button").forEach( (e) => {
 		}
 
 		newActiveLabel.classList.add("active");
+		injectFriends()
+
+
 	})
 }
 	

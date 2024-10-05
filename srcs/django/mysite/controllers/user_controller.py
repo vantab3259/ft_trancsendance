@@ -337,8 +337,8 @@ def search_users(request):
         query = data.get('query', '')
         mode = data.get('mode', '')
 
-        if query:
-            users = CustomUser.objects.search_by_pseudo_or_email(query)
+        if mode in ['add', 'friends', 'pending']:
+            users =  CustomUser.objects.search_by_pseudo_or_email(query, request.user, mode)
             user_data = [
                 {
                     'id': user.id,
