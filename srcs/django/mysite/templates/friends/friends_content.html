@@ -46,7 +46,7 @@
                 </div>
             </li> -->
 
-				{% if request.user.friends.all %}
+				{% if request.user and request.user.friends.all %}
 					{% for friend in request.user.friends.all %}
 					<li class="contributor-item friend">
 						<img src="{{ friend.get_profile_picture_url }}" alt="{{ friend.first_name }} {{ friend.last_name }}">
