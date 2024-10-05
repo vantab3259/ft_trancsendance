@@ -8,10 +8,16 @@ from django.conf import settings
 from shutil import copyfile
 import json
 from django.core.serializers import serialize
+from django.db.models import Q
 
 class CustomUserManager(BaseUserManager):
     def get_by_natural_key(self, email):
         return self.get(email=email)
+
+    def search_by_pseudo_or_email(self, query):
+        return self.filter(
+            Q(pseudo__icontains=query) | Q(email__icontains=query)
+        )
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)
@@ -40,6 +46,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     two_fa_code_is_active = models.BooleanField(_('active'), default=False)
     two_fa_code_is_checked = models.BooleanField(_('active'), default=False)
 
+    friends = models.ManyToManyField('self', symmetrical=True, related_name='friends')
+    friends_request = models.ManyToManyField('self', symmetrical=True, related_name='friends_request')
+    
 
 
 

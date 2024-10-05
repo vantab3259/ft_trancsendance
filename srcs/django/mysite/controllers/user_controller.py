@@ -20,7 +20,7 @@ from django.core.mail import send_mail
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 from django.utils import timezone
-
+from django.db.models import Q
 
 
 
@@ -281,7 +281,7 @@ def send_code_mail(code, mailTo):
     subject = "Ft-Transcendence CODE : " + str(code)
     message = "Bonjour,\n\nVoici votre code : " + str(code) + ".\n\n\nCordialement,\nl'equipe 42.\n"
     email_from = os.getenv('EMAIL_HOST_USER')
-    tos = ["rabalone94@gmail.com"]
+    tos = [mailTo]
 
     send_mail(
         subject,
@@ -328,3 +328,32 @@ def check_two_fa_code(request):
             return JsonResponse({'message': 'Code incorrect !', 'check' : False}, status=400)
 
     return JsonResponse({'error': 'POST uniquement'}, status=400)
+
+
+@csrf_exempt
+def search_users(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        query = data.get('query', '')
+        mode = data.get('mode', '')
+
+        if query:
+            users = CustomUser.objects.search_by_pseudo_or_email(query)
+            user_data = [
+                {
+                    'id': user.id,
+                    'pseudo': user.pseudo,
+                    'email': user.email,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'profile_picture': user.get_profile_picture_url(),
+                }
+                for user in users if user != request.user
+            ]
+
+            return JsonResponse({'status': 'success', 'users': user_data}, status=200)
+
+        else:
+            return JsonResponse({'error': 'No query provided.', 'query': query}, status=400)
+
+    return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)

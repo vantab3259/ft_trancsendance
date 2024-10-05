@@ -205,7 +205,6 @@ polygon {
 }
 .leaderboard-container {
     border-radius: 15px;
-    margin-left: 20px;
 }
 
 .match-history-title, .board-title {
@@ -324,7 +323,7 @@ polygon {
 }
 
 .sub-first-content-dashboard {
-    width: 30%;
+    width: 48%;
 }
 
 @media screen and (max-width: 1500px) {
@@ -491,4 +490,117 @@ polygon {
 
 .match-history-wrapper, .top-contributors {
     padding-bottom: 5px;
+}
+
+#search-bar-friends {
+    width: 50%;
+    padding: 10px 15px 10px 40px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 25px;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease;
+	margin-left: 10px;
+}
+
+#search-bar-friends:focus {
+    border-color: #007BFF;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.search-bar-container i {
+	position: relative;
+    top: 10px;
+    right: 40px;
+    transform: translateY(-50%);
+    color: #aaa;
+    font-size: 18px;
+    pointer-events: none;
+}
+
+.search-bar-container {
+	margin-bottom: 15px;
+}
+
+.contributor-list.friend {
+	max-height: 320px;
+}
+
+.dashboard-include {
+	margin-bottom: 10px;
+}
+
+.no-results {
+	text-align: center;
+    margin-top: 50px;
+    font-style: normal;
+    font-weight: 500;
+}
+
+.header-friends {
+	display: flex;
+    justify-content: space-between;
+}
+
+
+.left-header-friends {
+	display: flex;
+    justify-content: space-evenly;
+	font-size: 18px;
+}
+
+.option-friend-button {
+	padding: 5px 10px;
+	margin-right: 5px;
+	border-radius: 2px;
+	border: 1px solid black;
+}
+
+.left-header-friends {
+	margin-left: 5px;
+}
+
+.right-header-friends {
+	margin-right: 5px;
+}
+
+.option-friend-button:hover {
+	color: #017AFF;
+}
+
+.option-friend-button.active {
+	background-color: #017AFF;
+	color: white;
+}
+
+.label-option-friend-button {
+	font-weight: 500;
+    font-style: normal;
+    font-family: 'FuturaPT';
+}
+
+.right-header-friends {
+	display: flex;
+    justify-items: center;
+    align-items: center;
+	margin-right: 10px;
+}
+
+.add-friend-button {
+	width: 70px;
+    border-radius: 5px;
+    border: 1px solid;
+    height: 25px;
+    font-style: italic;
+}
+
+.add-friend-button:hover {
+	color:  #017AFF;
+}
+
+.contributor-item.friend {
+	width: 80%;
+    margin-left: 0;
+    margin-right: auto;
 }

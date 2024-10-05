@@ -1,0 +1,52 @@
+{% load static %}
+
+<div class="leaderboard-container">
+    <div class="top-contributors">
+		<div class="header-friends board-title">
+			<div class="left-header-friends">
+				<div class="options-friends-container">
+					<button class="option-friend-button active">
+						<span class="label-option-friend-button">My Friends</span>
+					</button>
+				</div>
+
+				<div class="options-friends-container">
+					<button class="option-friend-button ">
+						<span class="label-option-friend-button">Invite(s)</span>
+					</button>
+				</div>
+
+				<div class="options-friends-container">
+					<button class="option-friend-button">
+						<span class="label-option-friend-button">Add</span>
+					</button>
+				</div>
+			</div>
+
+			<div class="right-header-friends">
+				<h2 class="">FRIENDS</h2>
+			</div>
+		</div>
+		<div class="search-bar-container">
+			<input type="text" id="search-bar-friends" placeholder="Search a friend ...">
+			<i class="fa-solid fa-magnifying-glass"></i>
+		</div>
+        <ul class="contributor-list friend">
+
+			<li class="contributor-item friend">
+            
+                <img src="https://www.w3schools.com/howto/img_avatar.png" alt="John Doe">
+                <div class="contributor-details friend">
+                    <span class="contributor-name friend">John Doe</span>
+                    <span class="contributor-username friend">jdoe</span>
+                </div>
+                <div class="performance-stats friend">
+					<button onclick="addFriend(event)" class="add-friend-button">add</button>
+                </div>
+            </li>
+
+           
+            
+        </ul>
+    </div>
+</div>
