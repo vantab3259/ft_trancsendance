@@ -59,6 +59,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     friends = models.ManyToManyField('self', symmetrical=True, related_name='friends')
     friends_request = models.ManyToManyField('self', symmetrical=True, related_name='friends_request')
+    friends_send_request = models.ManyToManyField('self', symmetrical=True, related_name='friends_send_request')
     
 
 
