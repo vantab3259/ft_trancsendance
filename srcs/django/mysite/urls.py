@@ -30,6 +30,7 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('lobby_content', views.base, name='lobby_content'),
     path('pong-online/', views.base, name='pong_online'),
+    path('chat/', views.base, name='chat'),
 
     path('signup/', user_controller.signup, name='signup'),
     path('signin/', user_controller.signin, name='signin'),
