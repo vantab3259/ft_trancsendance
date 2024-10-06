@@ -117,14 +117,34 @@ document.querySelectorAll(".option-friend-button").forEach( (e) => {
 	
 );
 
+
+
 function addFriend(event) {
 
-	 // Get the clicked button element
-	 const clickedButton = event.target;
+	// Get the clicked button element
+	const clickedButton = event.target;
 
-	 // Get the value of data-id attribute
-	 const userId = clickedButton.dataset.id;
+	// Get the value of data-id attribute
+	const userId = clickedButton.dataset.id;
+	fetch('/request-friend/', {
+		method: "POST",
+		mode: "cors",
+		headers: {
+		"Content-Type": "application/json",
+		"Accept": "application/json"
+		},
+		body: JSON.stringify({
+			query: userId,
+		}),
+	})
+	.then(response => {
+		return response.json();
+	})
+	.then(data => {
+		console.log("response => ", data);
 
+		showFlashMessage('success', '✅ Your profile was updated successfully.');
+	})
 	console.log("HELLO FRIEND ! id => ", userId);
 }
 

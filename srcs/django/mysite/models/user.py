@@ -28,6 +28,13 @@ class CustomUserManager(BaseUserManager):
         elif mode == 'pending':
             users = users.filter(id__in=user.friends_request.all())
         return users
+    
+    def search_by_id(self, id):
+        if not id:
+            return None
+        user = self.get(Q(id=id))
+        return user
+        
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
