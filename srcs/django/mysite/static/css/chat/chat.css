@@ -1,0 +1,102 @@
+.chat-content .container {
+	border-radius: 0;
+	box-shadow: none;
+	display: flex;
+	width: 80%;
+	min-width: 400px;
+	max-width: 800px;
+	padding: 0;
+}
+
+.chat-content {
+	margin-top: 20px;
+}
+
+.chat-content .friend-conversation-item-profile-img-container img {
+	position: relative;
+	bottom: 15px;
+}
+
+
+.input-message-container.d-flex {
+	padding-bottom: 10px;
+}
+
+.friend-conversation-item-profile-img {
+	width: 30px;
+	border-radius: 50%;
+}
+
+.friend-conversation-item {
+	display: flex;
+	font-family: 'FuturaPT';
+	font-style: normal;
+	font-weight: 500;
+	padding-left: 10px;
+    padding-right: 10px;
+	padding-top: 5px;
+	width: 100%;
+}
+
+.friend-conversation-item-message-preview {
+	margin-left: 10px;
+	width: 100%;
+	
+}
+
+.friend-conversation-item-last-message {
+ 
+    text-overflow: ellipsis;
+	font-size: 14px !important;
+	padding-top: 5px;
+	display: inline-block;
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.friend-conversation-list-container {
+	width: 400px;
+	border-right: 1px solid #EEEEEE;
+	margin-right: 10px;
+}
+
+.friend-conversation-item-message-preview-top {
+	display: flex;
+	justify-content: space-between;
+}
+
+.friend-conversation-list {
+	margin-top: 10px;
+}
+
+.friend-conversation-list-header-title {
+	text-align: center;
+	padding-top: 10px;
+	font-size: 18px;
+}
+
+.friend-conversation-item-pseudo {
+	font-weight: 600;
+	font-size: 16px;
+}
+
+.friend-conversation-item-datetime {
+	font-weight: 600;
+	font-size: 10px !important;
+}
+
+.friend-conversation-item-profile-img-container {
+	width: 40px;
+}
+
+.friend-conversation-item:hover {
+	background-color: aliceblue;
+	cursor: pointer;
+}
+
+
+@media screen and (max-width: 1100px) {
+    
+}

@@ -109,6 +109,7 @@ if (profileDropdownList) {
     var lobbyLink = document.querySelector("#lobby-link");
     var editHeaderLink = document.querySelector("#edit-header-link");
     var logoutNavBarLink = document.querySelector("#logout-header-link");
+    var chatLink = document.querySelector("#chat-link");
 
     var pageContent = document.querySelector("div.content");
 
@@ -155,6 +156,13 @@ if (profileDropdownList) {
         loadContent('/profile/edit', 'Edit', 'home', ['/static/js/profile/profile.js'], 'profile_edit');
     });
 
+    chatLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        currentPageClick = "chat"
+        loadContent('/chat', 'chat', 'chat', []);
+    });
+
+
     logoutNavBarLink.addEventListener("click", function (e) {
         e.preventDefault();
 
@@ -179,6 +187,8 @@ if (profileDropdownList) {
                 document.body.innerHTML = '<p>Une erreur est survenue lors du chargement de la page.</p>';
             });
     });
+
+
 
 
 }
