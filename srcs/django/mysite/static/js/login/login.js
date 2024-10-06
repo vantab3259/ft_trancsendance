@@ -30,6 +30,8 @@ signUpForm.addEventListener("submit", function (event) {
             if (data['status'] === "success") {
                 initDashboard(data['data']['user'][0]['fields']);
                 goToNextPage();
+                document.getElementById("signup-form").reset();
+                document.getElementById("invalid-signup").innerHTML = '';
                 return data;
             } else {
                 document.getElementById("invalid-signup").innerHTML = data['errors'];
@@ -57,6 +59,8 @@ signInForm.addEventListener("submit", function (event) {
             if (data['status'] === "success") {
                 initDashboard(data['data']['user'][0]['fields']);
                 goToNextPage();
+                document.getElementById("signin-form").reset();
+                document.getElementById("invalid-signin").innerHTML = '';
                 return data;
             } else {
                 document.getElementById("invalid-signin").innerHTML = data['errors'];

@@ -26,13 +26,13 @@ function applyConfig(config) {
 
 document.getElementById('funConfig').addEventListener('click', function () {
     applyConfig(window.configurationPongFun);
-    document.querySelector('.active').classList.remove('active');
+    document.querySelector('.row-config.active').classList.remove('active');
     this.classList.add('active');
 });
 
 document.getElementById('classicConfig').addEventListener('click', function () {
     applyConfig(window.classicConfig);
-    document.querySelector('.active').classList.remove('active');
+    document.querySelector('.row-config.active').classList.remove('active');
     this.classList.add('active');
 });
 
