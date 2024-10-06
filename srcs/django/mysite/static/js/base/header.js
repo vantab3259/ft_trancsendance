@@ -209,6 +209,15 @@ function getCookie(name) {
 }
 
 
+window.addEventListener("popstate", (event) => {
+  let pathUrlState = window.location.pathname;
+  let pathUrlArgumentState = pathUrlState.replace(/^\/|\/$/g, '');
+  currentPageClick = pathUrlArgumentState;
+  
+  displayPage();
+});
+
+
 
 
 
