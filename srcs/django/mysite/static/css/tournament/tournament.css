@@ -188,6 +188,106 @@
 
 .connexion-tournament {
     background-color: white;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 120px;
+}
 
-    margin-top: 20px;
+.connexion-tournament {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f5f8fc;
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  width: 300px;
+  font-family: Arial, sans-serif;
+}
+
+.create-options-tournament,
+.join-options-tournament {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px 0;
+}
+
+.players-selection {
+  display: flex;
+  align-items: center;
+}
+
+.arrow-button {
+  background-color: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.number-tournament {
+  width: 40px;
+  text-align: center;
+  font-size: 18px;
+  margin: 0 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.play-button {
+  padding: 10px 20px;
+  margin-top: 10px;
+  background-color: #4b99e1;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  text-align: center;
+  transition: background-color 0.3s;
+}
+
+.play-button:hover {
+  background-color: #3a87c7;
+}
+
+.or-divider {
+  font-weight: bold;
+  color: #666;
+  margin: 10px 0;
+}
+
+.input-join-code-tournament {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.tournament-container { 
+  display: none;
+}
+
+.arrow-button, .play-button {
+  transition: all 0.3s ease-in-out ;
+}
+
+.arrow-button:hover {
+  color: #00BABC;
+  scale: 1.3;
+}
+
+.play-button {
+  margin-top: 20px;
+}
+
+.play-button:hover {
+  scale: 1.2;
 }

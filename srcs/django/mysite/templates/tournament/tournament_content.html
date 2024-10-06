@@ -1,40 +1,29 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/tournament/tournament.css' %}">
+<script src="{% static 'js/tournament/tournament.js' %}"></script>
 
 
 
 
 <div class="connexion-tournament">
-
-    <div class="create-options-tournament">
-        
-        <div class="create-options-tournament">
-
-            
-            <div>
-                <label for="">Players :</label>
-                <input type="text" class="number-tournament">
-            </div>
-        
-
-        </div>
-
-        <div class="play-code-tournament">
-            <span>CREATE</span>
-        </div>
-    </div>
-
-    <div class="join-options-tournament">
-        <div class="join-code-tournament">
-            <input type="text" class="input-join-code-tournament">
-        </div>
-
-        <div class="play-code-tournament">
-            <span>JOIN</span>
-        </div>
-    </div>
-
+  <div class="create-options-tournament">
+      <div class="players-selection">
+          <label>Players :</label>
+          <button class="arrow-button" onclick="decrementPlayers()">◄</button>
+          <input type="text" class="number-tournament" id="player-count" value="4" readonly>
+          <button class="arrow-button" onclick="incrementPlayers()">►</button>
+      </div>
+      <button class="play-button">CREATE</button>
+  </div>
+  
+  <div class="or-divider">OR</div>
+  
+  <div class="join-options-tournament">
+      <input type="text" class="input-join-code-tournament" placeholder="Code...">
+      <button class="play-button">JOIN</button>
+  </div>
 </div>
+
 
 <div class="tournament-container theme theme-dark">
     <div class="title-tournament">
