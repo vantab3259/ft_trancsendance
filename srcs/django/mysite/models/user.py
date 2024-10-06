@@ -8,10 +8,27 @@ from django.conf import settings
 from shutil import copyfile
 import json
 from django.core.serializers import serialize
+from django.db.models import Q
+from django.shortcuts import render
 
 class CustomUserManager(BaseUserManager):
     def get_by_natural_key(self, email):
         return self.get(email=email)
+
+    def search_by_pseudo_or_email(self, query, user, mode):
+        if not query:
+            users = self.all()
+        else:
+            users = self.filter(Q(pseudo__icontains=query) | Q(email__icontains=query))
+        if mode == 'add':
+            users = users.exclude(id__in=user.friends.all())
+            users = users.exclude(id__in=user.friends_request.all())
+        elif mode == 'friends':
+            users = users.filter(id__in=user.friends.all())
+        elif mode == 'pending':
+            users = users.filter(id__in=user.friends_request.all())
+        return users
+
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)
@@ -24,14 +41,26 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     phone_number = models.CharField(_('phone_number'), max_length=30, blank=True)
     birth_city = models.CharField(_('birth_city'), blank=True)
     birth_date = models.DateField(_('birth_date'), null=True, blank=True)
+
     access_token = models.CharField(_('access_token'), blank=True)
     access_code = models.CharField(_('access_code'), blank=True)
+
     coalition_color = models.CharField(_('coalition_color'), blank=True)
     coalition_cover_url = models.CharField(_('coalition_cover_url'), blank=True)
     coalition_image_url = models.CharField(_('coalition_image_url'), blank=True)
     coalition_name = models.CharField(_('coalition_name'), blank=True)
     coalition_slug = models.CharField(_('coalition_slug'), blank=True)
     coalition_id = models.CharField(_('coalition_id'), blank=True)
+
+    two_fa_code = models.CharField(max_length=6, blank=True, verbose_name=_('Two Factor Code'))
+    last_two_fa_code = models.DateTimeField(auto_now=True, verbose_name=_('Last Two Factor Code'))
+    two_fa_code_is_active = models.BooleanField(_('active'), default=False)
+    two_fa_code_is_checked = models.BooleanField(_('active'), default=False)
+
+    friends = models.ManyToManyField('self', symmetrical=True, related_name='friends')
+    friends_request = models.ManyToManyField('self', symmetrical=True, related_name='friends_request')
+    friends_send_request = models.ManyToManyField('self', symmetrical=True, related_name='friends_send_request')
+    
 
 
 

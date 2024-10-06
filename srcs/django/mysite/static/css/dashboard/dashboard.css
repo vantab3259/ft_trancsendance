@@ -205,7 +205,6 @@ polygon {
 }
 .leaderboard-container {
     border-radius: 15px;
-    margin-left: 20px;
 }
 
 .match-history-title, .board-title {
@@ -324,7 +323,7 @@ polygon {
 }
 
 .sub-first-content-dashboard {
-    width: 30%;
+    width: 48%;
 }
 
 @media screen and (max-width: 1500px) {
@@ -409,4 +408,199 @@ polygon {
 
 .card-body.inversed-text {
     text-align: end;
+}
+
+.achievements {
+    background-color: #ffffff;
+    width: 100%;
+    padding-bottom: 5px;
+}
+
+.achievements-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.achievements-header h2 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.see-all {
+    font-size: 14px;
+    color: #00bcd4;
+    text-decoration: none;
+    border: 1px solid #00bcd4;
+    padding: 6px 12px;
+    transition: background-color 0.3s ease;
+}
+
+.see-all:hover {
+    background-color: #00bcd4;
+    color: #fff;
+}
+
+.achievement-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+.achievement-info h3 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.achievement-info p {
+    font-size: 14px;
+    color: #777;
+}
+
+.achievement-icon img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 50%;
+    background-color: #ffffff;
+    padding: 8px;
+}
+
+
+.achievements .board-title {
+    width: 100%;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 1.5em;
+}
+
+.match-history-wrapper, .top-contributors {
+    padding-bottom: 5px;
+}
+
+#search-bar-friends {
+    width: 50%;
+    padding: 10px 15px 10px 40px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 25px;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease;
+	margin-left: 10px;
+}
+
+#search-bar-friends:focus {
+    border-color: #007BFF;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.search-bar-container i {
+	position: relative;
+    top: 10px;
+    right: 40px;
+    transform: translateY(-50%);
+    color: #aaa;
+    font-size: 18px;
+    pointer-events: none;
+}
+
+.search-bar-container {
+	margin-bottom: 15px;
+}
+
+.contributor-list.friend {
+	max-height: 320px;
+}
+
+.dashboard-include {
+	margin-bottom: 10px;
+}
+
+.no-results {
+	text-align: center;
+    margin-top: 50px;
+    font-style: normal;
+    font-weight: 500;
+}
+
+.header-friends {
+	display: flex;
+    justify-content: space-between;
+}
+
+
+.left-header-friends {
+	display: flex;
+    justify-content: space-evenly;
+	font-size: 18px;
+}
+
+.option-friend-button {
+	padding: 5px 10px;
+	margin-right: 5px;
+	border-radius: 2px;
+	border: 1px solid black;
+}
+
+.left-header-friends {
+	margin-left: 5px;
+}
+
+.right-header-friends {
+	margin-right: 5px;
+}
+
+.option-friend-button:hover {
+	color: #017AFF;
+}
+
+.option-friend-button.active {
+	background-color: #017AFF;
+	color: white;
+}
+
+.label-option-friend-button {
+	font-weight: 500;
+    font-style: normal;
+    font-family: 'FuturaPT';
+}
+
+.right-header-friends {
+	display: flex;
+    justify-items: center;
+    align-items: center;
+	margin-right: 10px;
+}
+
+.add-friend-button {
+	width: 70px;
+    border-radius: 5px;
+    border: 1px solid;
+    height: 25px;
+    font-style: italic;
+}
+
+.add-friend-button:hover {
+	color:  #017AFF;
+}
+
+.contributor-item.friend {
+	width: 80%;
+    margin-left: 0;
+    margin-right: auto;
 }

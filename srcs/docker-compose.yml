@@ -41,14 +41,12 @@ services:
       - webnet
 
   nginx:
-    image: nginx:latest
+    build: ./nginx
     container_name: nginx
     env_file: .env
     ports:
       - "4443:443"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/certs:/etc/nginx/ssl
       - ./django/mysite/static:/usr/src/app/mysite/static
     depends_on:
       - web

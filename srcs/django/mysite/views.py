@@ -4,21 +4,41 @@ from django.contrib.auth.decorators import login_required
 
 from django.shortcuts import redirect
 from functools import wraps
+from urllib.parse import urlencode
 
 def not_logged_in_required(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and request.user.two_fa_code_is_checked:
             return redirect('/dashboard/')
         return view_func(request, *args, **kwargs)
     return _wrapped_view
 
 
-@login_required(login_url='/login/')
+
+def two_fa_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if request.user.is_authenticated:
+            user = request.user
+            if user.two_fa_code_is_active and not user.two_fa_code_is_checked:
+                query_params = request.GET.urlencode()
+                full_path = f'{request.path}?{query_params}' if query_params else request.path
+                return redirect(f'/login/?next3%D{full_path}')
+        else:
+            query_params = request.GET.urlencode()
+            full_path = f'{request.path}?{query_params}' if query_params else request.path
+            return redirect(f'/login/?next3%D{full_path}')
+        return view_func(request, *args, **kwargs)
+    
+    return _wrapped_view
+
+
+@two_fa_required
 def home(request):
 	return render(request, 'login/login.html')
 
-@login_required(login_url='/login/')
+@two_fa_required
 def base(request):
 	return render(request, 'base/base.html')
 

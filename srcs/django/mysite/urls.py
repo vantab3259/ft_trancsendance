@@ -37,4 +37,9 @@ urlpatterns = [
     path('profile-edit-form/', user_controller.profile_edit_form, name='profile_edit_form'),
     path('get-oth-autorization/', user_controller.get_oth_autorization, name='get_oth_autorization'),
 
+    path('set-two-fa-code/', user_controller.set_two_fa_code, name='set_two_fa_code'),
+    path('check-two-fa-code/', user_controller.check_two_fa_code, name='check_two_fa_code'),
+
+    path('search-users/', user_controller.search_users, name='search_users'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

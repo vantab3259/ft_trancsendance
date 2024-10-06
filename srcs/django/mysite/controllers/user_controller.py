@@ -16,6 +16,11 @@ from shutil import copyfile
 from django.core.files import File
 import requests
 from dotenv import load_dotenv
+from django.core.mail import send_mail
+from django.http import JsonResponse
+from datetime import datetime, timedelta
+from django.utils import timezone
+from django.db.models import Q
 
 
 
@@ -143,6 +148,9 @@ def get_oth_autorization(request):
         redirect_uri = os.getenv('API_42_REDIRECT_URI')
         scope = os.getenv('API_42_SCOPE')
 
+        if not all([client_id, client_secret, redirect_uri, scope]):
+            return JsonResponse({'error': 'Missing client configuration'}, status=500)
+
         api_ft = OAuth2Session(
             client_id=client_id,
             client_secret=client_secret,
@@ -150,11 +158,15 @@ def get_oth_autorization(request):
             redirect_uri=redirect_uri
         )
 
-        token = api_ft.fetch_token(
-            'https://api.intra.42.fr/oauth/token',
-            code=code,
-            client_secret=client_secret
-        )
+        try:
+            token = api_ft.fetch_token(
+                'https://api.intra.42.fr/oauth/token',
+                code=code,
+                client_secret=client_secret,
+                include_client_id=True
+            )
+        except Exception as e:
+            return JsonResponse({'error co ': str(e)}, status=400)
 
         user_info = api_ft.get('https://api.intra.42.fr/v2/me').json()
 
@@ -174,6 +186,7 @@ def get_oth_autorization(request):
 
         if CustomUser.objects.filter(email=email).exists():
             user = CustomUser.objects.get(email=email)
+
             user.access_token = token['access_token']
             user.access_code = code
             if not user.first_name:
@@ -190,8 +203,6 @@ def get_oth_autorization(request):
             user.coalition_name = coalition_name
             user.coalition_slug = coalition_slug
             user.coalition_id = coalition_id
-            user.save()
-            login(request, user)
             message = "Connexion réussie"
         else:
             user = CustomUser.objects.create(
@@ -209,10 +220,19 @@ def get_oth_autorization(request):
                 coalition_slug = coalition_slug,
                 coalition_id = coalition_id
             )
-            user.save()
-            login(request, user)
-            message = "Utilisateur créé et connecté"
 
+        user.save()
+        login(request, user)
+
+
+        if user.two_fa_code_is_active:
+                user.two_fa_code_is_checked = False
+                user.save()
+                code = two_fa_code_gen(user)
+                send_code_mail(code, user.email)
+                return JsonResponse({'wait-two-fa': True}, status=200)
+
+        message = "Utilisateur créé et connecté"
         return JsonResponse({
             'message': message,
             'login': True,
@@ -245,3 +265,95 @@ def download_and_save_profile_picture(image_url):
         return f'profile_pics/{unique_filename}'
     else:
         raise Exception(f"Impossible de télécharger l'image. Statut du serveur : {response.status_code}")
+
+def  two_fa_code_gen(user):
+    two_fa_code = ""
+
+    if user.two_fa_code_is_active:
+        two_fa_code = str(uuid.uuid4().int)[:6]
+        user.two_fa_code = two_fa_code
+        user.last_two_fa_code = timezone.now()
+        user.save()
+
+    return two_fa_code
+
+def send_code_mail(code, mailTo):
+    subject = "Ft-Transcendence CODE : " + str(code)
+    message = "Bonjour,\n\nVoici votre code : " + str(code) + ".\n\n\nCordialement,\nl'equipe 42.\n"
+    email_from = os.getenv('EMAIL_HOST_USER')
+    tos = [mailTo]
+
+    send_mail(
+        subject,
+        message,
+        email_from,
+        tos,
+        fail_silently=False,
+    )
+    return JsonResponse({'message': 'Email envoyé avec succès !'}, status=200)
+
+@csrf_exempt 
+def set_two_fa_code(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        checked = data.get('checked', False)
+        user = request.user
+        user.two_fa_code_is_active = checked
+        user.save()
+        return JsonResponse({'message': 'Profil Updated !'}, status=200)
+    return JsonResponse({'error': 'POST ONLY'}, status=400)
+
+@csrf_exempt
+def check_two_fa_code(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        codeInput = data.get('codeInput', "")
+        codeInput = codeInput.replace(' ', '')
+        user = request.user
+
+        if user.two_fa_code_is_active and user.two_fa_code == codeInput:
+            now = timezone.now()
+            time_difference = now - user.last_two_fa_code
+
+            if time_difference < timedelta(minutes=5):
+                user.last_two_fa_code = None
+                user.two_fa_code = ""
+                user.two_fa_code_is_checked = True
+                user.save()
+
+                return JsonResponse({'message': 'Code validé et profil mis à jour !', 'check' : True, 'user': user.getJson()}, status=200)
+            else:
+                return JsonResponse({'message': 'Le code a expiré !', 'check' : False}, status=400)
+        else:
+            return JsonResponse({'message': 'Code incorrect !', 'check' : False}, status=400)
+
+    return JsonResponse({'error': 'POST uniquement'}, status=400)
+
+
+@csrf_exempt
+def search_users(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        query = data.get('query', '')
+        mode = data.get('mode', '')
+
+        if mode in ['add', 'friends', 'pending']:
+            users =  CustomUser.objects.search_by_pseudo_or_email(query, request.user, mode)
+            user_data = [
+                {
+                    'id': user.id,
+                    'pseudo': user.pseudo,
+                    'email': user.email,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'profile_picture': user.get_profile_picture_url(),
+                }
+                for user in users if user != request.user
+            ]
+
+            return JsonResponse({'status': 'success', 'users': user_data}, status=200)
+
+        else:
+            return JsonResponse({'error': 'No query provided.', 'query': query}, status=400)
+
+    return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)

@@ -36,7 +36,7 @@
                     <div class="container-2fa-log">
                         <span>Connexion 2FA</span>
                         <label class="switch-2fa-log" for="checkbox-2fa-log">
-                          <input type="checkbox" id="checkbox-2fa-log" />
+                          <input type="checkbox" id="checkbox-2fa-log" {% if request.user.two_fa_code_is_active %} checked {% endif %} />
                           <div class="slider-2fa-log round-2fa-log"></div>
                         </label>
                       </div>
