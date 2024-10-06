@@ -90,7 +90,7 @@
                         {% load custom_filters %}
                         <a href="tel:{{ request.user.phone_number }}">{{ request.user.phone_number|format_phone  }}</a>
                     {% else %}
-                        <span>Not Provided</span>
+                        <span class="label-phone-dashboard">Not Provided</span>
                     {% endif %}
 
                 </span>

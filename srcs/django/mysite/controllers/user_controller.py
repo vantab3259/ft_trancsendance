@@ -1,4 +1,5 @@
-import datetime
+from datetime import datetime
+
 import uuid
 
 from django.contrib.auth.decorators import login_required
@@ -114,7 +115,7 @@ def profile_edit_form(request):
 		birth_date = request.POST.get('birth-date')
 
 		if birth_date:
-			user.birth_date = datetime.datetime.strptime(birth_date, '%Y-%m-%d').date()
+			user.birth_date = datetime.strptime(birth_date, '%Y-%m-%d').date()
 			user.save()
 
 		if 'profile-picture' in request.FILES:

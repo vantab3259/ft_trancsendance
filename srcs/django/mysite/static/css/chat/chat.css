@@ -54,6 +54,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+	padding-bottom: 5px;
 }
 
 .friend-conversation-list-container {
@@ -69,6 +70,8 @@
 
 .friend-conversation-list {
 	margin-top: 10px;
+	max-height: 400px;
+    overflow-x: auto;
 }
 
 .friend-conversation-list-header-title {
@@ -99,4 +102,24 @@
 
 @media screen and (max-width: 1100px) {
     
+}
+
+.options-user-button-container {
+	text-align: end;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.options-user-button-container i {
+	font-size: 20px;
+	padding-left: 5px;
+}
+
+.options-user-button-container i:hover {
+	cursor: pointer;
+	color: #00BABC;
+}
+
+.ban-user {
+	color: red;
 }
