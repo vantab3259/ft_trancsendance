@@ -8,3 +8,4 @@ watchdog
 Authlib
 requests>=2.25.1
 python-dotenv
+pyjwt
