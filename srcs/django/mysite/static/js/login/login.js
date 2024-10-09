@@ -1,5 +1,3 @@
-
-
 var containerLogin = document.getElementById('container');
 var registerBtn = document.getElementById('register');
 var loginBtn = document.getElementById('login');
@@ -21,7 +19,9 @@ signUpForm.addEventListener("submit", function (event) {
     let formDataSignUp = new FormData(signUpForm);
 
     fetch("/signup/", {
-        method: "POST", body: formDataSignUp, headers: {
+        method: "POST",
+        body: formDataSignUp,
+        headers: {
             "X-CSRFToken": getCookie("csrftoken")
         }
     })
@@ -48,10 +48,8 @@ signInForm.addEventListener("submit", function (event) {
     let formDataSignIn = new FormData(signInForm);
 
     fetch("/signin/", {
-        method: "POST",
-        body: formDataSignIn,
-        headers: {
-            "X-CSRFToken": getCookie("csrftoken")
+        method: "POST", body: formDataSignIn, headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
         }
     })
         .then(response => response.json())
@@ -61,6 +59,7 @@ signInForm.addEventListener("submit", function (event) {
                 goToNextPage();
                 document.getElementById("signin-form").reset();
                 document.getElementById("invalid-signin").innerHTML = '';
+                localStorage.setItem('token', data.token);
                 return data;
             } else {
                 document.getElementById("invalid-signin").innerHTML = data['errors'];
@@ -73,7 +72,7 @@ signInForm.addEventListener("submit", function (event) {
 });
 
 function isEmpty(str) {
-    return (!str || str.length === 0 );
+    return (!str || str.length === 0);
 }
 
 function initDashboard(userData) {
@@ -87,7 +86,7 @@ function initDashboard(userData) {
         document.querySelector(".dashboard-picture-header.not-s.not-g.icon").setAttribute('src', userData['coalition_image_url']);
     }
 
-    
+
     document.querySelector(".profile-dropdown-btn span").innerHTML = userData['pseudo']
     document.querySelector(".pseudo-container span").innerHTML = userData['pseudo']
     document.querySelector("#pseudo").value = userData['pseudo']
@@ -110,7 +109,6 @@ function initDashboard(userData) {
     } else {
         document.querySelector("#checkbox-2fa-log").checked = false;
     }
-    
 
 
     document.querySelector("#profile-img").style = "background-image: url('/media/" + userData['profile_picture'] + "');";
@@ -140,5 +138,5 @@ function goToNextPage(page = "dashboard", scripts = ["/static/js/base/header.js"
     // Construire l'URL complète en fonction de la page
 
     currentPageClick = "dashboard"
-     displayPage();
+    displayPage();
 }
