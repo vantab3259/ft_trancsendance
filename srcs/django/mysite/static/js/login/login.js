@@ -60,6 +60,7 @@ signInForm.addEventListener("submit", function (event) {
                 document.getElementById("signin-form").reset();
                 document.getElementById("invalid-signin").innerHTML = '';
                 localStorage.setItem('token', data.token);
+                history.pushState(null, '', '/dashboard');
                 return data;
             } else {
                 document.getElementById("invalid-signin").innerHTML = data['errors'];

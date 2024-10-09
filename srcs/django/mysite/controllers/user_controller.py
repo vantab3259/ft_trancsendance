@@ -1,11 +1,7 @@
-from datetime import datetime
-
 import uuid
-
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from mysite.views import require_jwt
 from mysite.models import CustomUser
 from django.utils.html import escape
 from django.contrib.auth import *
@@ -13,15 +9,14 @@ import os
 import mimetypes
 from authlib.integrations.requests_client import OAuth2Session
 import json
-from shutil import copyfile
-from django.core.files import File
 import requests
 from dotenv import load_dotenv
 from django.core.mail import send_mail
 from django.http import JsonResponse
-from datetime import datetime, timedelta
 from django.utils import timezone
-from django.db.models import Q
+import jwt
+from datetime import datetime, timedelta
+from django.conf import settings
 
 
 @csrf_exempt
@@ -44,6 +39,11 @@ def signup(request):
             })
         user.save()
         login(request, user)
+        token = generate_jwt(user)
+        if not user.active_tokens:
+            user.active_tokens = []
+        user.active_tokens.append(token)
+        user.save()
         return JsonResponse({
             'status': 'success',
             'message': 'User created !',
@@ -65,9 +65,7 @@ def signin(request):
         if user is not None:
 
             login(request, user)
-            login(request, user)
             token = generate_jwt(user)
-
             if not user.active_tokens:
                 user.active_tokens = []
             user.active_tokens.append(token)
@@ -89,7 +87,7 @@ def signin(request):
     else:
         return JsonResponse({'error': 'Méthode non autorisée. Utilisez POST.'})
 
-
+@require_jwt
 @csrf_exempt
 def logout_view(request):
     logout(request)
@@ -107,7 +105,7 @@ def is_safe_file(file_path):
         return True
     return False
 
-
+@require_jwt
 @login_required(login_url='/login/')
 @csrf_exempt
 def profile_edit_form(request):
@@ -232,8 +230,11 @@ def get_oth_autorization(request):
             )
 
         user.save()
-        login(request, user)
-
+        token = generate_jwt(user)
+        if not user.active_tokens:
+            user.active_tokens = []
+        user.active_tokens.append(token)
+        user.save()
         if user.two_fa_code_is_active:
             user.two_fa_code_is_checked = False
             user.save()
@@ -257,7 +258,6 @@ def get_oth_autorization(request):
         })
 
     return JsonResponse({'error': 'init error'}, status=400)
-
 
 def download_and_save_profile_picture(image_url):
     response = requests.get(image_url, stream=True, verify=False)
@@ -303,7 +303,7 @@ def send_code_mail(code, mailTo):
     )
     return JsonResponse({'message': 'Email envoyé avec succès !'}, status=200)
 
-
+@require_jwt
 @csrf_exempt
 def set_two_fa_code(request):
     if request.method == 'POST':
@@ -315,7 +315,7 @@ def set_two_fa_code(request):
         return JsonResponse({'message': 'Profil Updated !'}, status=200)
     return JsonResponse({'error': 'POST ONLY'}, status=400)
 
-
+@require_jwt
 @csrf_exempt
 def check_two_fa_code(request):
     if request.method == 'POST':
@@ -344,7 +344,7 @@ def check_two_fa_code(request):
 
     return JsonResponse({'error': 'POST uniquement'}, status=400)
 
-
+@require_jwt
 @csrf_exempt
 def search_users(request):
     if request.method == 'POST':
@@ -373,7 +373,7 @@ def search_users(request):
 
     return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
 
-
+@require_jwt
 @csrf_exempt
 def request_friend(request):
     if request.method == 'POST':
@@ -399,18 +399,13 @@ def request_friend(request):
     return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
 
 
-import jwt
-from datetime import datetime, timedelta
-from django.conf import settings
-
-SECRET_KEY = 'your_secret_key'
-
-
 @csrf_exempt
 def generate_jwt(user):
+    load_dotenv()
+    secret_key_jwt = os.getenv('SECRET_KEY_JWT')
     expiration_time = datetime.utcnow() + timedelta(hours=1)  # Token valable 1 heure
     token = jwt.encode({
         'user_id': user.id,
         'exp': expiration_time
-    }, SECRET_KEY, algorithm='HS256')
+    }, secret_key_jwt, algorithm='HS256')
     return token
