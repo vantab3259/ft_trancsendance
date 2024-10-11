@@ -148,3 +148,26 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def getJson(self):
         return json.loads(serialize('json', [self]))
+
+
+    def is_blocked_by(self, other_user):
+        """Check if the user is blocked by another user."""
+        return UserBlock.objects.filter(blocker=other_user, blocked=self).exists()
+
+    def has_blocked(self, other_user):
+        """Check if the user has blocked another user."""
+        return UserBlock.objects.filter(blocker=self, blocked=other_user).exists()
+
+    def can_message(self, other_user):
+        """Check if the user can send messages to the other user (not blocked)."""
+        return not self.has_blocked(other_user) and not self.is_blocked_by(other_user)
+
+    def send_game_invite(self, recipient, game):
+        """Send a game invite to another user."""
+        if self == recipient:
+            raise ValueError("Cannot invite yourself to a game.")
+        if self.can_message(recipient):
+            invite = GameInvite.objects.create(sender=self, recipient=recipient, game=game)
+            return invite
+        else:
+            raise PermissionError("You cannot invite this user to a game.")
