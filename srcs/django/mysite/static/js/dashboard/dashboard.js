@@ -19,6 +19,7 @@ document.querySelector("#link-edit").addEventListener("click", function (e) {
 function injectFriends() {
     console.log("inject Friend !");
     let value = document.querySelector("#search-bar-friends").value;
+    let mode = document.querySelector(".option-friend-button.active span").getAttribute("data-mode");
 
     fetch('/search-users/', {
         method: "POST", mode: "cors", headers: {
@@ -26,7 +27,7 @@ function injectFriends() {
             "Accept": "application/json",
             'Authorization': `Bearer ${localStorage.getItem('token')}`
         }, body: JSON.stringify({
-            query: value, 'mode': document.querySelector(".option-friend-button.active span").getAttribute("data-mode")
+            query: value, 'mode': mode
         }),
     })
         .then(response => {
@@ -36,7 +37,7 @@ function injectFriends() {
             console.log("response => ", data);
 
             if (data.status === 'success') {
-                injectUsersIntoList(data.users);
+                injectUsersIntoList(data.users, mode);
             } else {
                 console.error("Error: ", data.error);
             }
@@ -64,7 +65,7 @@ document.getElementById('search-bar-friends').addEventListener('keydown', functi
 });
 
 
-function injectUsersIntoList(users) {
+function injectUsersIntoList(users, mode) {
     const userList = document.querySelector(".contributor-list.friend");
     userList.innerHTML = '';
 
@@ -79,9 +80,11 @@ function injectUsersIntoList(users) {
                 <span class="contributor-username friend">@${user.pseudo}</span>
             </div>
             <div class="performance-stats friend">
-               		<button onclick="addFriend(event)" class="add-friend-button" data-id="${user.id}" >add</button>
+                    ${mode === "pending" ? `<button onclick="addFriend(event)" class="add-friend-button" data-id="${user.id}" >Accept</button>` 
+                    : (mode === "friends" ? '' : `<button onclick="addFriend(event)" class="add-friend-button" data-id="${user.id}" >add</button>`)}
             </div>
         `;
+
 
         userList.appendChild(userItem);
     });
@@ -117,6 +120,7 @@ function addFriend(event) {
 
     // Get the clicked button element
     const clickedButton = event.target;
+    let mode = document.querySelector(".option-friend-button.active span").getAttribute('data-mode')
 
     // Get the value of data-id attribute
     const userId = clickedButton.dataset.id;
@@ -127,7 +131,7 @@ function addFriend(event) {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
         }, body: JSON.stringify({
             query: userId,
-			'mode': document.querySelector(".option-friend-button.active span").getAttribute('data-mode')
+			'mode': mode
         }),
     })
         .then(response => {
@@ -137,7 +141,12 @@ function addFriend(event) {
             console.log("response => ", data);
             injectFriends()
             
-            showFlashMessage('success', '✅ Your profile was updated successfully.');
+            if (mode == "add") {
+                showFlashMessage('success', '✅ Your invitation has been sent successfully.');
+            } else {
+                showFlashMessage('success', "✅ Your invitation has been successfully accepted.");
+            }
+
         })
     console.log("HELLO FRIEND ! id => ", userId);
 }

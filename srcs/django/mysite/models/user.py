@@ -76,10 +76,27 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     two_fa_code_is_active = models.BooleanField(_('active'), default=False)
     two_fa_code_is_checked = models.BooleanField(_('active'), default=False)
 
-    # module friends
-    friends = models.ManyToManyField('self', symmetrical=True, related_name='friends')
-    friends_request = models.ManyToManyField('self', symmetrical=False, related_name='friends_request')
-    friends_send_request = models.ManyToManyField('self', symmetrical=False, related_name='friends_send_request')
+    #module friends
+    friends = models.ManyToManyField(
+        'self',
+        symmetrical=True,
+        related_name='friends_of',
+        blank=True
+    )
+
+    friends_request = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        related_name='received_requests',
+        blank=True
+    )
+
+    friends_send_request = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        related_name='sent_requests',
+        blank=True
+    )
 
     # module jwt
     active_tokens = ArrayField(
