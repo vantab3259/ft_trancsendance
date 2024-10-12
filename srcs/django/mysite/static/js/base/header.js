@@ -168,7 +168,11 @@ if (profileDropdownList) {
 
         var scripts = ["/static/js/login/login.js"];
 
-        fetch('/logout')
+        fetch('/logout', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+            })
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Erreur lors du chargement de ${page}`);
