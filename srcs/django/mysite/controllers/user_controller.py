@@ -255,6 +255,7 @@ def get_oth_autorization(request):
             'user': user.getJson(),
             'pure': user_info,
             'coalitions': coalitions,
+            'token': token,
         })
 
     return JsonResponse({'error': 'init error'}, status=400)

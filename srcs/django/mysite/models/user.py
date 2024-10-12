@@ -82,9 +82,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         blank=True,
         verbose_name='Active Tokens'
     )
-    
 
-
+    #status online
+    is_online = models.BooleanField(_('active'), default=False)
+    last_time_check_is_online = models.DateTimeField(auto_now=True)
 
 
     objects = CustomUserManager()
@@ -163,3 +164,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def getJson(self):
         return json.loads(serialize('json', [self]))
+
+    # def check_is_online(self):
+    #     return self.is_online and datetime.now - self.last_time_check_is_online > 10 

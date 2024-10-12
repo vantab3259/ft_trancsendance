@@ -37,7 +37,7 @@ def require_jwt(view_func):
             except jwt.ExpiredSignatureError:
                 return JsonResponse({'error': 'Token expiré'}, status=401)
             except jwt.InvalidTokenError:
-                return JsonResponse({'error': 'Token invalide', 'token' : token}, status=401)
+                return JsonResponse({'error': 'Token invalide', 'token' : token, 'auth_header': auth_header}, status=401)
         else:
             return JsonResponse({'error': 'Token manquant'}, status=401)
     return _wrapped_view
