@@ -126,6 +126,7 @@ function addFriend(event) {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
         }, body: JSON.stringify({
             query: userId,
+			'mode': document.querySelector(".option-friend-button.active span").getAttribute('data-mode')
         }),
     })
         .then(response => {

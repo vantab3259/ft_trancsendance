@@ -380,6 +380,7 @@ def request_friend(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         id = data.get('query', '')
+        mode = data.get('mode', '')
 
         user = CustomUser.objects.search_by_id(id)
         if user:
@@ -391,9 +392,16 @@ def request_friend(request):
                 'last_name': user.last_name,
                 'profile_picture': user.get_profile_picture_url(),
             }
-
-            request.user.friends_send_request.add(user)
-            user.friends_request.add(request.user)
+            if mode == 'pending':
+                request.user.friends.add(user)
+                user.friends.add(request.user)
+                request.user.friends_request.remove(user)
+                user.friends_send_request.remove(request.user)
+            else:
+                request.user.friends_send_request.add(user)
+                user.friends_request.add(request.user)
+            user.save()
+            request.user.save()
         else:
             return JsonResponse({'error': 'No user at this id', 'id': id}, status=400)
         return JsonResponse({'status': 'success', 'users': user_data}, status=200)
