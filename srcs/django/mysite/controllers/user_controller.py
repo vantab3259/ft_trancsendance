@@ -235,6 +235,7 @@ def get_oth_autorization(request):
             user.active_tokens = []
         user.active_tokens.append(token)
         user.save()
+        login(request, user)
         if user.two_fa_code_is_active:
             user.two_fa_code_is_checked = False
             user.save()
