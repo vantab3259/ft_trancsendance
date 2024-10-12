@@ -17,6 +17,7 @@ from django.utils import timezone
 import jwt
 from datetime import datetime, timedelta
 from django.conf import settings
+import logging
 
 
 @csrf_exempt
@@ -37,7 +38,9 @@ def signup(request):
                 'message': 'Invalid User !',
                 'errors': 'Errors : Email is already use.'
             })
+        
         user.save()
+        user = authenticate(request, username=email, password=password)
         login(request, user)
         token = generate_jwt(user)
         if not user.active_tokens:
@@ -47,6 +50,8 @@ def signup(request):
         return JsonResponse({
             'status': 'success',
             'message': 'User created !',
+            'token': token,
+
             'data': {
                 'user': user.getJson()
             }
@@ -353,6 +358,7 @@ def search_users(request):
         data = json.loads(request.body)
         query = data.get('query', '')
         mode = data.get('mode', '')
+        
 
         if mode in ['add', 'friends', 'pending']:
             users = CustomUser.objects.search_by_pseudo_or_email(query, request.user, mode)
@@ -368,7 +374,7 @@ def search_users(request):
                 for user in users if user != request.user
             ]
 
-            return JsonResponse({'status': 'success', 'users': user_data}, status=200)
+            return JsonResponse({'status': 'success', 'users': user_data, 'mode': mode}, status=200)
 
         else:
             return JsonResponse({'error': 'No query provided.', 'query': query}, status=400)
@@ -382,26 +388,28 @@ def request_friend(request):
         data = json.loads(request.body)
         id = data.get('query', '')
         mode = data.get('mode', '')
-
-        user = CustomUser.objects.search_by_id(id)
-        if user:
+        
+        userToInvite = CustomUser.objects.search_by_id(id)
+        if userToInvite:
             user_data = {
-                'id': user.id,
-                'pseudo': user.pseudo,
-                'email': user.email,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'profile_picture': user.get_profile_picture_url(),
+                'id': userToInvite.id,
+                'pseudo': userToInvite.pseudo,
+                'email': userToInvite.email,
+                'first_name': userToInvite.first_name,
+                'last_name': userToInvite.last_name,
+                'profile_picture': userToInvite.get_profile_picture_url(),
             }
             if mode == 'pending':
-                request.user.friends.add(user)
-                user.friends.add(request.user)
-                request.user.friends_request.remove(user)
-                user.friends_send_request.remove(request.user)
-            else:
-                request.user.friends_send_request.add(user)
-                user.friends_request.add(request.user)
-            user.save()
+                request.user.friends.add(userToInvite)
+                userToInvite.friends.add(request.user)
+                request.user.friends_request.remove(userToInvite)
+                userToInvite.friends_send_request.remove(request.user)
+
+            elif mode == "add":
+                request.user.friends_send_request.add(userToInvite)
+                userToInvite.friends_request.add(request.user)
+
+            userToInvite.save()
             request.user.save()
         else:
             return JsonResponse({'error': 'No user at this id', 'id': id}, status=400)
@@ -413,7 +421,7 @@ def request_friend(request):
 def generate_jwt(user):
     load_dotenv()
     secret_key_jwt = os.getenv('SECRET_KEY_JWT')
-    expiration_time = datetime.utcnow() + timedelta(hours=1)  # Token valable 1 heure
+    expiration_time = datetime.utcnow() + timedelta(hours=6)  # Token valable 1 heure
     token = jwt.encode({
         'user_id': user.id,
         'exp': expiration_time

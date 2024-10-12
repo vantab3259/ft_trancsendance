@@ -32,6 +32,8 @@ signUpForm.addEventListener("submit", function (event) {
                 goToNextPage();
                 document.getElementById("signup-form").reset();
                 document.getElementById("invalid-signup").innerHTML = '';
+                localStorage.setItem('token', data.token);
+                history.pushState(null, '', '/dashboard');
                 return data;
             } else {
                 document.getElementById("invalid-signup").innerHTML = data['errors'];

@@ -17,6 +17,7 @@ document.querySelector("#link-edit").addEventListener("click", function (e) {
 
 
 function injectFriends() {
+    console.log("inject Friend !");
     let value = document.querySelector("#search-bar-friends").value;
 
     fetch('/search-users/', {
@@ -134,7 +135,8 @@ function addFriend(event) {
         })
         .then(data => {
             console.log("response => ", data);
-
+            injectFriends()
+            
             showFlashMessage('success', '✅ Your profile was updated successfully.');
         })
     console.log("HELLO FRIEND ! id => ", userId);

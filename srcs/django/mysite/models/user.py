@@ -12,6 +12,7 @@ from django.db.models import Q
 from django.shortcuts import render
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+import logging
 
 class CustomUserManager(BaseUserManager):
     def get_by_natural_key(self, email):
@@ -22,13 +23,18 @@ class CustomUserManager(BaseUserManager):
             users = self.all()
         else:
             users = self.filter(Q(pseudo__icontains=query) | Q(email__icontains=query))
+
+        logging.info(f'\n\n\n\n\n{mode}')
         if mode == 'add':
             users = users.exclude(id__in=user.friends.all())
             users = users.exclude(id__in=user.friends_request.all())
+            users = users.exclude(id__in=user.friends_send_request.all())
         elif mode == 'friends':
             users = users.filter(id__in=user.friends.all())
         elif mode == 'pending':
             users = users.filter(id__in=user.friends_request.all())
+
+
         return users
     
     def search_by_id(self, id):
@@ -72,8 +78,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     # module friends
     friends = models.ManyToManyField('self', symmetrical=True, related_name='friends')
-    friends_request = models.ManyToManyField('self', symmetrical=True, related_name='friends_request')
-    friends_send_request = models.ManyToManyField('self', symmetrical=True, related_name='friends_send_request')
+    friends_request = models.ManyToManyField('self', symmetrical=False, related_name='friends_request')
+    friends_send_request = models.ManyToManyField('self', symmetrical=False, related_name='friends_send_request')
 
     # module jwt
     active_tokens = ArrayField(
