@@ -99,8 +99,8 @@
 }
 
 svg.polygon {
-    width: 100%;
-    height: 100%;
+    width: 90px;
+    height: 110px;
 }
 
 svg.icon, .dashboard-picture-header.not-s.not-g.icon {
@@ -614,4 +614,41 @@ polygon {
     position: relative;
     left: 39px;
     top: 10px;
+}
+
+@media screen and (max-width: 750px) {
+
+    .dashboard-header {
+        display: block;
+        height: 455px;
+    }
+
+    .end-header-dashboard {
+        max-width: none;
+    }
+
+    .center-dashboard-header {
+        width: 100%;
+    }
+}
+
+.user-pseudo-header {
+    padding-right: 40px;
+}
+
+#search-bar-friends {
+    min-width: 200px;
+}
+
+@media screen and (max-width: 530px) {
+
+    .header-friends.board-title {
+        flex-direction: column-reverse;
+    }
+
+    .right-header-friends {
+        margin-right: auto;
+        margin-left: auto;
+        padding-bottom: 10px;
+    }
 }
