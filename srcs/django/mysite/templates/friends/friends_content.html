@@ -53,10 +53,23 @@
 						<div class="contributor-details friend">
 							<span class="contributor-name friend">{{ friend.first_name }} {{ friend.last_name }}</span>
 							<span class="contributor-username friend">{{ friend.pseudo }}</span>
-						</div>
+
+                            <div id="center-div">
+                                <div class="bubble">
+                                <span class="bubble-outer-dot item-dashboard">
+                                    <span class="bubble-inner-dot" style="background-color: {% if friend.is_online %}green{% else %}red{% endif %};"></span>
+
+
+                                    </span>
+                                </span>
+                                </div>
+                            </div>
+                        </div>
 						<div class="performance-stats friend">
 							<button onclick="addFriend(event)" class="add-friend-button" data-id="{{ friend.id }}">add</button>
 						</div>
+
+
 					</li>
 					{% endfor %}
 				{% else %}

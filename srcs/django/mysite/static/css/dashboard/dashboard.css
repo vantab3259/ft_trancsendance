@@ -608,3 +608,10 @@ polygon {
 .contributor-list.friend .contributor-item.friend:first-of-type {
     padding-top: 20px;
 }
+
+
+.bubble-outer-dot.item-dashboard {
+    position: relative;
+    left: 39px;
+    top: 10px;
+}

@@ -46,6 +46,7 @@ def signup(request):
         if not user.active_tokens:
             user.active_tokens = []
         user.active_tokens.append(token)
+        user.is_online = True
         user.save()
         return JsonResponse({
             'status': 'success',
@@ -74,6 +75,7 @@ def signin(request):
             if not user.active_tokens:
                 user.active_tokens = []
             user.active_tokens.append(token)
+            user.is_online = True
             user.save()
             return JsonResponse({
                 'status': 'success',
@@ -94,6 +96,8 @@ def signin(request):
 
 @csrf_exempt
 def logout_view(request):
+    request.user.is_online = False
+    request.user.save()
     logout(request)
     return JsonResponse({'message': 'Déconnexion réussie !'})
 
@@ -247,6 +251,9 @@ def get_oth_autorization(request):
             send_code_mail(code, user.email)
             return JsonResponse({'wait-two-fa': True}, status=200)
 
+        user.is_online = True
+        user.save()
+
         message = "Utilisateur créé et connecté"
         return JsonResponse({
             'message': message,
@@ -369,6 +376,7 @@ def search_users(request):
                     'first_name': user.first_name,
                     'last_name': user.last_name,
                     'profile_picture': user.get_profile_picture_url(),
+                    'is_online': user.is_online,
                 }
                 for user in users if user != request.user
             ]

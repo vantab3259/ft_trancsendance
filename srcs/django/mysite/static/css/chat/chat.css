@@ -138,3 +138,16 @@
 	position: relative;
 	right: 25px;
 }
+
+
+.bubble-outer-dot {
+	position: relative;
+	right: 57px;
+	bottom: 5px;
+}
+
+.bubble-outer-dot.item-chat {
+	position: relative;
+	left: 42px;
+	bottom: 7px;
+}

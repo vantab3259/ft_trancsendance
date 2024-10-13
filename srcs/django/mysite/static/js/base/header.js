@@ -33,6 +33,17 @@ function displayPage() {
 
         };
 
+    let icons = document.querySelectorAll(".side-bar i");
+    icons.forEach(function (event) {
+        event.style.opacity = 0.3;
+    });
+
+
+    let nameIcon = document.querySelector('#' + currentPageClick + "-link" + " i");
+    if (nameIcon !== undefined && nameIcon) {
+        nameIcon.style.opacity = 1;
+    }
+
     if (currentPageClick in mapPage) {
         currentPageClick = mapPage[currentPageClick];
     }

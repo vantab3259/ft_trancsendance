@@ -71,18 +71,30 @@ function injectUsersIntoList(users, mode) {
         const userItem = document.createElement('li');
         userItem.classList.add('contributor-item', 'friend');
 
+        // Vérifie si l'utilisateur est en ligne pour définir la couleur du point
+        const onlineStatusColor = user.is_online ? 'green' : 'red';
+
         userItem.innerHTML = `
             <img src="${user.profile_picture}" alt="${user.first_name} ${user.last_name}">
             <div class="contributor-details friend">
                 <span class="contributor-name friend">${user.first_name} ${user.last_name}</span>
                 <span class="contributor-username friend">@${user.pseudo}</span>
+                ${mode === "friends" ? `
+                    <div id="center-div">
+                        <div class="bubble">
+                            <span class="bubble-outer-dot item-dashboard">
+                                <span class="bubble-inner-dot" style="background-color: ${onlineStatusColor};"></span>
+                            </span>
+                        </div>
+                    </div>
+                ` : ''}
             </div>
             <div class="performance-stats friend">
-                    ${mode === "pending" ? `<button onclick="addFriend(event)" class="add-friend-button" data-id="${user.id}" >Accept</button>` 
-                    : (mode === "friends" ? '' : `<button onclick="addFriend(event)" class="add-friend-button" data-id="${user.id}" >add</button>`)}
+                ${mode === "pending"
+            ? `<button onclick="addFriend(event)" class="add-friend-button" data-id="${user.id}" >Accept</button>`
+            : (mode === "friends" ? '' : `<button onclick="addFriend(event)" class="add-friend-button" data-id="${user.id}" >Add</button>`)}
             </div>
         `;
-
 
         userList.appendChild(userItem);
     });
@@ -91,6 +103,7 @@ function injectUsersIntoList(users, mode) {
         userList.innerHTML = '<li class="no-results">No friends found.</li>';
     }
 }
+
 
 document.querySelectorAll(".option-friend-button").forEach((e) => {
 
