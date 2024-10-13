@@ -24,7 +24,6 @@ class CustomUserManager(BaseUserManager):
         else:
             users = self.filter(Q(pseudo__icontains=query) | Q(email__icontains=query))
 
-        logging.info(f'\n\n\n\n\n{mode}')
         if mode == 'add':
             users = users.exclude(id__in=user.friends.all())
             users = users.exclude(id__in=user.friends_request.all())
@@ -35,7 +34,7 @@ class CustomUserManager(BaseUserManager):
             users = users.filter(id__in=user.friends_request.all())
 
 
-        return users
+        return users.distinct()[:30]
     
     def search_by_id(self, id):
         if not id:

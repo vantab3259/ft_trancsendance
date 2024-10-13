@@ -43,5 +43,6 @@ urlpatterns = [
 
     path('search-users/', user_controller.search_users, name='search_users'),
     path('request-friend/', user_controller.request_friend, name='request_friend'),
+    path('update-online-status/', user_controller.update_online_status, name='update_online_status'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

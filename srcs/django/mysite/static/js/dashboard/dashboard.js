@@ -17,7 +17,6 @@ document.querySelector("#link-edit").addEventListener("click", function (e) {
 
 
 function injectFriends() {
-    console.log("inject Friend !");
     let value = document.querySelector("#search-bar-friends").value;
     let mode = document.querySelector(".option-friend-button.active span").getAttribute("data-mode");
 
@@ -34,7 +33,6 @@ function injectFriends() {
             return response.json();
         })
         .then(data => {
-            console.log("response => ", data);
 
             if (data.status === 'success') {
                 injectUsersIntoList(data.users, mode);
@@ -138,7 +136,6 @@ function addFriend(event) {
             return response.json();
         })
         .then(data => {
-            console.log("response => ", data);
             injectFriends()
             
             if (mode == "add") {
@@ -148,7 +145,6 @@ function addFriend(event) {
             }
 
         })
-    console.log("HELLO FRIEND ! id => ", userId);
 }
 
 

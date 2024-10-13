@@ -92,7 +92,6 @@ def signin(request):
     else:
         return JsonResponse({'error': 'Méthode non autorisée. Utilisez POST.'})
 
-@require_jwt
 @csrf_exempt
 def logout_view(request):
     logout(request)
@@ -427,3 +426,36 @@ def generate_jwt(user):
         'exp': expiration_time
     }, secret_key_jwt, algorithm='HS256')
     return token
+
+@csrf_exempt
+def update_online_status(request):
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return JsonResponse({'status': 'success'}, status=200)
+
+        load_dotenv()
+        auth_header = request.META.get('HTTP_AUTHORIZATION')
+        secret_key_jwt = os.getenv('SECRET_KEY_JWT')
+
+        if auth_header:
+            try:
+                token = auth_header.split(" ")[1]
+                jwt.decode(token, secret_key_jwt, algorithms=['HS256'])
+            except jwt.ExpiredSignatureError:
+                return JsonResponse({'error': 'Token expiré'}, status=401)
+            except jwt.InvalidTokenError:
+                return JsonResponse({'error': 'Token invalide'}, status=401)
+        else:
+            return JsonResponse({'error': 'Token manquant'}, status=401)
+
+        request.user.is_online = True
+        request.user.last_time_check_is_online = timezone.now()
+        request.user.save()
+
+        ten_minutes_ago = timezone.now() - timedelta(minutes=10)
+        CustomUser.objects.filter(is_online=True, last_time_check_is_online__lt=ten_minutes_ago).update(is_online=False)
+
+        return JsonResponse({'status': 'success'}, status=200)
+
+    return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
+

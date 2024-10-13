@@ -222,3 +222,29 @@
   color: #666666;
   font-size: 19px;
 }
+
+.bubble {
+  display: block;
+  position: absolute;
+  cursor: pointer;
+}
+
+.bubble .bubble-inner-dot {
+
+  display: block;
+  text-align: center;
+  opacity: 1;
+  background-color: #04a777;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  position: relative;
+  right: 8px;
+}
+
+#center-div {
+  position: relative;
+  right: 55px;
+  bottom: 5px;
+}
+
