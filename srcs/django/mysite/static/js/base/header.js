@@ -159,7 +159,7 @@ if (profileDropdownList) {
     chatLink.addEventListener("click", function (e) {
         e.preventDefault();
         currentPageClick = "chat"
-        loadContent('/chat', 'chat', 'chat', []);
+        loadContent('/chat', 'Chat', 'chat', []);
     });
 
 

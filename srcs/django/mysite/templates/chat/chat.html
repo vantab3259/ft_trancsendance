@@ -9,428 +9,58 @@
                 <h2 class="friend-conversation-list-header-title">
                     Friends
                 </h2>
+
+                <div class="search-bar-container-chat">
+                    <input type="text" id="search-bar-friends-chat" placeholder="Search a friend ...">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
             </div>
 
             <div class="friend-conversation-list">
-                <div class="friend-conversation-item">
-                
-                    <div class="friend-conversation-item-profile-img-container">
-                        &nbsp;
-                        <img src="https://www.w3schools.com/howto/img_avatar.png"
-                            alt=""
-                            class="friend-conversation-item-profile-img">
-                    </div>
-    
-                    <div class="friend-conversation-item-message-preview">
 
-                        <div class="friend-conversation-item-message-preview-top">
-                            <span class="friend-conversation-item-pseudo">
-                                ranki
-                            </span>
-    
-                            <span class="friend-conversation-item-datetime">
-                                04/10/2024
-                            </span>
+
+                {% if request.user and request.user.friends.all %}
+                    {% for friend in request.user.friends.all %}
+
+                        <div class="friend-conversation-item">
+
+                            <div class="friend-conversation-item-profile-img-container">
+                                &nbsp;
+                                <img src="{{ friend.get_profile_picture_url }}" alt="{{ friend.first_name }} {{ friend.last_name }}"
+                                     class="friend-conversation-item-profile-img">
+                            </div>
+
+                            <div class="friend-conversation-item-message-preview">
+
+                                <div class="friend-conversation-item-message-preview-top">
+                                    <span class="friend-conversation-item-pseudo">
+                                        {{ friend.pseudo }}
+                                    </span>
+
+                                    <span class="friend-conversation-item-datetime">
+                                        04/10/2024
+                                    </span>
+                                </div>
+
+                                <div class="friend-conversation-item-message-preview-bottom">
+
+                                    <span class="friend-conversation-item-last-message">
+                                        ooh you can play with me my best friend because this message is very long
+                                    </span>
+                                </div>
+
+                            </div>
+
+
+
                         </div>
-
-                        <div class="friend-conversation-item-message-preview-bottom">
-                
-                            <span class="friend-conversation-item-last-message">
-                                ooh you can play with me my best friend because this message is very long 
-                            </span>
-                        </div>
-
-                    </div>
-                    
-                    
-
-                </div>
-
-                <div class="friend-conversation-item">
-                
-                    <div class="friend-conversation-item-profile-img-container">
-                        &nbsp;
-                        <img src="https://www.w3schools.com/howto/img_avatar.png"
-                            alt=""
-                            class="friend-conversation-item-profile-img">
-                    </div>
-    
-                    <div class="friend-conversation-item-message-preview">
-
-                        <div class="friend-conversation-item-message-preview-top">
-                            <span class="friend-conversation-item-pseudo">
-                                ranki
-                            </span>
-    
-                            <span class="friend-conversation-item-datetime">
-                                04/10/2024
-                            </span>
-                        </div>
-
-                        <div class="friend-conversation-item-message-preview-bottom">
-                
-                            <span class="friend-conversation-item-last-message">
-                                cause this message is very long 
-                            </span>
-                        </div>
-
-                    </div>
-                    
-                    
-
-                </div>
-
-  
-                <div class="friend-conversation-item">
-                
-                    <div class="friend-conversation-item-profile-img-container">
-                        &nbsp;
-                        <img src="https://www.w3schools.com/howto/img_avatar.png"
-                            alt=""
-                            class="friend-conversation-item-profile-img">
-                    </div>
-    
-                    <div class="friend-conversation-item-message-preview">
-
-                        <div class="friend-conversation-item-message-preview-top">
-                            <span class="friend-conversation-item-pseudo">
-                                ranki
-                            </span>
-    
-                            <span class="friend-conversation-item-datetime">
-                                04/10/2024
-                            </span>
-                        </div>
-
-                        <div class="friend-conversation-item-message-preview-bottom">
-                
-                            <span class="friend-conversation-item-last-message">
-                                cause this message is very long 
-                            </span>
-                        </div>
-
-                    </div>
-                    
-                    
-
-                </div>
-
-  
-                <div class="friend-conversation-item">
-                
-                    <div class="friend-conversation-item-profile-img-container">
-                        &nbsp;
-                        <img src="https://www.w3schools.com/howto/img_avatar.png"
-                            alt=""
-                            class="friend-conversation-item-profile-img">
-                    </div>
-    
-                    <div class="friend-conversation-item-message-preview">
-
-                        <div class="friend-conversation-item-message-preview-top">
-                            <span class="friend-conversation-item-pseudo">
-                                ranki
-                            </span>
-    
-                            <span class="friend-conversation-item-datetime">
-                                04/10/2024
-                            </span>
-                        </div>
-
-                        <div class="friend-conversation-item-message-preview-bottom">
-                
-                            <span class="friend-conversation-item-last-message">
-                                cause this message is very long 
-                            </span>
-                        </div>
-
-                    </div>
-                    
-                    
-
-                </div>
-
-  
-                <div class="friend-conversation-item">
-                
-                    <div class="friend-conversation-item-profile-img-container">
-                        &nbsp;
-                        <img src="https://www.w3schools.com/howto/img_avatar.png"
-                            alt=""
-                            class="friend-conversation-item-profile-img">
-                    </div>
-    
-                    <div class="friend-conversation-item-message-preview">
-
-                        <div class="friend-conversation-item-message-preview-top">
-                            <span class="friend-conversation-item-pseudo">
-                                ranki
-                            </span>
-    
-                            <span class="friend-conversation-item-datetime">
-                                04/10/2024
-                            </span>
-                        </div>
-
-                        <div class="friend-conversation-item-message-preview-bottom">
-                
-                            <span class="friend-conversation-item-last-message">
-                                cause this message is very long 
-                            </span>
-                        </div>
-
-                    </div>
-                    
-                    
-
-                </div>
-
-  
-                <div class="friend-conversation-item">
-                
-                    <div class="friend-conversation-item-profile-img-container">
-                        &nbsp;
-                        <img src="https://www.w3schools.com/howto/img_avatar.png"
-                            alt=""
-                            class="friend-conversation-item-profile-img">
-                    </div>
-    
-                    <div class="friend-conversation-item-message-preview">
-
-                        <div class="friend-conversation-item-message-preview-top">
-                            <span class="friend-conversation-item-pseudo">
-                                ranki
-                            </span>
-    
-                            <span class="friend-conversation-item-datetime">
-                                04/10/2024
-                            </span>
-                        </div>
-
-                        <div class="friend-conversation-item-message-preview-bottom">
-                
-                            <span class="friend-conversation-item-last-message">
-                                cause this message is very long 
-                            </span>
-                        </div>
-
-                    </div>
-                    
-                    
-
-                </div>
-
-  
-                <div class="friend-conversation-item">
-                
-                    <div class="friend-conversation-item-profile-img-container">
-                        &nbsp;
-                        <img src="https://www.w3schools.com/howto/img_avatar.png"
-                            alt=""
-                            class="friend-conversation-item-profile-img">
-                    </div>
-    
-                    <div class="friend-conversation-item-message-preview">
-
-                        <div class="friend-conversation-item-message-preview-top">
-                            <span class="friend-conversation-item-pseudo">
-                                ranki
-                            </span>
-    
-                            <span class="friend-conversation-item-datetime">
-                                04/10/2024
-                            </span>
-                        </div>
-
-                        <div class="friend-conversation-item-message-preview-bottom">
-                
-                            <span class="friend-conversation-item-last-message">
-                                cause this message is very long 
-                            </span>
-                        </div>
-
-                    </div>
-                    
-                    
-
-                </div>
-
-  
-                <div class="friend-conversation-item">
-                
-                    <div class="friend-conversation-item-profile-img-container">
-                        &nbsp;
-                        <img src="https://www.w3schools.com/howto/img_avatar.png"
-                            alt=""
-                            class="friend-conversation-item-profile-img">
-                    </div>
-    
-                    <div class="friend-conversation-item-message-preview">
-
-                        <div class="friend-conversation-item-message-preview-top">
-                            <span class="friend-conversation-item-pseudo">
-                                ranki
-                            </span>
-    
-                            <span class="friend-conversation-item-datetime">
-                                04/10/2024
-                            </span>
-                        </div>
-
-                        <div class="friend-conversation-item-message-preview-bottom">
-                
-                            <span class="friend-conversation-item-last-message">
-                                cause this message is very long 
-                            </span>
-                        </div>
-
-                    </div>
-                    
-                    
-
-                </div>
-
-
-                <div class="friend-conversation-item">
-                
-                    <div class="friend-conversation-item-profile-img-container">
-                        &nbsp;
-                        <img src="https://www.w3schools.com/howto/img_avatar.png"
-                            alt=""
-                            class="friend-conversation-item-profile-img">
-                    </div>
-    
-                    <div class="friend-conversation-item-message-preview">
-
-                        <div class="friend-conversation-item-message-preview-top">
-                            <span class="friend-conversation-item-pseudo">
-                                ranki
-                            </span>
-    
-                            <span class="friend-conversation-item-datetime">
-                                04/10/2024
-                            </span>
-                        </div>
-
-                        <div class="friend-conversation-item-message-preview-bottom">
-                
-                            <span class="friend-conversation-item-last-message">
-                                cause this message is very long 
-                            </span>
-                        </div>
-
-                    </div>
-                    
-                    
-
-                </div>
-
-  
-                <div class="friend-conversation-item">
-                
-                    <div class="friend-conversation-item-profile-img-container">
-                        &nbsp;
-                        <img src="https://www.w3schools.com/howto/img_avatar.png"
-                            alt=""
-                            class="friend-conversation-item-profile-img">
-                    </div>
-    
-                    <div class="friend-conversation-item-message-preview">
-
-                        <div class="friend-conversation-item-message-preview-top">
-                            <span class="friend-conversation-item-pseudo">
-                                ranki
-                            </span>
-    
-                            <span class="friend-conversation-item-datetime">
-                                04/10/2024
-                            </span>
-                        </div>
-
-                        <div class="friend-conversation-item-message-preview-bottom">
-                
-                            <span class="friend-conversation-item-last-message">
-                                cause this message is very long 
-                            </span>
-                        </div>
-
-                    </div>
-                    
-                    
-
-                </div>
-
-  
-                <div class="friend-conversation-item">
-                
-                    <div class="friend-conversation-item-profile-img-container">
-                        &nbsp;
-                        <img src="https://www.w3schools.com/howto/img_avatar.png"
-                            alt=""
-                            class="friend-conversation-item-profile-img">
-                    </div>
-    
-                    <div class="friend-conversation-item-message-preview">
-
-                        <div class="friend-conversation-item-message-preview-top">
-                            <span class="friend-conversation-item-pseudo">
-                                ranki
-                            </span>
-    
-                            <span class="friend-conversation-item-datetime">
-                                04/10/2024
-                            </span>
-                        </div>
-
-                        <div class="friend-conversation-item-message-preview-bottom">
-                
-                            <span class="friend-conversation-item-last-message">
-                                cause this message is very long 
-                            </span>
-                        </div>
-
-                    </div>
-                    
-                    
-
-                </div>
-
-  
-
-                <div class="friend-conversation-item">
-                
-                    <div class="friend-conversation-item-profile-img-container">
-                        &nbsp;
-                        <img src="https://www.w3schools.com/howto/img_avatar.png"
-                            alt=""
-                            class="friend-conversation-item-profile-img">
-                    </div>
-    
-                    <div class="friend-conversation-item-message-preview">
-
-                        <div class="friend-conversation-item-message-preview-top">
-                            <span class="friend-conversation-item-pseudo">
-                                ranki
-                            </span>
-    
-                            <span class="friend-conversation-item-datetime">
-                                04/10/2024
-                            </span>
-                        </div>
-
-                        <div class="friend-conversation-item-message-preview-bottom">
-                
-                            <span class="friend-conversation-item-last-message">
-                                ok
-                            </span>
-                        </div>
-
-                    </div>
-                    
-                    
-
-                </div>
+                    {% endfor %}
+                {% else %}
+                    <li class="no-results">No friends found.</li>
+                {% endif %}
             </div>
+
+
             
         </div>
         <div class="messaging open">

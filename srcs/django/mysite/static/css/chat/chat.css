@@ -123,3 +123,18 @@
 .ban-user {
 	color: red;
 }
+
+.search-bar-container-chat {
+	width: 90%;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.search-bar-container-chat {
+	display: flex;
+	align-items: center;
+}
+.search-bar-container-chat i{
+	position: relative;
+	right: 25px;
+}
