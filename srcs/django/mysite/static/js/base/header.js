@@ -44,6 +44,24 @@ function displayPage() {
         nameIcon.style.opacity = 1;
     }
 
+    if (currentPageClick === "chat") {
+        friendsChats();
+        document.getElementById("search-bar-friends-chat").value = '';
+        document.getElementById("input-message").value = '';
+        document.getElementById("search-bar-friends").value = '';
+    }
+
+    if (currentPageClick === "dashboard") {
+        document.getElementById("search-bar-friends").value = '';
+        let oldActiveButton = document.querySelector(".option-friend-button.active");
+        oldActiveButton.classList.remove("active");
+        oldActiveButton = document.querySelector(".friends-option");
+        if (oldActiveButton) {
+            oldActiveButton.classList.add("active");
+        }
+        injectFriends();
+    }
+
     if (currentPageClick in mapPage) {
         currentPageClick = mapPage[currentPageClick];
     }

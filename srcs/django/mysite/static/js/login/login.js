@@ -108,7 +108,7 @@ function initDashboard(userData) {
 
     let oldActiveButton = document.querySelector(".option-friend-button.active");
     oldActiveButton.classList.remove("active");
-    oldActiveButton = document.querySelector(".option-friend-button[data-mode='friends']");
+    oldActiveButton = document.querySelector(".friends-option");
     if (oldActiveButton) {
         oldActiveButton.classList.add("active");
     }

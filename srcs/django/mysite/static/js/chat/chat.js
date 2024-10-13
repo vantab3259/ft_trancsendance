@@ -12,31 +12,35 @@ function updateActiveFriendConversationItem(id) {
 
 let searchTimeoutChat;
 
+function friendsChats(query = "") {
+    fetch('/search-users/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ query: query, mode: 'friends' })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                injectUsersIntoListChat(data.users, 'friends');
+            } else {
+                console.error('Errors', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la requête:', error);
+        });
+}
+
 document.querySelector('#search-bar-friends-chat').addEventListener('input', function () {
     const query = this.value;
 
     clearTimeout(searchTimeoutChat);
 
-    searchTimeoutChat = setTimeout(() => {
-        fetch('/search-users/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify({ query: query, mode: 'friends' })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    injectUsersIntoListChat(data.users, 'friends');
-                } else {
-                    console.error('Errors', data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Erreur lors de la requête:', error);
-            });
+    searchTimeoutChat = setTimeout(function () {
+        friendsChats(query);
     }, 500);
 });
 
