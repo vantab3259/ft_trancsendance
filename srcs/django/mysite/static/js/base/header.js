@@ -56,7 +56,7 @@ function displayPage() {
     document.querySelector("div." + currentPageClick + "-include" ).style.display = "block";
     document.getElementById('loader').style.display = 'none';
 
-
+    document.querySelector("body" ).style.display = "unset";
 }
 
  displayPage();
