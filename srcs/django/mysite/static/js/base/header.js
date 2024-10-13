@@ -16,7 +16,7 @@ function displayPage() {
 
     if (currentPageClick !== "login" && currentPageClick !== "login/") {
             document.querySelector(".navbar" ).style.display = "flex";
-            document.querySelector(".side-bar" ).style.display = "block";
+            // document.querySelector(".side-bar" ).style.display = "block";
     } else {
             document.querySelector(".navbar" ).style.display = "none";
             document.querySelector(".side-bar" ).style.display = "none";
@@ -251,6 +251,21 @@ window.addEventListener("popstate", (event) => {
 });
 
 
+document.querySelector(".menu-mobile").addEventListener("click", () => {
+    const menuMobile = document.querySelector(".side-bar");
 
+    if (menuMobile.classList.contains("side-bar-active")) {
+        menuMobile.classList.remove("side-bar-active");
+
+        setTimeout(() => {
+            menuMobile.style.display = 'none';
+        }, 500);
+    } else {
+        menuMobile.style.display = 'block';
+        setTimeout(() => {
+            menuMobile.classList.add("side-bar-active");
+        }, 10);
+    }
+});
 
 

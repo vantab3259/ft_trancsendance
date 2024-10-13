@@ -152,6 +152,7 @@
                     initDashboard(data['user'][0]['fields']);
                     localStorage.setItem('token', data.token);
                     goToNextPage();
+                    document.querySelector(".side-bar").classList.add("d-block");
                 }
 
             })

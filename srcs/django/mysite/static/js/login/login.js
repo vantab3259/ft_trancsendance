@@ -34,6 +34,7 @@ signUpForm.addEventListener("submit", function (event) {
                 document.getElementById("invalid-signup").innerHTML = '';
                 localStorage.setItem('token', data.token);
                 history.pushState(null, '', '/dashboard');
+                document.querySelector(".side-bar").classList.add("d-block");
                 return data;
             } else {
                 document.getElementById("invalid-signup").innerHTML = data['errors'];
@@ -63,6 +64,7 @@ signInForm.addEventListener("submit", function (event) {
                 document.getElementById("invalid-signin").innerHTML = '';
                 localStorage.setItem('token', data.token);
                 history.pushState(null, '', '/dashboard');
+                document.querySelector(".side-bar").classList.add("d-block");
                 return data;
             } else {
                 document.getElementById("invalid-signin").innerHTML = data['errors'];
