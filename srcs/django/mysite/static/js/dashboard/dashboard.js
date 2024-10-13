@@ -44,6 +44,10 @@ function injectFriends() {
 
 }
 
+document.querySelector(".actualize-friends").addEventListener("click", function (e) {
+
+    injectFriends();
+});
 
 let timeoutId;
 document.querySelector("#search-bar-friends").addEventListener("keyup", function (e) {
@@ -102,6 +106,9 @@ function injectUsersIntoList(users, mode) {
     if (users.length === 0) {
         userList.innerHTML = '<li class="no-results">No friends found.</li>';
     }
+
+    document.getElementById('loader').style.display = 'none';
+
 }
 
 

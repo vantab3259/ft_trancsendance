@@ -6,9 +6,15 @@
         <div class="friend-conversation-list-container">
 
             <div class="friend-conversation-list-header">
-                <h2 class="friend-conversation-list-header-title">
-                    Friends
-                </h2>
+                <div class="friend-conversation-list-header-title">
+
+                    <h2 class="">
+                        Friends
+                    </h2>
+
+                    <i class="fa-solid fa-arrow-rotate-left actualize-friends-chat"></i>
+                </div>
+
 
                 <div class="search-bar-container-chat">
                     <input type="text" id="search-bar-friends-chat" placeholder="Search a friend ...">
@@ -22,7 +28,7 @@
                 {% if request.user and request.user.friends.all %}
                     {% for friend in request.user.friends.all %}
 
-                        <div class="friend-conversation-item" data-id="{{ friend.id }}">
+                        <div class="friend-conversation-item" data-id="{{ friend.id }}" onclick="updateActiveFriendConversationItem({{ friend.id }})">
 
                             <div class="friend-conversation-item-profile-img-container">
                                 &nbsp;
@@ -130,3 +136,5 @@
 
     </div>
 </div>
+
+<script src="{% static 'js/chat/chat.js' %}"></script>

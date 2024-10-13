@@ -106,6 +106,12 @@ function initDashboard(userData) {
         document.querySelector(".label-phone-dashboard").innerHTML = formattedPhoneNumber;
     }
 
+    let oldActiveButton = document.querySelector(".option-friend-button.active");
+    oldActiveButton.classList.remove("active");
+    oldActiveButton = document.querySelector(".option-friend-button[data-mode='friends']");
+    if (oldActiveButton) {
+        oldActiveButton.classList.add("active");
+    }
 
     if (userData['two_fa_code_is_active']) {
         document.querySelector("#checkbox-2fa-log").checked = true;

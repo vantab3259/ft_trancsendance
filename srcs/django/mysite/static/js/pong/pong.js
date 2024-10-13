@@ -418,7 +418,7 @@ if (window.keydownFlag === undefined) {
 }
 
 document.addEventListener("keydown", function (event) {
-    let urlG = location.href
+    let urlG = location.href;
 
     if (!window.keydownFlag && event.keyCode === 32 && urlG.includes('pong'))
     {
@@ -433,7 +433,8 @@ document.addEventListener("keydown", function (event) {
 });
 
 document.addEventListener("keyup", function (event) {
-    let url = location.href
+    let urlG = location.href;
+
     if (event.keyCode === 32 && urlG.includes('pong')) {
         event.preventDefault();
         window.keydownFlag = false;
