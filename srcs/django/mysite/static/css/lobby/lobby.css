@@ -337,8 +337,10 @@
 
 .messaging.open {
     max-height: 1000px;
-
+    margin-left: 10px;
 }
+
+
 
 .chat-close {
     cursor: pointer;

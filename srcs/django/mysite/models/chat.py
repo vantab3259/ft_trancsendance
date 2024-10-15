@@ -23,8 +23,10 @@ class UserBlock(models.Model):
     def __str__(self):
         return f"{self.blocker.get_short_name()} blocked {self.blocked.get_short_name()}"
 
+from .game import Game
+
 class GameInvite(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    game = models.ForeignKey('mysite.Game', on_delete=models.CASCADE)
     sender = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='game_invitations_sent', on_delete=models.CASCADE)
     recipient = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='game_invitations_received', on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')], default='pending')

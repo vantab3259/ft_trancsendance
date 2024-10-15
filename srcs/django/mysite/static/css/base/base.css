@@ -186,6 +186,18 @@ body{
     display: flex;
 }
 
+.d-none {
+  display: none;
+}
+
+.v-hidden {
+  visibility: hidden;
+}
+
+.v-visible {
+  visibility: visible;
+}
+
 .not-s {
     -webkit-user-select: none;
     -moz-user-select: none;

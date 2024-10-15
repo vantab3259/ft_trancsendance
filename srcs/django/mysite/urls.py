@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from . import views
 from .controllers import *
+from .controllers import chat_controller
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -44,5 +45,8 @@ urlpatterns = [
     path('search-users/', user_controller.search_users, name='search_users'),
     path('request-friend/', user_controller.request_friend, name='request_friend'),
     path('update-online-status/', user_controller.update_online_status, name='update_online_status'),
+
+    path('chat/messages/<int:id>/', chat_controller.get_messages, name='get_messages'),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
