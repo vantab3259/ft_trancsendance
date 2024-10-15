@@ -163,7 +163,7 @@ function openSocket() {
       return;
   }
 
-  socketChat = new WebSocket(`wss://localhost:4443/ws/pong/`);
+  socketChat = new WebSocket(`wss://localhost:4443/ws/chat/`);
 
   socketChat.onopen = () => {
       console.log("Connexion WebSocket établie");
