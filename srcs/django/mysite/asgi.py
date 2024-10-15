@@ -1,27 +1,26 @@
-"""
-ASGI config for mysite project.
-
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/5.1/howto/deployment/asgi/
-"""
-
 # asgi.py
 
 import os
+import django
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
-import mysite.routing
+from django.urls import re_path
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
+django.setup()  # Initialise Django
+
+from mysite.consumers.pong_consumer import PongConsumer
+from mysite.consumers.chat_consumer import ChatConsumer
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": AuthMiddlewareStack(
-        URLRouter(
-            mysite.routing.websocket_urlpatterns
-        )
+        URLRouter([
+            re_path(r'ws/pong/$', PongConsumer.as_asgi()),
+            re_path(r'ws/chat/$', ChatConsumer.as_asgi()),
+        ])
     ),
 })
+
+

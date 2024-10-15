@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 
+
 class Game(models.Model):
     name = models.CharField(max_length=255, verbose_name="Name of the Game")
     players = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='games', through='PlayerGameLink')
@@ -25,7 +26,7 @@ class Game(models.Model):
 
 class PlayerGameLink(models.Model):
     player = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    game = models.ForeignKey('mysite.Game', on_delete=models.CASCADE)
     team = models.IntegerField(default=1, verbose_name="Team Number")
     score = models.IntegerField(default=0, verbose_name="Score")
 

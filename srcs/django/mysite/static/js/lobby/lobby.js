@@ -55,29 +55,29 @@ function closeMatchmakingModal() {
     modal.style.display = 'none';
 }
 
-var socket = null;
+// var socket = null;
 
-document.querySelector(".launch-button-game-content").addEventListener("click", () => {
-    openMatchmakingModal();
-    console.log("Connection local socket ");
-    socket = new WebSocket('wss://localhost:4443/ws/pong/');
+// document.querySelector(".launch-button-game-content").addEventListener("click", () => {
+//     openMatchmakingModal();
+//     console.log("Connection local socket ");
+//     socket = new WebSocket('wss://localhost:4443/ws/pong/');
 
-    socket.onopen = function(event) {
-        console.log("Connexion établie avec le serveur WebSocket");
-    };
+//     socket.onopen = function(event) {
+//         console.log("Connexion établie avec le serveur WebSocket");
+//     };
 
-    socket.onmessage = function(event) {
+//     socket.onmessage = function(event) {
         
-    };
+//     };
 
-    socket.onclose = function(event) {
-        console.log("Connexion fermée");
-    };
+//     socket.onclose = function(event) {
+//         console.log("Connexion fermée");
+//     };
 
-    socket.onerror = function(error) {
-        console.error("Erreur WebSocket : ", error);
-    };
-});
+//     socket.onerror = function(error) {
+//         console.error("Erreur WebSocket : ", error);
+//     };
+// });
 
 
 if (typeof totalAvatarsMatchmaking === undefined) {
