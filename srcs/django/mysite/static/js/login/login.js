@@ -91,7 +91,7 @@ function initDashboard(userData) {
         document.querySelector(".dashboard-picture-header.not-s.not-g.icon").setAttribute('src', userData['coalition_image_url']);
     }
 
-
+    injectFriends();
     document.querySelector(".profile-dropdown-btn span").innerHTML = userData['pseudo']
     document.querySelector(".pseudo-container span").innerHTML = userData['pseudo']
     document.querySelector("#pseudo").value = userData['pseudo']

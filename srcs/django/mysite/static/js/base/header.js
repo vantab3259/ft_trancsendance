@@ -49,6 +49,7 @@ function displayPage() {
         document.getElementById("search-bar-friends-chat").value = '';
         document.getElementById("input-message").value = '';
         document.getElementById("search-bar-friends").value = '';
+        document.querySelector(".messaging.open").classList.add("v-hidden");
     }
 
     if (currentPageClick === "dashboard") {
