@@ -93,7 +93,7 @@
 
 <style>
     .container-flex-login {
-        margin-top: 10%;
+        margin-top: 40px;
         height: 700px;
     }
 
@@ -150,7 +150,9 @@
                 } else if (data['login']) {
                     history.pushState(null, '', "/dashboard");
                     initDashboard(data['user'][0]['fields']);
+                    localStorage.setItem('token', data.token);
                     goToNextPage();
+                    document.querySelector(".side-bar").classList.add("d-block");
                 }
 
             })

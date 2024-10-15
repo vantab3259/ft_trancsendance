@@ -418,7 +418,9 @@ if (window.keydownFlag === undefined) {
 }
 
 document.addEventListener("keydown", function (event) {
-    if (!window.keydownFlag && event.keyCode === 32) // 32 est le code pour la barre d'espace
+    let urlG = location.href;
+
+    if (!window.keydownFlag && event.keyCode === 32 && urlG.includes('pong'))
     {
         event.preventDefault();
         window.keydownFlag = true;
@@ -431,7 +433,9 @@ document.addEventListener("keydown", function (event) {
 });
 
 document.addEventListener("keyup", function (event) {
-    if (event.keyCode === 32) {
+    let urlG = location.href;
+
+    if (event.keyCode === 32 && urlG.includes('pong')) {
         event.preventDefault();
         window.keydownFlag = false;
     }

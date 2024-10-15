@@ -1,5 +1,5 @@
 // Initialisation de Flatpickr sur le champ avec l'ID "birth-date"
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     flatpickr("#birth-date", {
         dateFormat: "Y-m-d",
         maxDate: "today",
@@ -18,7 +18,7 @@ document.querySelector("#form-edit-profile").addEventListener("submit", function
 
     fetch("/profile-edit-form/", {
         method: "POST", body: formDataEditProfile, headers: {
-            "X-CSRFToken": getCookie("csrftoken")
+            "X-CSRFToken": getCookie("csrftoken"), 'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     })
         .then(response => {
@@ -42,11 +42,11 @@ document.querySelector("#form-edit-profile").addEventListener("submit", function
         });
 });
 
-document.getElementById('file-input').addEventListener('change', function(event) {
+document.getElementById('file-input').addEventListener('change', function (event) {
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             document.getElementById('profile-pic-preview').src = e.target.result;
         }
         reader.readAsDataURL(file);
@@ -57,29 +57,25 @@ document.querySelector("input#checkbox-2fa-log").addEventListener("change", (e) 
     document.getElementById('loader').style.display = 'unset';
 
     fetch('/set-two-fa-code/', {
-        method: "POST",
-        mode: "cors",
-        headers: {
-           "Content-Type": "application/json",
-           "Accept": "application/json"
-        },
-        body: JSON.stringify({
+        method: "POST", mode: "cors", headers: {
+            "Content-Type": "application/json", "Accept": "application/json"
+        }, body: JSON.stringify({
             checked: e.target.checked
         }),
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Erreur lors de la mise à jour.');
-        }
-        return response.json();
-    })
-    .then(data => {
-        showFlashMessage('success', '✅ Your profile was updated successfully.');
-        document.getElementById('loader').style.display = 'none';
-    })
-    .catch(error => {
-        console.error(error);
-        showFlashMessage('error', '❌ Erreur lors de la mise à jour.');
-        document.getElementById('loader').style.display = 'none';
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur lors de la mise à jour.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            showFlashMessage('success', '✅ Your profile was updated successfully.');
+            document.getElementById('loader').style.display = 'none';
+        })
+        .catch(error => {
+            console.error(error);
+            showFlashMessage('error', '❌ Erreur lors de la mise à jour.');
+            document.getElementById('loader').style.display = 'none';
+        });
 });

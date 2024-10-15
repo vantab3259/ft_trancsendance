@@ -10,6 +10,9 @@ import json
 from django.core.serializers import serialize
 from django.db.models import Q
 from django.shortcuts import render
+from django.contrib.postgres.fields import ArrayField
+from django.db import models
+import logging
 
 class CustomUserManager(BaseUserManager):
     def get_by_natural_key(self, email):
@@ -20,14 +23,18 @@ class CustomUserManager(BaseUserManager):
             users = self.all()
         else:
             users = self.filter(Q(pseudo__icontains=query) | Q(email__icontains=query))
+
         if mode == 'add':
             users = users.exclude(id__in=user.friends.all())
             users = users.exclude(id__in=user.friends_request.all())
+            users = users.exclude(id__in=user.friends_send_request.all())
         elif mode == 'friends':
             users = users.filter(id__in=user.friends.all())
         elif mode == 'pending':
             users = users.filter(id__in=user.friends_request.all())
-        return users
+
+
+        return users.distinct()[:30]
     
     def search_by_id(self, id):
         if not id:
@@ -38,6 +45,8 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+
+    # core
     email = models.EmailField(_('email address'), unique=True)
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
@@ -49,6 +58,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     birth_city = models.CharField(_('birth_city'), blank=True)
     birth_date = models.DateField(_('birth_date'), null=True, blank=True)
 
+    # module api
     access_token = models.CharField(_('access_token'), blank=True)
     access_code = models.CharField(_('access_code'), blank=True)
 
@@ -59,17 +69,45 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     coalition_slug = models.CharField(_('coalition_slug'), blank=True)
     coalition_id = models.CharField(_('coalition_id'), blank=True)
 
+    # module 2fa
     two_fa_code = models.CharField(max_length=6, blank=True, verbose_name=_('Two Factor Code'))
     last_two_fa_code = models.DateTimeField(auto_now=True, verbose_name=_('Last Two Factor Code'))
     two_fa_code_is_active = models.BooleanField(_('active'), default=False)
     two_fa_code_is_checked = models.BooleanField(_('active'), default=False)
 
-    friends = models.ManyToManyField('self', symmetrical=True, related_name='friends')
-    friends_request = models.ManyToManyField('self', symmetrical=True, related_name='friends_request')
-    friends_send_request = models.ManyToManyField('self', symmetrical=True, related_name='friends_send_request')
-    
+    #module friends
+    friends = models.ManyToManyField(
+        'self',
+        symmetrical=True,
+        related_name='friends_of',
+        blank=True
+    )
 
+    friends_request = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        related_name='received_requests',
+        blank=True
+    )
 
+    friends_send_request = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        related_name='sent_requests',
+        blank=True
+    )
+
+    # module jwt
+    active_tokens = ArrayField(
+        models.CharField(max_length=255, blank=True),
+        default=list,
+        blank=True,
+        verbose_name='Active Tokens'
+    )
+
+    #status online
+    is_online = models.BooleanField(_('active'), default=False)
+    last_time_check_is_online = models.DateTimeField(auto_now=True)
 
 
     objects = CustomUserManager()
@@ -148,7 +186,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def getJson(self):
         return json.loads(serialize('json', [self]))
-
 
     def is_blocked_by(self, other_user):
         """Check if the user is blocked by another user."""

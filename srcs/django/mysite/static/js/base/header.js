@@ -16,7 +16,7 @@ function displayPage() {
 
     if (currentPageClick !== "login" && currentPageClick !== "login/") {
             document.querySelector(".navbar" ).style.display = "flex";
-            document.querySelector(".side-bar" ).style.display = "block";
+            // document.querySelector(".side-bar" ).style.display = "block";
     } else {
             document.querySelector(".navbar" ).style.display = "none";
             document.querySelector(".side-bar" ).style.display = "none";
@@ -33,6 +33,35 @@ function displayPage() {
 
         };
 
+    let icons = document.querySelectorAll(".side-bar i");
+    icons.forEach(function (event) {
+        event.style.opacity = 0.3;
+    });
+
+
+    let nameIcon = document.querySelector('#' + currentPageClick + "-link" + " i");
+    if (nameIcon !== undefined && nameIcon) {
+        nameIcon.style.opacity = 1;
+    }
+
+    if (currentPageClick === "chat") {
+        friendsChats();
+        document.getElementById("search-bar-friends-chat").value = '';
+        document.getElementById("input-message").value = '';
+        document.getElementById("search-bar-friends").value = '';
+    }
+
+    if (currentPageClick === "dashboard") {
+        document.getElementById("search-bar-friends").value = '';
+        let oldActiveButton = document.querySelector(".option-friend-button.active");
+        oldActiveButton.classList.remove("active");
+        oldActiveButton = document.querySelector(".friends-option");
+        if (oldActiveButton) {
+            oldActiveButton.classList.add("active");
+        }
+        injectFriends();
+    }
+
     if (currentPageClick in mapPage) {
         currentPageClick = mapPage[currentPageClick];
     }
@@ -45,7 +74,7 @@ function displayPage() {
     document.querySelector("div." + currentPageClick + "-include" ).style.display = "block";
     document.getElementById('loader').style.display = 'none';
 
-
+    document.querySelector("body" ).style.display = "unset";
 }
 
  displayPage();
@@ -159,7 +188,7 @@ if (profileDropdownList) {
     chatLink.addEventListener("click", function (e) {
         e.preventDefault();
         currentPageClick = "chat"
-        loadContent('/chat', 'chat', 'chat', []);
+        loadContent('/chat', 'Chat', 'chat', []);
     });
 
 
@@ -168,7 +197,11 @@ if (profileDropdownList) {
 
         var scripts = ["/static/js/login/login.js"];
 
-        fetch('/logout')
+        fetch('/logout', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+            })
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Erreur lors du chargement de ${page}`);
@@ -218,6 +251,21 @@ window.addEventListener("popstate", (event) => {
 });
 
 
+document.querySelector(".menu-mobile").addEventListener("click", () => {
+    const menuMobile = document.querySelector(".side-bar");
 
+    if (menuMobile.classList.contains("side-bar-active")) {
+        menuMobile.classList.remove("side-bar-active");
+
+        setTimeout(() => {
+            menuMobile.style.display = 'none';
+        }, 500);
+    } else {
+        menuMobile.style.display = 'block';
+        setTimeout(() => {
+            menuMobile.classList.add("side-bar-active");
+        }, 10);
+    }
+});
 
 

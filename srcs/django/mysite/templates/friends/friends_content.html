@@ -1,12 +1,12 @@
 {% load static %}
 
-<div class="leaderboard-container">
+<div class="leaderboard-container friend">
     <div class="top-contributors">
 		<div class="header-friends board-title">
 			<div class="left-header-friends">
 				<div class="options-friends-container">
-					<button class="option-friend-button active">
-						<span class="label-option-friend-button" data-mode="friends">My Friends</span>
+					<button class="option-friend-button friends-option active">
+						<span class="label-option-friend-button" data-mode="friends">Friends</span>
 					</button>
 				</div>
 
@@ -24,6 +24,7 @@
 			</div>
 
 			<div class="right-header-friends">
+                <i class="fa-solid fa-rotate-left actualize-friends"></i>
 				<h2 class="">FRIENDS</h2>
 			</div>
 		</div>
@@ -53,10 +54,20 @@
 						<div class="contributor-details friend">
 							<span class="contributor-name friend">{{ friend.first_name }} {{ friend.last_name }}</span>
 							<span class="contributor-username friend">{{ friend.pseudo }}</span>
-						</div>
-						<div class="performance-stats friend">
-							<button onclick="addFriend(event)" class="add-friend-button" data-id="{{ friend.id }}">add</button>
-						</div>
+
+                            <div id="center-div">
+                                <div class="bubble">
+                                <span class="bubble-outer-dot item-dashboard">
+                                    <span class="bubble-inner-dot" style="background-color: {% if friend.is_online %}green{% else %}red{% endif %};"></span>
+
+
+                                    </span>
+                                </span>
+                                </div>
+                            </div>
+                        </div>
+
+
 					</li>
 					{% endfor %}
 				{% else %}

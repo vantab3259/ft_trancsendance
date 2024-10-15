@@ -11,12 +11,22 @@
       <div class="profile-dropdown">
         <div class="profile-dropdown-btn">
             
-          <span
+          <span class="user-pseudo-header"
             >{{ request.user.pseudo|lower }}
           </span>
 
             <div class="profile-img" id="profile-img" style="background-image: url('{{ request.user.get_profile_picture_url }}');">
                 &nbsp;
+            </div>
+
+            <div id="center-div my-user">
+                <div class="bubble">
+                    <span class="bubble-outer-dot">
+                        <span class="bubble-inner-dot">
+
+                        </span>
+                    </span>
+                </div>
             </div>
 
         </div>
@@ -37,4 +47,8 @@
           </li>
         </ul>
       </div>
+
+        <div class="menu-mobile">
+            <i class="fa-solid fa-bars"></i>
+        </div>
     </nav>

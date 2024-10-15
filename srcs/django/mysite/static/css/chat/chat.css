@@ -123,3 +123,69 @@
 .ban-user {
 	color: red;
 }
+
+.search-bar-container-chat {
+	width: 90%;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.search-bar-container-chat {
+	display: flex;
+	align-items: center;
+}
+.search-bar-container-chat i{
+	position: relative;
+	right: 25px;
+}
+
+
+.bubble-outer-dot {
+	position: relative;
+	right: 57px;
+	bottom: 5px;
+}
+
+.bubble-outer-dot.item-chat {
+	position: relative;
+	left: 42px;
+	bottom: 7px;
+}
+
+.active-chat-friend-conversation-item {
+	background-color: aliceblue;
+}
+
+.actualize-friends {
+	position: relative;
+	margin-right: 10px;
+	transition: scale 0.3s ease-in-out;
+}
+
+.actualize-friends:hover {
+	scale: 1.1;
+	cursor: pointer;
+	color: #6d6d6d;
+}
+
+.friend-conversation-list-header-title {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	align-content: center;
+	width: 92%;
+	margin-left: auto;
+	margin-right: auto;
+	padding-bottom: 20px;
+}
+
+
+
+.actualize-friends-chat:hover {
+	scale: 1.1;
+	color: gray;
+	cursor: pointer;
+}
+.actualize-friends-chat {
+	transition: scale 0.3s ease-in-out;
+}

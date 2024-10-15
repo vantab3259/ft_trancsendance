@@ -5,6 +5,13 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from functools import wraps
 from urllib.parse import urlencode
+import jwt
+from functools import wraps
+from django.conf import settings
+from django.http import JsonResponse
+from mysite.models.user import CustomUser
+import os
+from dotenv import load_dotenv
 
 def not_logged_in_required(view_func):
     @wraps(view_func)
@@ -14,7 +21,26 @@ def not_logged_in_required(view_func):
         return view_func(request, *args, **kwargs)
     return _wrapped_view
 
-
+def require_jwt(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        load_dotenv()
+        auth_header = request.META.get('HTTP_AUTHORIZATION')
+        secret_key_jwt = os.getenv('SECRET_KEY_JWT')
+        if auth_header:
+            try:
+                token = auth_header.split(" ")[1]
+                decoded = jwt.decode(token, secret_key_jwt, algorithms=['HS256'])
+                user = CustomUser.objects.get(id=decoded['user_id'])
+                request.user = user
+                return view_func(request, *args, **kwargs)
+            except jwt.ExpiredSignatureError:
+                return JsonResponse({'error': 'Token expiré'}, status=401)
+            except jwt.InvalidTokenError:
+                return JsonResponse({'error': 'Token invalide', 'token' : token, 'auth_header': auth_header}, status=401)
+        else:
+            return JsonResponse({'error': 'Token manquant'}, status=401)
+    return _wrapped_view
 
 def two_fa_required(view_func):
     @wraps(view_func)
