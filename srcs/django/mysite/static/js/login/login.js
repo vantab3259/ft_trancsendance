@@ -81,6 +81,7 @@ function isEmpty(str) {
 }
 
 function initDashboard(userData) {
+  console.log("initDashboard");
 
     if (!isEmpty(userData['coalition_cover_url'])) {
         document.querySelector(".dashboard-header").style.backgroundImage = 'url(' + userData['coalition_cover_url'] + ')';

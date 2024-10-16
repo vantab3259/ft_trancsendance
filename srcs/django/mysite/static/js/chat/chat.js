@@ -2,7 +2,8 @@ let socketChat = null;
 let selectedFriendId = null;
 let searchTimeoutChat;
 
-function init() {
+
+function initPageChat() {
     setupEventListeners();
     friendsChats();
 }
@@ -272,5 +273,3 @@ function scrollToBottom(element) {
     element.scrollTop = element.scrollHeight;
 }
 
-// Initialiser la fonctionnalité de chat
-init();

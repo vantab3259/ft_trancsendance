@@ -50,6 +50,7 @@ function displayPage() {
         document.getElementById("input-message").value = '';
         document.getElementById("search-bar-friends").value = '';
         document.querySelector(".messaging.open").classList.add("v-hidden");
+        initPageChat();
     }
 
     if (currentPageClick === "dashboard") {

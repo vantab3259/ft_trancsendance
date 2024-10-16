@@ -14,7 +14,6 @@ def get_messages(request, id):
         user = request.user
         recipient = User.objects.get(id=id)
 
-        # Récupérer les 30 derniers messages entre les deux utilisateurs
         messages = ChatMessage.objects.filter(
             Q(sender=user, recipient=recipient) | Q(sender=recipient, recipient=user)
         ).order_by('-timestamp')[:30]
