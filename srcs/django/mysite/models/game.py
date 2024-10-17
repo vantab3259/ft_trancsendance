@@ -1,15 +1,14 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 
 class Game(models.Model):
-    name = models.CharField(max_length=255, verbose_name="Name of the Game")
     players = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='games', through='PlayerGameLink')
     is_active = models.BooleanField(default=True, verbose_name="Is Active?")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
 
     def __str__(self):
-        return self.name
+        return ""
 
     def add_player(self, user):
         """Add a player to the game."""
@@ -22,7 +21,7 @@ class Game(models.Model):
         return self.players.count() >= 4
 
     def __str__(self):
-        return self.name
+        return ""
 
 class PlayerGameLink(models.Model):
     player = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
