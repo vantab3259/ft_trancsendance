@@ -3,6 +3,27 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import uuid
 import asyncio
 import math
+
+# Constants
+SCREEN_WIDTH = 600
+SCREEN_HEIGHT = 400
+FPS = 60
+MAX_PLAYERS_PER_ROOM = 2
+
+BALL_INITIAL_X = SCREEN_WIDTH / 2
+BALL_INITIAL_Y = SCREEN_HEIGHT / 2
+BALL_RADIUS = 10
+BALL_INITIAL_SPEED = 2
+BALL_SPEED_INCREMENT = 0.2
+BALL_MAX_SPEED = 10
+BALL_RESET_SPEED = 2
+
+PADDLE_WIDTH = 20
+PADDLE_HEIGHT = 100
+PADDLE_INITIAL_Y = 250
+
+UPDATE_INTERVAL = 1
+
 connected_players = {}
 rooms = {}
 
@@ -19,7 +40,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         room_found = False
         for room_name, room_data in rooms.items():
-            if len(room_data['players']) < 2:
+            if len(room_data['players']) < MAX_PLAYERS_PER_ROOM:
                 self.room_group_name = room_name
                 room_data['players'].append({'player_id': self.player_id, 'channel_name': self.channel_name})
                 room_found = True
@@ -31,16 +52,16 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'players': [{'player_id': self.player_id, 'channel_name': self.channel_name}],
                 'game_state': {
                     'ball': {
-                        'x': 300,
-                        'y': 200,
-                        'radius': 10,
-                        'speed': 4,       # Vitesse initiale réduite
-                        'velocityX': 4,   # Vitesse horizontale initiale réduite
-                        'velocityY': 4    # Vitesse verticale initiale réduite
+                        'x': BALL_INITIAL_X,
+                        'y': BALL_INITIAL_Y,
+                        'radius': BALL_RADIUS,
+                        'speed': BALL_INITIAL_SPEED,
+                        'velocityX': BALL_INITIAL_SPEED,
+                        'velocityY': BALL_INITIAL_SPEED
                     },
                     'paddles': {
-                        'left': {'y': 250},
-                        'right': {'y': 250}
+                        'left': {'y': PADDLE_INITIAL_Y},
+                        'right': {'y': PADDLE_INITIAL_Y}
                     },
                     'scores': {
                         'left': 0,
@@ -52,7 +73,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.accept()
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
-        if len(rooms[self.room_group_name]['players']) == 2:
+        if len(rooms[self.room_group_name]['players']) == MAX_PLAYERS_PER_ROOM:
             players = rooms[self.room_group_name]['players']
             await self.channel_layer.group_send(
                 self.room_group_name,
@@ -78,7 +99,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'isPlayerLeft': False
             }))
 
-        # Démarrer la boucle de jeu
+        # Start the game loop
         asyncio.create_task(self.game_loop())
 
     async def disconnect(self, close_code):
@@ -109,71 +130,70 @@ class PongConsumer(AsyncWebsocketConsumer):
             if self.room_group_name in rooms:
                 game_state = rooms[self.room_group_name]['game_state']
                 if self.channel_name == rooms[self.room_group_name]['players'][0]['channel_name']:
-                    # Joueur gauche
+                    # Left player
                     game_state['paddles']['left']['y'] = data['paddleY']
                 else:
-                    # Joueur droit
+                    # Right player
                     game_state['paddles']['right']['y'] = data['paddleY']
 
     async def game_loop(self):
-      update_counter = 0
-      while True:
-          await asyncio.sleep(1/60)  # 60 FPS
+        update_counter = 0
+        while True:
+            await asyncio.sleep(1 / FPS)  # FPS
 
-          if self.room_group_name in rooms:
-              game_state = rooms[self.room_group_name]['game_state']
+            if self.room_group_name in rooms:
+                game_state = rooms[self.room_group_name]['game_state']
 
-              ball = game_state['ball']
-              paddles = game_state['paddles']
-              scores = game_state['scores']
+                ball = game_state['ball']
+                paddles = game_state['paddles']
+                scores = game_state['scores']
 
-              # Mise à jour de la position de la balle
-              ball['x'] += ball['velocityX']
-              ball['y'] += ball['velocityY']
+                # Update ball position
+                ball['x'] += ball['velocityX']
+                ball['y'] += ball['velocityY']
 
-              # Collisions avec les murs
-              if ball['y'] - ball['radius'] < 0:
-                  ball['y'] = ball['radius']
-                  ball['velocityY'] = -ball['velocityY']
-              elif ball['y'] + ball['radius'] > 400:
-                  ball['y'] = 400 - ball['radius']
-                  ball['velocityY'] = -ball['velocityY']
+                # Collisions with walls
+                if ball['y'] - ball['radius'] < 0:
+                    ball['y'] = ball['radius']
+                    ball['velocityY'] = -ball['velocityY']
+                elif ball['y'] + ball['radius'] > SCREEN_HEIGHT:
+                    ball['y'] = SCREEN_HEIGHT - ball['radius']
+                    ball['velocityY'] = -ball['velocityY']
 
-              # Vérifier si un point est marqué
-              if ball['x'] - ball['radius'] < 0:
-                  scores['right'] += 1
-                  await self.reset_ball(ball)
-              elif ball['x'] + ball['radius'] > 600:
-                  scores['left'] += 1
-                  await self.reset_ball(ball)
+                # Check if a point is scored
+                if ball['x'] - ball['radius'] < 0:
+                    scores['right'] += 1
+                    await self.reset_ball(ball)
+                elif ball['x'] + ball['radius'] > SCREEN_WIDTH:
+                    scores['left'] += 1
+                    await self.reset_ball(ball)
 
-              # Collisions avec les paddles
-              paddle_left = {'x': 0, 'y': paddles['left']['y'], 'width': 20, 'height': 100}
-              paddle_right = {'x': 600 - 20, 'y': paddles['right']['y'], 'width': 20, 'height': 100}
+                # Collisions with paddles
+                paddle_left = {'x': 0, 'y': paddles['left']['y'], 'width': PADDLE_WIDTH, 'height': PADDLE_HEIGHT}
+                paddle_right = {'x': SCREEN_WIDTH - PADDLE_WIDTH, 'y': paddles['right']['y'], 'width': PADDLE_WIDTH, 'height': PADDLE_HEIGHT}
 
-              if self.check_collision(ball, paddle_left):
-                  ball['x'] = paddle_left['x'] + paddle_left['width'] + ball['radius']
-                  self.reflect_ball(ball, paddle_left)
-              elif self.check_collision(ball, paddle_right):
-                  ball['x'] = paddle_right['x'] - ball['radius']
-                  self.reflect_ball(ball, paddle_right)
+                if self.check_collision(ball, paddle_left):
+                    ball['x'] = paddle_left['x'] + paddle_left['width'] + ball['radius']
+                    self.reflect_ball(ball, paddle_left)
+                elif self.check_collision(ball, paddle_right):
+                    ball['x'] = paddle_right['x'] - ball['radius']
+                    self.reflect_ball(ball, paddle_right)
 
-              # Envoie les mises à jour seulement toutes les 5 itérations (1/12 secondes environ)
-              update_counter += 1
-              if update_counter % 5 == 0 or 1:
-                  await self.channel_layer.group_send(
-                      self.room_group_name,
-                      {
-                          'type': 'game_update',
-                          'game_state': game_state  # Envoie l'état du jeu
-                      }
-                  )
-          else:
-              break
-
+                # Send updates every UPDATE_INTERVAL iterations
+                update_counter += 1
+                if update_counter % UPDATE_INTERVAL == 0:
+                    await self.channel_layer.group_send(
+                        self.room_group_name,
+                        {
+                            'type': 'game_update',
+                            'game_state': game_state  # Send the game state
+                        }
+                    )
+            else:
+                break
 
     def check_collision(self, ball, paddle):
-        # Vérifier la collision entre la balle et un paddle
+        # Check collision between the ball and a paddle
         return (
             ball['x'] - ball['radius'] < paddle['x'] + paddle['width'] and
             ball['x'] + ball['radius'] > paddle['x'] and
@@ -182,29 +202,28 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
 
     def reflect_ball(self, ball, paddle):
-        # Calcule le point de collision
+        # Calculate the collision point
         collide_point = (ball['y'] - (paddle['y'] + paddle['height'] / 2)) / (paddle['height'] / 2)
-        angle_rad = (math.pi / 4) * collide_point  # Utilise math.pi pour plus de précision
+        angle_rad = (math.pi / 4) * collide_point  # Use math.pi for precision
 
-        # Change la direction de la balle
-        direction = 1 if ball['x'] < 300 else -1  # Canvas de largeur 600, donc le milieu est à 300
+        # Change the direction of the ball
+        direction = 1 if ball['x'] < SCREEN_WIDTH / 2 else -1
         ball['velocityX'] = direction * ball['speed'] * math.cos(angle_rad)
         ball['velocityY'] = ball['speed'] * math.sin(angle_rad)
 
-        # Augmente la vitesse de la balle plus lentement
-        ball['speed'] += 0.2  # Incrément réduit
-        if ball['speed'] >= 10:  # Vitesse maximale réduite
-            ball['speed'] = 10
-
+        # Increase the ball's speed gradually
+        ball['speed'] += BALL_SPEED_INCREMENT
+        if ball['speed'] >= BALL_MAX_SPEED:
+            ball['speed'] = BALL_MAX_SPEED
 
     async def reset_ball(self, ball):
-        # Réinitialise la balle au centre avec une vitesse initiale réduite
-        ball['x'] = 300
-        ball['y'] = 200
-        ball['speed'] = 2  # Vitesse initiale réduite
-        angle_rad = 0  # Angle initial pour un mouvement horizontal
-        ball['velocityX'] = ball['speed'] * math.cos(angle_rad) * (-1 if ball['velocityX'] > 0 else 1)
-        ball['velocityY'] = ball['speed'] * math.sin(angle_rad)
+        # Reset the ball to the center with initial reduced speed
+        ball['x'] = BALL_INITIAL_X
+        ball['y'] = BALL_INITIAL_Y
+        ball['speed'] = BALL_RESET_SPEED
+        angle_rad = 0  # Initial angle for horizontal movement
+        ball['velocityX'] = ball['speed'] * (-1 if ball['velocityX'] > 0 else 1)
+        ball['velocityY'] = 0
 
     async def game_update(self, event):
         await self.send(text_data=json.dumps({

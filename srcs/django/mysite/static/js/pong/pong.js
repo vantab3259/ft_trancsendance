@@ -1,5 +1,14 @@
 let modePlay = null;
 let lastServerUpdateTime;
+const CANVAS_WIDTH = 600;
+const CANVAS_HEIGHT = 400;
+const BALL_RADIUS = 10;
+const PADDLE_WIDTH = 20;
+const PADDLE_HEIGHT = 100;
+const INITIAL_BALL_SPEED = 2;
+const MAX_BALL_SPEED = 20;
+const FRAME_PER_SECOND = 60;
+const SMOOTHING_FACTOR = 1;
 
 // modePlay = local => contre IA ou online sur un serveur webscoket 
 
@@ -60,9 +69,9 @@ if (window.context) {
 if (!window.user) {
     const user = {
         x: 0,
-        y: canvas.height / 2 - 100 / 2,
-        width: 20,
-        height: 100,
+        y: canvas.height / 2 - PADDLE_HEIGHT / 2,
+        width: PADDLE_WIDTH,
+        height: PADDLE_HEIGHT,
         color: document.getElementById("userPaddleColor").value,
         score: 0
     };
@@ -72,20 +81,20 @@ if (!window.user) {
 // Create the com paddle Object
 if (!window.com) {
     const com = {
-        x: canvas.width - 20,
-        y: canvas.height / 2 - 100 / 2,
-        width: 20,
-        height: 100,
+        x: canvas.width - PADDLE_WIDTH,
+        y: canvas.height / 2 - PADDLE_HEIGHT / 2,
+        width: PADDLE_WIDTH,
+        height: PADDLE_HEIGHT,
         color: document.getElementById("comPaddleColor").value,
         score: 0
     };
     window.com = com;
 } else {
     window.com = com = {
-        x: canvas.width - 20,
-        y: canvas.height / 2 - 100 / 2,
-        width: 20,
-        height: 100,
+        x: canvas.width - PADDLE_WIDTH,
+        y: canvas.height / 2 - PADDLE_HEIGHT / 2,
+        width: PADDLE_WIDTH,
+        height: PADDLE_HEIGHT,
         color: document.getElementById("comPaddleColor").value,
         score: 0
     };
@@ -96,8 +105,8 @@ if (!window.ball) {
     const ball = {
         x: canvas.width / 2,
         y: canvas.height / 2,
-        radius: 10,
-        speed: 8,
+        radius: BALL_RADIUS,
+        speed: INITIAL_BALL_SPEED,
         velocityX: 5,
         velocityY: 5,
         color: document.getElementById("ballColor").value,
@@ -107,8 +116,8 @@ if (!window.ball) {
     window.ball = {
         x: canvas.width / 2,
         y: canvas.height / 2,
-        radius: 10,
-        speed: 8,
+        radius: BALL_RADIUS,
+        speed: INITIAL_BALL_SPEED,
         velocityX: 5,
         velocityY: 5,
         color: document.getElementById("ballColor").value,
@@ -118,12 +127,12 @@ if (!window.ball) {
 // Create the net Object
 if (!window.net) {
     const net = {
-        x: canvas.width / 2 - 1, y: 0, width: 2, height: 10, color: "WHITE"
+        x: canvas.width / 2 - 1, y: 0, width: 2, height: BALL_RADIUS, color: "WHITE"
     };
     window.net = net;
 } else {
     window.net = {
-        x: canvas.width / 2 - 1, y: 0, width: 2, height: 10, color: "WHITE"
+        x: canvas.width / 2 - 1, y: 0, width: 2, height: BALL_RADIUS, color: "WHITE"
     };
 }
 
@@ -247,7 +256,7 @@ function resetBall() {
     ball.x = canvas.width / 2 - 4;
     ball.y = canvas.height / 2;
     ball.velocityX = -ball.velocityX;
-    ball.speed = 8;
+    ball.speed = INITIAL_BALL_SPEED;
 }
 
 function update() {
@@ -302,8 +311,8 @@ function update() {
   }
 
   // Limite la vitesse de la balle
-  if (ball.speed >= 30) {
-      ball.speed = 30;
+  if (ball.speed >= MAX_BALL_SPEED) {
+      ball.speed = MAX_BALL_SPEED;
   }
 }
 
@@ -335,8 +344,8 @@ function render() {
     drawNet();
 
     //Draw the score
-    drawText(user.score, canvas.width / 4, canvas.height / 8, "WHITE");
-    drawText(com.score, 3 * canvas.width / 4, canvas.height / 8, "WHITE");
+    drawText(user.score, canvas.width / 4, canvas.height / INITIAL_BALL_SPEED, "WHITE");
+    drawText(com.score, 3 * canvas.width / 4, canvas.height / INITIAL_BALL_SPEED, "WHITE");
 
     // Draw the user and computer paddle
     drawRect(user.x, user.y, user.width, user.height, user.color);
@@ -357,10 +366,10 @@ function game() {
 
 // Loop
 if (window.framePerSecond) {
-    window.framePerSecond = 60;
+    window.framePerSecond = FRAME_PER_SECOND;
 } else {
-    const framePerSecond = 60;
-    window.framePerSecond = 60;
+    const framePerSecond = FRAME_PER_SECOND;
+    window.framePerSecond = FRAME_PER_SECOND;
 }
 // Sélectionne le bouton Play
 
@@ -520,7 +529,7 @@ function interpolateGameState() {
   if (!serverState) return;
 
   // Facteur de lissage fixe
-  let alpha = 1;  // Ajustez cette valeur entre 0 et 1
+  let alpha = SMOOTHING_FACTOR;  // Ajustez cette valeur entre 0 et 1
 
 
   // Interpolation de la balle
