@@ -275,14 +275,35 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def end_game(self, winner_link):
-      """End the game, mark the winner, and close the game."""
-      game = winner_link.game
-      winner_link.is_winner = True
-      winner_link.reason = "A atteint le score maximum."
-      await database_sync_to_async(winner_link.save)()
+        """End the game, mark the winner, and close the game."""
+        game = await database_sync_to_async(lambda: winner_link.game)()
+        winner_link.is_winner = True
+        winner_link.reason = "A atteint le score maximum."
+        await database_sync_to_async(winner_link.save)()
 
-      game.is_active = False
-      await database_sync_to_async(game.save)()
+        game.is_active = False
+        await database_sync_to_async(game.save)()
+
+        await database_sync_to_async(game.finish_game)()
+
+        # Envoyer un message à tous les joueurs pour indiquer que le jeu est terminé
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'game_finished',
+                'message': f"Le jeu est terminé ! Le joueur {winner_link.player.get_short_name()} a gagné.",
+                'winner': winner_link.player.get_short_name()
+            }
+        )
+
+    # Ajouter un nouveau gestionnaire d'événements pour gérer l'affichage de la fin du jeu côté client
+    async def game_finished(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'game_finished',
+            'message': event['message'],
+            'winner': event['winner']
+        }))
+
 
 
     def check_collision(self, ball, paddle):

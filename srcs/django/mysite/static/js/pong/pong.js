@@ -482,6 +482,22 @@ document.querySelector(".launch-button-game-content").addEventListener("click", 
               lastServerUpdateTime = Date.now();
               startGame();
           }
+
+          if (data.type === 'game_finished') {
+            let winner = data.winner;
+    
+            // Vérifie si le joueur est le gagnant
+            if (winner === window.user.name) {
+                alert("Vous avez gagné !");
+            } else {
+                alert("Vous avez perdu !");
+            }
+    
+            // Arrête le jeu
+            if (window.gameInterval) {
+                clearInterval(window.gameInterval);
+            }
+        }
       
           // Réception des mises à jour de position des paddles/balles du joueur opposé
           if (data.type === 'game_update') {

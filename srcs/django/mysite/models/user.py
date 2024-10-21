@@ -8,10 +8,11 @@ from django.conf import settings
 from shutil import copyfile
 import json
 from django.core.serializers import serialize
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.shortcuts import render
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from mysite.models.game import Game, PlayerGameLink
 import logging
 
 class CustomUserManager(BaseUserManager):
@@ -41,6 +42,8 @@ class CustomUserManager(BaseUserManager):
             return None
         user = self.get(Q(id=id))
         return user
+  
+
         
 
 
@@ -207,3 +210,68 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             return invite
         else:
             raise PermissionError("You cannot invite this user to a game.")
+        
+    def getHistoryGame(self):
+        # Récupérer tous les liens de jeux pour cet utilisateur
+        games = PlayerGameLink.objects.filter(player=self).select_related('game')
+        
+        # Transformer ces objets en une structure de données utile
+        game_history = []
+        for game_link in games:
+            opponent = PlayerGameLink.objects.filter(game=game_link.game).exclude(player=self).first()  # Récupère l'opposant
+
+            # Calculer la durée du jeu si cette info est disponible
+            if game_link.game.date_created and game_link.game.date_finish:
+                duration = game_link.game.date_finish - game_link.game.date_created
+                duration_in_seconds = duration.total_seconds()
+                minutes, seconds = divmod(duration_in_seconds, 60)
+                duration_str = f"{int(minutes)}min {int(seconds)}s"
+            else:
+                duration_str = "N/A"
+
+            # Déterminer si c'est une victoire ou une défaite
+            result = "match-victory" if game_link.is_winner else "match-defeat"
+
+            game_history.append({
+                'opponent_name': opponent.player.pseudo if opponent else "Unknown",
+                'opponent_image': opponent.player.get_profile_picture_url(),
+                'date': game_link.game.date_created.strftime("%Y-%m-%d") if game_link.game.date_created else "Unknown",
+                'score': f"{game_link.score}-{opponent.score if opponent else 0}",
+                'duration': duration_str,
+                'result': result
+            })
+        
+        return game_history
+    
+    def getRanking(self):
+        # Récupérer tous les utilisateurs avec leur nombre de victoires et de titres
+        ranking = (
+            CustomUser.objects.annotate(
+                matches_won=Count(
+                    'playergamelink',
+                    filter=Q(playergamelink__is_winner=True)
+                ),
+                titles_won=Count(
+                    'playergamelink',
+                    filter=Q(playergamelink__is_winner=True, playergamelink__reason__icontains="Title")
+                )
+            )
+            .order_by('-matches_won', '-titles_won')
+        )
+
+        # Transformer ces objets en une structure de données utile
+        leaderboard = []
+        for position, player in enumerate(ranking, start=1):
+            leaderboard.append({
+                'position': position,
+                'id': player.id,
+                'name': f"{player.first_name} {player.last_name}",
+                'pseudo': player.pseudo,
+                'profile_picture_url': player.get_profile_picture_url(),
+                'matches_won': player.matches_won,
+                'titles_won': player.titles_won
+            })
+
+        return leaderboard
+
+
