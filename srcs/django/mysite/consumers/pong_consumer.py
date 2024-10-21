@@ -274,8 +274,12 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
 
+    import asyncio
+
     async def end_game(self, winner_link):
         """End the game, mark the winner, and close the game."""
+        
+        # Utilisation de sync_to_async pour accéder aux attributs ORM
         game = await database_sync_to_async(lambda: winner_link.game)()
         winner_link.is_winner = True
         winner_link.reason = "A atteint le score maximum."
@@ -286,15 +290,41 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         await database_sync_to_async(game.finish_game)()
 
-        # Envoyer un message à tous les joueurs pour indiquer que le jeu est terminé
+        # Récupérer le nom et l'ID du joueur gagnant en mode async
+        winner_name = await database_sync_to_async(lambda: winner_link.player.get_short_name())()
+        winner_id = await database_sync_to_async(lambda: winner_link.player.id)()
+
+        # Envoyer un message à tous les joueurs pour indiquer que le jeu est terminé avec l'ID et le nom du gagnant
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'game_finished',
-                'message': f"Le jeu est terminé ! Le joueur {winner_link.player.get_short_name()} a gagné.",
-                'winner': winner_link.player.get_short_name()
+                'message': f"Le jeu est terminé ! Le joueur {winner_name} a gagné.",
+                'winner_name': winner_name,
+                'winner_id': winner_id
             }
         )
+
+        # Attendre 2 secondes pour s'assurer que le message est reçu
+        await asyncio.sleep(2)
+
+        # Fermeture des sockets des joueurs après la fin de la partie
+        players = rooms[self.room_group_name]['players']
+        for player in players:
+            await self.channel_layer.group_discard(self.room_group_name, player['channel_name'])
+            # Fermer chaque WebSocket
+            await self.channel_layer.send(player['channel_name'], {
+                'type': 'websocket.close'
+            })
+
+        # Optionnel : supprimer la room une fois la partie terminée
+        if self.room_group_name in rooms:
+            del rooms[self.room_group_name]
+
+
+
+
+
 
     # Ajouter un nouveau gestionnaire d'événements pour gérer l'affichage de la fin du jeu côté client
     async def game_finished(self, event):

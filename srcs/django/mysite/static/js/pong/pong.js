@@ -483,11 +483,16 @@ document.querySelector(".launch-button-game-content").addEventListener("click", 
               startGame();
           }
 
+          console.log("data.type => ", data.type);
+
           if (data.type === 'game_finished') {
             let winner = data.winner;
     
             // Vérifie si le joueur est le gagnant
-            if (winner === window.user.name) {
+            console.log("winner => ", winner);
+            let currentUserId = document.querySelector(".user-pseudo-header").getAttribute('data-user-id');
+            console.log("currentUserId => ", currentUserId);
+            if (winner === currentUserId) {
                 alert("Vous avez gagné !");
             } else {
                 alert("Vous avez perdu !");
