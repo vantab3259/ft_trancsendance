@@ -120,48 +120,49 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def disconnect(self, close_code):
-        if self.room_group_name in rooms:
-            players = rooms[self.room_group_name]['players']
-            rooms[self.room_group_name]['players'] = [p for p in players if p['channel_name'] != self.channel_name]
+      if self.room_group_name in rooms:
+          players = rooms[self.room_group_name]['players']
+          rooms[self.room_group_name]['players'] = [p for p in players if p['channel_name'] != self.channel_name]
 
-            if len(rooms[self.room_group_name]['players']) == 0:
-                del rooms[self.room_group_name]
-            else:
-                remaining_player = rooms[self.room_group_name]['players'][0]
-                game = rooms[self.room_group_name]['game']
-                user = await database_sync_to_async(User.objects.get)(id=remaining_player['player_id'])
+          if len(rooms[self.room_group_name]['players']) == 0:
+              del rooms[self.room_group_name]
+          else:
+              remaining_player = rooms[self.room_group_name]['players'][0]
+              game = rooms[self.room_group_name]['game']
+              user = await database_sync_to_async(User.objects.get)(id=remaining_player['player_id'])
 
-                # Vérifier si le PlayerGameLink existe
-                try:
-                    winner_link = await database_sync_to_async(PlayerGameLink.objects.get)(player=user, game=game)
-                except PlayerGameLink.DoesNotExist:
-                    # Créer le lien s'il n'existe pas
-                    winner_link = await database_sync_to_async(PlayerGameLink.objects.create)(
-                        player=user,
-                        game=game,
-                        team=1  # Ou l'équipe appropriée
-                    )
+              # Vérifier si le PlayerGameLink existe
+              try:
+                  winner_link = await database_sync_to_async(PlayerGameLink.objects.get)(player=user, game=game)
+              except PlayerGameLink.DoesNotExist:
+                  winner_link = await database_sync_to_async(PlayerGameLink.objects.create)(
+                      player=user,
+                      game=game,
+                      team=1
+                  )
 
-                winner_link.is_winner = True
-                winner_link.reason = "L'autre joueur a quitté la partie."
-                await database_sync_to_async(winner_link.save)()
+              winner_link.is_winner = True
+              winner_link.reason = "L'autre joueur a quitté la partie."
+              await database_sync_to_async(winner_link.save)()
 
-                game.is_active = False
-                await database_sync_to_async(game.save)()
+              game.is_active = False
+              await database_sync_to_async(game.save)()
 
-        if self.player_id in connected_players:
-            del connected_players[self.player_id]
+      if self.player_id in connected_players:
+          del connected_players[self.player_id]
 
-        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+      # Ne ferme pas explicitement le WebSocket ici
+      await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
-        if self.room_group_name in rooms and len(rooms[self.room_group_name]['players']) == 1:
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {
-                    'type': 'player_left',
-                    'message': 'L\'autre joueur a quitté la partie.',
-                }
-            )
+      if self.room_group_name in rooms and len(rooms[self.room_group_name]['players']) == 1:
+          await self.channel_layer.group_send(
+              self.room_group_name,
+              {
+                  'type': 'player_left',
+                  'message': "L'autre joueur a quitté la partie.",
+              }
+          )
+
 
 
     async def start_game(self, event):
@@ -277,8 +278,8 @@ class PongConsumer(AsyncWebsocketConsumer):
     import asyncio
 
     async def end_game(self, winner_link):
-        """End the game, mark the winner, and close the game."""
-        
+        """End the game, mark the winner, and notify players without closing the WebSocket."""
+
         # Utilisation de sync_to_async pour accéder aux attributs ORM
         game = await database_sync_to_async(lambda: winner_link.game)()
         winner_link.is_winner = True
@@ -300,26 +301,24 @@ class PongConsumer(AsyncWebsocketConsumer):
             {
                 'type': 'game_finished',
                 'message': f"Le jeu est terminé ! Le joueur {winner_name} a gagné.",
-                'winner_name': winner_name,
-                'winner_id': winner_id
+                'winner_name': winner_name,  # Inclure 'winner_name'
+                'winner_id': winner_id       # Inclure 'winner_id'
             }
         )
 
-        # Attendre 2 secondes pour s'assurer que le message est reçu
-        await asyncio.sleep(2)
-
-        # Fermeture des sockets des joueurs après la fin de la partie
+        # Retirer les joueurs de la room mais ne pas fermer le WebSocket
         players = rooms[self.room_group_name]['players']
         for player in players:
+            # Retirer chaque joueur du groupe, sans fermer la connexion WebSocket
             await self.channel_layer.group_discard(self.room_group_name, player['channel_name'])
-            # Fermer chaque WebSocket
-            await self.channel_layer.send(player['channel_name'], {
-                'type': 'websocket.close'
-            })
 
         # Optionnel : supprimer la room une fois la partie terminée
         if self.room_group_name in rooms:
             del rooms[self.room_group_name]
+
+
+
+
 
 
 
@@ -331,8 +330,10 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'type': 'game_finished',
             'message': event['message'],
-            'winner': event['winner']
+            'winner_name': event['winner_name'],  # Utilise 'winner_name'
+            'winner_id': event['winner_id']       # Utilise 'winner_id'
         }))
+
 
 
 

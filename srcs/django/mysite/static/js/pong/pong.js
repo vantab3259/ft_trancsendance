@@ -468,47 +468,48 @@ document.querySelector(".launch-button-game-content").addEventListener("click", 
     };
 
     socketPong.onmessage = function (event) {
-          let data = JSON.parse(event.data);
-      
-          // Réception des informations de démarrage pour savoir si le joueur est à gauche ou à droite
-          if (data.type === 'player_position') {
-              isPlayerLeft = data.isPlayerLeft; // Si true, le joueur est à gauche
-              console.log("Votre position :", isPlayerLeft ? "Gauche" : "Droite");
+      let data = JSON.parse(event.data);
+  
+      // Réception des informations de démarrage pour savoir si le joueur est à gauche ou à droite
+      if (data.type === 'player_position') {
+          isPlayerLeft = data.isPlayerLeft; // Si true, le joueur est à gauche
+          console.log("Votre position :", isPlayerLeft ? "Gauche" : "Droite");
+      }
+  
+      if (data.message === "La partie commence!") {
+          closeMatchmakingModal();
+          showGamePage();
+          lastServerUpdateTime = Date.now();
+          startGame();
+      }
+  
+      if (data.type === 'game_finished') {
+          let winnerName = data.winner_name; // Utilise 'winner_name'
+          let winnerId = data.winner_id;     // Utilise 'winner_id'
+  
+          // Vérifie si le joueur est le gagnant
+          console.log("winner_name => ", winnerName);
+          console.log("winner_id => ", winnerId);
+          let currentUserId = document.querySelector(".user-pseudo-header").getAttribute('data-user-id');
+          console.log("currentUserId => ", currentUserId);
+          if (winnerId.toString() === currentUserId) {
+              alert("Vous avez gagné !");
+          } else {
+              alert("Vous avez perdu !");
           }
-      
-          if (data.message === "La partie commence!") {
-              closeMatchmakingModal();
-              showGamePage();
-              lastServerUpdateTime = Date.now();
-              startGame();
+  
+          // Arrête le jeu
+          if (window.gameInterval) {
+              clearInterval(window.gameInterval);
+              }
           }
-
-          console.log("data.type => ", data.type);
-
-          if (data.type === 'game_finished') {
-            let winner = data.winner;
-    
-            // Vérifie si le joueur est le gagnant
-            console.log("winner => ", winner);
-            let currentUserId = document.querySelector(".user-pseudo-header").getAttribute('data-user-id');
-            console.log("currentUserId => ", currentUserId);
-            if (winner === currentUserId) {
-                alert("Vous avez gagné !");
-            } else {
-                alert("Vous avez perdu !");
-            }
-    
-            // Arrête le jeu
-            if (window.gameInterval) {
-                clearInterval(window.gameInterval);
-            }
-        }
       
           // Réception des mises à jour de position des paddles/balles du joueur opposé
           if (data.type === 'game_update') {
               updateGameState(data);
           }
       };
+  
   
 
     socketPong.onclose = function () {
