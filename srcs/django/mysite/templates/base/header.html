@@ -13,6 +13,7 @@
             
           <span class="user-pseudo-header"
           data-user-id="{{ request.user.id }}"
+          data-profile-url="{{request.user.get_profile_picture_url}}"
             >{{ request.user.pseudo|lower }}
           </span>
 

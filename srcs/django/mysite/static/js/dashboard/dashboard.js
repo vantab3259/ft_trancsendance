@@ -168,5 +168,118 @@ function addFriend(event) {
 }
 
 
+function injectRanking() {
+  fetch('/get-ranking/', {
+      method: "GET", 
+      headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (data.status === 'success') {
+          injectPlayersIntoRanking(data.players);
+      } else {
+          console.error("Error: ", data.error);
+      }
+  })
+  .catch(error => {
+      console.error('Fetch error:', error);
+  });
+}
 
+function injectPlayersIntoRanking(players) {
+  const rankingList = document.querySelector(".contributor-list.ranking");
+  rankingList.innerHTML = '';
+  let currentUserId = document.querySelector(".user-pseudo-header").getAttribute('data-user-id');
+
+  players.forEach((player, index) => {
+      const playerItem = document.createElement('li');
+      playerItem.classList.add('contributor-item');
+      if (player.id.toString() === currentUserId) {
+          playerItem.classList.add('highlight');
+      }
+
+      // Assurez-vous que le prénom et le nom ne sont pas vides
+      const name = player.name
+
+      playerItem.innerHTML = `
+          <span class="position-number">${index + 1}</span>
+          <img src="${player.profile_picture_url}" alt="${name}">
+          <div class="contributor-details">
+              <span class="contributor-name"></span>
+              <span class="contributor-username">@${player.pseudo.toLowerCase()}</span>
+          </div>
+          <div class="performance-stats">
+              <span class="matches-won">Matches Won: ${player.matches_won}</span>
+              <span class="titles-won">Titles Won: ${player.titles_won}</span>
+          </div>
+      `;
+
+      rankingList.appendChild(playerItem);
+  });
+
+  if (players.length === 0) {
+      rankingList.innerHTML = '<li class="no-results">No players found in the ranking.</li>';
+  }
+}
+
+
+function injectGameHistory() {
+  fetch('/get-history-game/', {
+      method: "GET", 
+      headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (data.status === 'success') {
+          injectGamesIntoHistory(data.games);
+      } else {
+          console.error("Error: ", data.error);
+      }
+  })
+  .catch(error => {
+      console.error('Fetch error:', error);
+  });
+}
+
+function injectGamesIntoHistory(games) {
+  const historyList = document.querySelector(".match-history-list");
+  historyList.innerHTML = '';
+
+  games.forEach((game) => {
+      const gameItem = document.createElement('li');
+      gameItem.classList.add('match-history-item', game.result);
+
+      gameItem.innerHTML = `
+          <div class="player-info-wrapper">
+              <img src="${document.querySelector('.user-pseudo-header').getAttribute('data-profile-url')}" alt="Player's Profile Picture" class="player-image">
+          </div>
+          <div class="content-versus">
+              <span class="versus">Vs</span>
+          </div>
+          <div class="opponent-info-wrapper">
+              <span class="opponent-name">${game.opponent_name}</span>
+              <img src="${game.opponent_image}" alt="Opponent's Profile Picture" class="opponent-image">
+          </div>
+          <div class="match-stats">
+              <span class="match-date">${game.date}</span>
+              <span class="match-score">Score: ${game.score}</span>
+              <span class="match-duration">Duration: ${game.duration}</span>
+          </div>
+      `;
+
+      historyList.appendChild(gameItem);
+  });
+
+  if (games.length === 0) {
+      historyList.innerHTML = '<li class="label-no-games-found">No games found.</li>';
+  }
+}
 

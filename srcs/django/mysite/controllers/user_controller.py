@@ -18,6 +18,7 @@ import jwt
 from datetime import datetime, timedelta
 from django.conf import settings
 import logging
+from mysite.models.game import Game, PlayerGameLink
 
 
 @csrf_exempt
@@ -466,4 +467,84 @@ def update_online_status(request):
         return JsonResponse({'status': 'success'}, status=200)
 
     return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
+
+from django.db.models import Count, Q
+
+@csrf_exempt
+def getRanking(request):
+    try:
+        # Récupérer tous les utilisateurs avec leur nombre de victoires et de titres
+        ranking = (
+            CustomUser.objects.annotate(
+                matches_won=Count(
+                    'playergamelink',
+                    filter=Q(playergamelink__is_winner=True)
+                ),
+                titles_won=Count(
+                    'playergamelink',
+                    filter=Q(playergamelink__is_winner=True, playergamelink__reason__icontains="Title")
+                )
+            )
+            .order_by('-matches_won', '-titles_won')
+        )
+
+        # Transformer ces objets en une structure de données utile
+        leaderboard = []
+        for position, player in enumerate(ranking, start=1):
+            leaderboard.append({
+                'position': position,
+                'id': player.id,
+                'name': f"{player.first_name} {player.last_name}",
+                'pseudo': player.pseudo,
+                'profile_picture_url': player.get_profile_picture_url(),
+                'matches_won': player.matches_won,
+                'titles_won': player.titles_won
+            })
+
+        # Retourner les données dans une réponse JSON
+        return JsonResponse({'status': 'success', 'players': leaderboard}, status=200)
+
+    except Exception as e:
+        # En cas d'erreur, retourner une réponse JSON avec un message d'erreur
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    
+@csrf_exempt
+def get_history_game(request):
+    try:
+        # Récupérer l'utilisateur connecté
+        user = request.user
+
+        # Récupérer tous les liens de jeux pour cet utilisateur
+        games = PlayerGameLink.objects.filter(player=user).select_related('game')
+
+        # Transformer ces objets en une structure de données utile
+        game_history = []
+        for game_link in games:
+            opponent = PlayerGameLink.objects.filter(game=game_link.game).exclude(player=user).first()
+
+            # Calculer la durée du jeu si cette info est disponible
+            if game_link.game.date_created and game_link.game.date_finish:
+                duration = game_link.game.date_finish - game_link.game.date_created
+                duration_in_seconds = duration.total_seconds()
+                minutes, seconds = divmod(duration_in_seconds, 60)
+                duration_str = f"{int(minutes)}min {int(seconds)}s"
+            else:
+                duration_str = "N/A"
+
+            # Déterminer si c'est une victoire ou une défaite
+            result = "match-victory" if game_link.is_winner else "match-defeat"
+
+            game_history.append({
+                'opponent_name': opponent.player.pseudo if opponent else "Unknown",
+                'opponent_image': opponent.player.get_profile_picture_url(),
+                'date': game_link.game.date_created.strftime("%Y-%m-%d") if game_link.game.date_created else "Unknown",
+                'score': f"{game_link.score}-{opponent.score if opponent else 0}",
+                'duration': duration_str,
+                'result': result
+            })
+
+        return JsonResponse({'status': 'success', 'games': game_history}, status=200)
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 

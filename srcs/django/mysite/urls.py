@@ -48,5 +48,8 @@ urlpatterns = [
 
     path('chat/messages/<int:id>/', chat_controller.get_messages, name='get_messages'),
 
+    path('get-ranking/', user_controller.getRanking, name='getRanking'),
+    path('get-history-game/', user_controller.get_history_game, name='get_history_game'),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

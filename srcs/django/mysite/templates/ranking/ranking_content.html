@@ -4,7 +4,7 @@
 <div class="leaderboard-container">
     <div class="top-contributors">
         <h2 class="board-title">RANKING</h2>
-        <ul class="contributor-list">
+        <ul class="contributor-list ranking">
 
             {% for player in request.user.getRanking %}
                 <li class="contributor-item {% if player.id == request.user.id %}highlight{% endif %}">
@@ -12,7 +12,7 @@
                     <img src="{{ player.profile_picture_url }}" alt="{{ player.first_name }}">
                     <div class="contributor-details">
                         <span class="contributor-name">{{ player.first_name|lower|capfirst }} {{ player.last_name|lower|capfirst }}</span>
-                        <span class="contributor-username">{{ player.pseudo|lower }}</span>
+                        <span class="contributor-username">@{{ player.pseudo|lower }}</span>
                     </div>
                     <div class="performance-stats">
                         <span class="matches-won">Matches Won: {{ player.matches_won }}</span>
