@@ -204,6 +204,7 @@ function drawCircle(x, y, r, color) {
 function resetPadCenter() {
     window.user.y = canvas.height / 2 - window.user.height / 2;
     window.com.y = canvas.height / 2 - window.com.height / 2;
+    ball.speed = INITIAL_BALL_SPEED;
 }
 
 
@@ -235,6 +236,19 @@ function movePaddle(evt) {
   }
 }
 
+function resetAllGame() {
+  window.user.score = 0;
+  window.com.score = 0;
+  resetPadCenter();
+  resetBall();
+  applyConfig(window.classicConfig);
+
+  if (window.gameInterval) {
+      clearInterval(window.gameInterval);
+  }
+}
+
+
 
 // Collision Detection ( b = ball , p = player)
 function collision(b, p) {
@@ -253,11 +267,18 @@ function collision(b, p) {
 
 // Reset Ball
 function resetBall() {
-    ball.x = canvas.width / 2 - 4;
-    ball.y = canvas.height / 2;
-    ball.velocityX = -ball.velocityX;
-    ball.speed = INITIAL_BALL_SPEED;
+  ball.x = canvas.width / 2 - 4;
+  ball.y = canvas.height / 2;
+
+  let angleRad = Math.random() * Math.PI / 4;
+
+  let direction = (Math.random() > 0.5) ? 1 : -1;
+
+  ball.speed = INITIAL_BALL_SPEED;
+  ball.velocityX = direction * ball.speed * Math.cos(angleRad);
+  ball.velocityY = ball.speed * Math.sin(angleRad);
 }
+
 
 function update() {
 
@@ -270,6 +291,7 @@ function update() {
       }
       resetBall();
       resetPadCenter();
+      ball.speed = INITIAL_BALL_SPEED;
 
   } else if (ball.x + ball.radius > canvas.width) {
       // Si la balle dépasse à droite, le joueur marque
@@ -279,6 +301,7 @@ function update() {
       }
       resetBall();
       resetPadCenter();
+      ball.speed = INITIAL_BALL_SPEED;
   }
 
   // Mise à jour de la position de la balle
@@ -394,6 +417,7 @@ document.getElementById("pauseButton").addEventListener("click", function () {
 window.launchFirstTimeGame = true;
 
 playButton.addEventListener("click", function () {
+    modePlay = "local";
     document.querySelector(".pong-container").style.display = "block";
     if (window.gameInterval) {
         clearInterval(window.gameInterval);

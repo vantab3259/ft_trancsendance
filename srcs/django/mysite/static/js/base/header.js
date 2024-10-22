@@ -53,6 +53,13 @@ function displayPage() {
         initPageChat();
     }
 
+    if (currentPageClick === "pong") {
+        resetAllGame();
+        document.querySelector(".pong-container").style.display = "none";
+        document.getElementById("playButton").style.display = "block";
+        document.getElementById("pauseButton").style.display = "none";
+    }
+
     if (currentPageClick === "dashboard") {
         document.getElementById("search-bar-friends").value = '';
         let oldActiveButton = document.querySelector(".option-friend-button.active");
