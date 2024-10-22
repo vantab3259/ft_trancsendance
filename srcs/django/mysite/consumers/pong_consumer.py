@@ -331,15 +331,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         if self.room_group_name in rooms:
             del rooms[self.room_group_name]
 
-
-
-
-
-
-
-
-
-
     # Ajouter un nouveau gestionnaire d'événements pour gérer l'affichage de la fin du jeu côté client
     async def game_finished(self, event):
         await self.send(text_data=json.dumps({
@@ -348,8 +339,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             'winner_name': event['winner_name'],  # Utilise 'winner_name'
             'winner_id': event['winner_id']       # Utilise 'winner_id'
         }))
-
-
 
 
     def check_collision(self, ball, paddle):

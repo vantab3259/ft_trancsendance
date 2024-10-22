@@ -58,6 +58,7 @@ function displayPage() {
         document.querySelector(".pong-container").style.display = "none";
         document.getElementById("playButton").style.display = "block";
         document.getElementById("pauseButton").style.display = "none";
+        document.querySelector(".left-header-pong").style.display = 'block';
     }
 
     if (currentPageClick === "dashboard") {
