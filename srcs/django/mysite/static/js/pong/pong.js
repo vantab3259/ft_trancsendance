@@ -488,8 +488,6 @@ document.querySelector(".launch-button-game-content").addEventListener("click", 
           let winnerId = data.winner_id;     // Utilise 'winner_id'
   
           // Vérifie si le joueur est le gagnant
-          console.log("winner_name => ", winnerName);
-          console.log("winner_id => ", winnerId);
           let currentUserId = document.querySelector(".user-pseudo-header").getAttribute('data-user-id');
           console.log("currentUserId => ", currentUserId);
           if (winnerId.toString() === currentUserId) {
@@ -539,7 +537,6 @@ function updateGameState(data) {
       playerRightPaddleY: data.playerRightPaddleY
   };
 
-  // console.log("serverState => ", serverState);
 }
 
 
@@ -557,6 +554,9 @@ function interpolateGameState() {
   // Interpolation de la balle
   window.ball.x = window.ball.x + (serverState.ballX - window.ball.x) * alpha;
   window.ball.y = window.ball.y + (serverState.ballY - window.ball.y) * alpha;
+
+  console.log("window.ball.x => ", window.ball.x);
+  console.log("window.ball.y => ", window.ball.y);
 
   // Interpolation des paddles
   if (isPlayerLeft) {

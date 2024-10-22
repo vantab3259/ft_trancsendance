@@ -74,7 +74,8 @@ class PongConsumer(AsyncWebsocketConsumer):
                     'scores': {
                         'left': 0,
                         'right': 0
-                    }
+                    },
+                    'point_scored': False
                 }
             }
 
@@ -206,6 +207,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 ball = game_state['ball']
                 paddles = game_state['paddles']
                 scores = game_state['scores']
+                point_scored = game_state.get('point_scored', False)
 
                 # Update ball position
                 ball['x'] += ball['velocityX']
@@ -219,15 +221,18 @@ class PongConsumer(AsyncWebsocketConsumer):
                     ball['y'] = SCREEN_HEIGHT - ball['radius']
                     ball['velocityY'] = -ball['velocityY']
 
-                # Check if a point is scored
-                if ball['x'] - ball['radius'] < 0:
-                    scores['right'] += 1
-                    await self.update_score('right')
-                    await self.reset_ball(ball)
-                elif ball['x'] + ball['radius'] > SCREEN_WIDTH:
-                    scores['left'] += 1
-                    await self.update_score('left')
-                    await self.reset_ball(ball)
+                # Check if a point is scored only if no point has been scored yet
+                if not point_scored:
+                    if ball['x'] - ball['radius'] < 0:
+                        scores['right'] += 1
+                        game_state['point_scored'] = True
+                        await self.update_score('right')
+                        await self.reset_ball(ball)
+                    elif ball['x'] + ball['radius'] > SCREEN_WIDTH:
+                        scores['left'] += 1
+                        game_state['point_scored'] = True
+                        await self.update_score('left')
+                        await self.reset_ball(ball)
 
                 # Collisions with paddles
                 paddle_left = {'x': 0, 'y': paddles['left']['y'], 'width': PADDLE_WIDTH, 'height': PADDLE_HEIGHT}
@@ -253,25 +258,35 @@ class PongConsumer(AsyncWebsocketConsumer):
             else:
                 break
 
+
     async def update_score(self, scoring_team):
-      """Update the score of the respective team and check if the game is won."""
-      game = rooms[self.room_group_name]['game']
-      
-      # Récupérer les liens pour les deux joueurs
-      left_player_link = await database_sync_to_async(PlayerGameLink.objects.get)(game=game, team=1)
-      right_player_link = await database_sync_to_async(PlayerGameLink.objects.get)(game=game, team=2)
+        """Update the score of the respective team and check if the game is won."""
+        game = rooms[self.room_group_name]['game']
+        
+        # Récupérer les liens pour les deux joueurs
+        left_player_link = await database_sync_to_async(PlayerGameLink.objects.get)(game=game, team=1)
+        right_player_link = await database_sync_to_async(PlayerGameLink.objects.get)(game=game, team=2)
 
-      # Mettre à jour le score de l'équipe qui a marqué
-      if scoring_team == 'left':
-          left_player_link.score += 1
-          await database_sync_to_async(left_player_link.save)()
-      else:
-          right_player_link.score += 1
-          await database_sync_to_async(right_player_link.save)()
+        # Mettre à jour le score de l'équipe qui a marqué en ajoutant 1 point
+        if scoring_team == 'left':
+            left_player_link.score += 1
+            await database_sync_to_async(left_player_link.save)()
+        else:
+            right_player_link.score += 1
+            await database_sync_to_async(right_player_link.save)()
 
-      # Vérifier si l'un des deux joueurs a gagné
-      if left_player_link.score >= SCORE_TO_WIN or right_player_link.score >= SCORE_TO_WIN:
-          await self.end_game(left_player_link if left_player_link.score >= SCORE_TO_WIN else right_player_link)
+        # Vérifier si l'équipe qui a marqué a atteint le score vainqueur
+        if scoring_team == 'left' and left_player_link.score >= SCORE_TO_WIN:
+            # Ajouter un point supplémentaire avant de terminer le jeu
+            left_player_link.score += 1
+            await database_sync_to_async(left_player_link.save)()
+            await self.end_game(left_player_link)
+        elif scoring_team == 'right' and right_player_link.score >= SCORE_TO_WIN:
+            # Ajouter un point supplémentaire avant de terminer le jeu
+            right_player_link.score += 1
+            await database_sync_to_async(right_player_link.save)()
+            await self.end_game(right_player_link)
+
 
 
 
@@ -358,11 +373,16 @@ class PongConsumer(AsyncWebsocketConsumer):
             ball['speed'] = BALL_MAX_SPEED
 
     async def reset_ball(self, ball):
-        ball['x'] = BALL_INITIAL_X
-        ball['y'] = BALL_INITIAL_Y
-        ball['speed'] = BALL_RESET_SPEED
-        ball['velocityX'] = ball['speed'] * (-1 if ball['velocityX'] > 0 else 1)
-        ball['velocityY'] = 0
+      ball['x'] = BALL_INITIAL_X
+      ball['y'] = BALL_INITIAL_Y
+      ball['speed'] = BALL_RESET_SPEED
+      ball['velocityX'] = ball['speed'] * (-1 if ball['velocityX'] > 0 else 1)
+      ball['velocityY'] = 0
+
+      # Réinitialiser le flag point_scored
+      if self.room_group_name in rooms:
+          rooms[self.room_group_name]['game_state']['point_scored'] = False
+
 
     async def game_update(self, event):
         await self.send(text_data=json.dumps({
