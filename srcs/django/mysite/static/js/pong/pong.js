@@ -479,6 +479,14 @@ document.querySelector("#pong").addEventListener("click", function () {
 let socketPong = null;
 let isPlayerLeft = false; // Définit si le joueur est à gauche (true) ou à droite (false)
 
+function closeWebSocket() {
+  if (socketPong) {
+      socketPong.close();
+      socketPong = null;
+      console.log("WebSocket fermé proprement.");
+  }
+}
+
 document.querySelector(".launch-button-game-content").addEventListener("click", function () {
     modePlay = 'online';
     socketPong = new WebSocket("wss://localhost:4443/ws/pong/");
@@ -515,6 +523,7 @@ document.querySelector(".launch-button-game-content").addEventListener("click", 
           let currentUserId = document.querySelector(".user-pseudo-header").getAttribute('data-user-id');
           let resultModal = document.querySelector("#resultModal");
           let resultText = document.querySelector("#resultText");
+          closeWebSocket();
           if (winnerId.toString() === currentUserId) {
             resultText.innerHTML = "You win 😻 !";
             resultModal.style.display = "contents";
@@ -538,8 +547,8 @@ document.querySelector(".launch-button-game-content").addEventListener("click", 
   
 
     socketPong.onclose = function () {
+        closeWebSocket()
         console.log("Déconnecté du WebSocket Pong Server");
-        alert("L'autre joueur s'est déconnecté.");
     };
 });
 
