@@ -489,11 +489,14 @@ document.querySelector(".launch-button-game-content").addEventListener("click", 
   
           // Vérifie si le joueur est le gagnant
           let currentUserId = document.querySelector(".user-pseudo-header").getAttribute('data-user-id');
-          console.log("currentUserId => ", currentUserId);
+          let resultModal = document.querySelector("#resultModal");
+          let resultText = document.querySelector("#resultText");
           if (winnerId.toString() === currentUserId) {
-              alert("Vous avez gagné !");
+            resultText.innerHTML = "You win 😻 !";
+            resultModal.style.display = "contents";
           } else {
-              alert("Vous avez perdu !");
+            resultText.innerHTML = "You lose 😿 !";
+              resultModal.style.display = "contents";
           }
   
           // Arrête le jeu
@@ -515,6 +518,7 @@ document.querySelector(".launch-button-game-content").addEventListener("click", 
         alert("L'autre joueur s'est déconnecté.");
     };
 });
+
 
 function updateGameState(data) {
   lastServerUpdateTime = Date.now();
@@ -554,9 +558,6 @@ function interpolateGameState() {
   // Interpolation de la balle
   window.ball.x = window.ball.x + (serverState.ballX - window.ball.x) * alpha;
   window.ball.y = window.ball.y + (serverState.ballY - window.ball.y) * alpha;
-
-  console.log("window.ball.x => ", window.ball.x);
-  console.log("window.ball.y => ", window.ball.y);
 
   // Interpolation des paddles
   if (isPlayerLeft) {

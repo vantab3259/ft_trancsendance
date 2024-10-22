@@ -1,0 +1,35 @@
+<div class="modal fade result-modal"
+    id="resultModal"
+>
+  <div class="modal-dialog" style="
+      position: absolute;
+      left: 38%;
+      top: 50%;
+      width: 30%;
+      max-width: 400px;
+      min-width: 200px;"
+  >
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="resultModalLabel">Result</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+              <p class="result-text" id="resultText">You win 😻 !</p>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-close-modal" data-bs-dismiss="modal">Back to lobby</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<script>
+    document.querySelectorAll(".result-modal .modal-footer button, .result-modal .modal-header button").forEach(button => {
+    button.addEventListener("click", () => {
+        document.querySelector("#resultModal").style.display = "none";
+        currentPageClick = "lobby";
+        displayPage();
+    });
+  });
+</script>
