@@ -144,3 +144,36 @@
     background-color: #00BABC;
     color: white;
 }
+
+
+
+
+.result-modal .modal-header {
+  background-color: #4A90E2;
+  color: white;
+  text-align: center;
+}
+
+.result-modal .modal-content {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+}
+
+.result-modal .modal-footer {
+  border-top: none;
+}
+
+.btn-close-modal {
+  background-color: #4A90E2;
+  color: white;
+}
+
+.btn-close-modal:hover {
+  background-color: #357ABD;
+}
+
+.result-text {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}

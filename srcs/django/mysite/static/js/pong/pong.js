@@ -1,3 +1,17 @@
+let modePlay = null;
+let lastServerUpdateTime;
+const CANVAS_WIDTH = 600;
+const CANVAS_HEIGHT = 400;
+const BALL_RADIUS = 10;
+const PADDLE_WIDTH = 20;
+const PADDLE_HEIGHT = 100;
+const INITIAL_BALL_SPEED = 2;
+const MAX_BALL_SPEED = 20;
+const FRAME_PER_SECOND = 60;
+const SMOOTHING_FACTOR = 1;
+
+// modePlay = local => contre IA ou online sur un serveur webscoket 
+
 if (window.gameInterval) {
     clearInterval(window.gameInterval);
 }
@@ -37,29 +51,6 @@ document.getElementById('classicConfig').addEventListener('click', function () {
 });
 
 
-if (!window.audioElements) {
-
-    window.hitSoundOne = new Audio('/static/sound/pong/ball_sound_1.mp3');
-    window.hitSoundTwo = new Audio('/static/sound/pong/ball_sound_2.mp3');
-    window.winPoint = new Audio('/static/sound/pong/win_point.mp3');
-    window.lostPoint = new Audio('/static/sound/pong/lose_point.mp3');
-    window.ostGame = new Audio('/static/sound/pong/ost_game_1.mp3');
-    window.startZelda = new Audio('/static/sound/pong/zelda_botw.mp3');
-
-    window.audioElements = [window.hitSoundOne, window.hitSoundTwo, window.winPoint, window.lostPoint, window.ostGame, window.startZelda,];
-}
-
-
-window.ostGame.volume = 0.2;
-window.hitSoundTwo.volume = 0.5;
-window.hitSoundOne.volume = 0.5;
-window.winPoint.volume = 1;
-window.lostPoint.volume = 1;
-window.startZelda = 1;
-window.sound_ball_choice = 0;
-window.lastHitTime = 0;
-window.soundCooldown = 100;
-
 if (window.canvas) {
     window.canvas = document.getElementById("pong");
 } else {
@@ -78,9 +69,9 @@ if (window.context) {
 if (!window.user) {
     const user = {
         x: 0,
-        y: canvas.height / 2 - 100 / 2,
-        width: 20,
-        height: 100,
+        y: canvas.height / 2 - PADDLE_HEIGHT / 2,
+        width: PADDLE_WIDTH,
+        height: PADDLE_HEIGHT,
         color: document.getElementById("userPaddleColor").value,
         score: 0
     };
@@ -90,20 +81,20 @@ if (!window.user) {
 // Create the com paddle Object
 if (!window.com) {
     const com = {
-        x: canvas.width - 20,
-        y: canvas.height / 2 - 100 / 2,
-        width: 20,
-        height: 100,
+        x: canvas.width - PADDLE_WIDTH,
+        y: canvas.height / 2 - PADDLE_HEIGHT / 2,
+        width: PADDLE_WIDTH,
+        height: PADDLE_HEIGHT,
         color: document.getElementById("comPaddleColor").value,
         score: 0
     };
     window.com = com;
 } else {
     window.com = com = {
-        x: canvas.width - 20,
-        y: canvas.height / 2 - 100 / 2,
-        width: 20,
-        height: 100,
+        x: canvas.width - PADDLE_WIDTH,
+        y: canvas.height / 2 - PADDLE_HEIGHT / 2,
+        width: PADDLE_WIDTH,
+        height: PADDLE_HEIGHT,
         color: document.getElementById("comPaddleColor").value,
         score: 0
     };
@@ -114,8 +105,8 @@ if (!window.ball) {
     const ball = {
         x: canvas.width / 2,
         y: canvas.height / 2,
-        radius: 10,
-        speed: 8,
+        radius: BALL_RADIUS,
+        speed: INITIAL_BALL_SPEED,
         velocityX: 5,
         velocityY: 5,
         color: document.getElementById("ballColor").value,
@@ -125,8 +116,8 @@ if (!window.ball) {
     window.ball = {
         x: canvas.width / 2,
         y: canvas.height / 2,
-        radius: 10,
-        speed: 8,
+        radius: BALL_RADIUS,
+        speed: INITIAL_BALL_SPEED,
         velocityX: 5,
         velocityY: 5,
         color: document.getElementById("ballColor").value,
@@ -136,12 +127,12 @@ if (!window.ball) {
 // Create the net Object
 if (!window.net) {
     const net = {
-        x: canvas.width / 2 - 1, y: 0, width: 2, height: 10, color: "WHITE"
+        x: canvas.width / 2 - 1, y: 0, width: 2, height: BALL_RADIUS, color: "WHITE"
     };
     window.net = net;
 } else {
     window.net = {
-        x: canvas.width / 2 - 1, y: 0, width: 2, height: 10, color: "WHITE"
+        x: canvas.width / 2 - 1, y: 0, width: 2, height: BALL_RADIUS, color: "WHITE"
     };
 }
 
@@ -213,6 +204,7 @@ function drawCircle(x, y, r, color) {
 function resetPadCenter() {
     window.user.y = canvas.height / 2 - window.user.height / 2;
     window.com.y = canvas.height / 2 - window.com.height / 2;
+    ball.speed = INITIAL_BALL_SPEED;
 }
 
 
@@ -227,9 +219,36 @@ function drawText(text, x, y, color) {
 canvas.addEventListener("mousemove", movePaddle);
 
 function movePaddle(evt) {
-    let rect = canvas.getBoundingClientRect();
-    user.y = evt.clientY - rect.top - user.height / 2;
+  let rect = canvas.getBoundingClientRect();
+
+  if (modePlay === "local") {
+      user.y = evt.clientY - rect.top - user.height / 2;
+  } else  {
+      let paddleY = evt.clientY - rect.top - user.height / 2;
+
+      // Envoie l'input au serveur
+      if (socketPong) {
+          socketPong.send(JSON.stringify({
+              'type': 'input',
+              'paddleY': paddleY
+          }));
+      }
+  }
 }
+
+function resetAllGame() {
+  window.user.score = 0;
+  window.com.score = 0;
+  resetPadCenter();
+  resetBall();
+  applyConfig(window.classicConfig);
+
+  if (window.gameInterval) {
+      clearInterval(window.gameInterval);
+  }
+}
+
+
 
 // Collision Detection ( b = ball , p = player)
 function collision(b, p) {
@@ -248,100 +267,96 @@ function collision(b, p) {
 
 // Reset Ball
 function resetBall() {
-    ball.x = canvas.width / 2 - 4;
-    ball.y = canvas.height / 2;
-    ball.velocityX = -ball.velocityX;
-    ball.speed = 8;
+  ball.x = canvas.width / 2 - 4;
+  ball.y = canvas.height / 2;
+
+  let angleRad = Math.random() * Math.PI / 4;
+
+  let direction = (Math.random() > 0.5) ? 1 : -1;
+
+  ball.speed = INITIAL_BALL_SPEED;
+  ball.velocityX = direction * ball.speed * Math.cos(angleRad);
+  ball.velocityY = ball.speed * Math.sin(angleRad);
 }
 
-// Update : pos, mov, score, etc Game Logic
+
 function update() {
 
-    // Change the score if the ball exceeds the canvas width and reset the ball
-    if (ball.x - ball.radius < 0) {
-        com.score++;
-        window.lostPoint.play();
-        if (document.getElementById("pauseButton")) {
-            document.getElementById("pauseButton").click();
-        }
-        resetBall();
-        resetPadCenter();
+  // Change the score if the ball exceeds the canvas width and reset the ball
+  if (ball.x - ball.radius < 0) {
+      // Si la balle dépasse à gauche, l'adversaire marque
+      com.score++;
+      if (document.getElementById("pauseButton")) {
+          document.getElementById("pauseButton").click();
+      }
+      resetBall();
+      resetPadCenter();
+      ball.speed = INITIAL_BALL_SPEED;
 
-    } else if (ball.x + ball.radius > canvas.width) {
-        user.score++;
-        window.winPoint.play();
-        if (document.getElementById("pauseButton")) {
-            document.getElementById("pauseButton").click();
-        }
-        resetBall();
-        resetPadCenter();
-    }
+  } else if (ball.x + ball.radius > canvas.width) {
+      // Si la balle dépasse à droite, le joueur marque
+      user.score++;
+      if (document.getElementById("pauseButton")) {
+          document.getElementById("pauseButton").click();
+      }
+      resetBall();
+      resetPadCenter();
+      ball.speed = INITIAL_BALL_SPEED;
+  }
 
-    // Increasing ball velocity
-    ball.x += ball.velocityX;
-    ball.y += ball.velocityY;
+  // Mise à jour de la position de la balle
+  ball.x += ball.velocityX;
+  ball.y += ball.velocityY;
 
-    // Simples computer AI
+  // Simples computer AI (uniquement pour le mode local)
+  if (modePlay === "local") {
     com.y += ((ball.y - (com.y + com.height / 2))) * 0.1;
+  }
 
-    if (ball.y - ball.radius < 0) {
-        ball.velocityY = -ball.velocityY;
-        ball.y = ball.radius; // Réajuste la position de la balle juste à l'intérieur du canvas
-    } else if (ball.y + ball.radius > canvas.height) {
-        ball.velocityY = -ball.velocityY;
-        ball.y = canvas.height - ball.radius; // Réajuste la position de la balle juste à l'intérieur du canvas
-    }
+  // Gestion des collisions avec les bords supérieur et inférieur
+  if (ball.y - ball.radius < 0) {
+      ball.velocityY = -ball.velocityY;
+      ball.y = ball.radius; // Réajustement de la balle
+  } else if (ball.y + ball.radius > canvas.height) {
+      ball.velocityY = -ball.velocityY;
+      ball.y = canvas.height - ball.radius; // Réajustement de la balle
+  }
 
-    // Check if the paddle hit the user or the com paddle
-    let player = (ball.x + ball.radius < canvas.width / 2) ? user : com;
+  // Vérification si la balle touche un paddle (joueur ou adversaire)
+  let player = isPlayerLeft ? user : com; // Le joueur est toujours à gauche
+  let opponent = isPlayerLeft ? com : user; // L'adversaire est toujours à droite
 
-    // If the ball hits a paddle
-    if (collision(ball, player)) {
+  // Si la balle touche le paddle du joueur ou de l'adversaire
+  if (collision(ball, player)) {
+      handleBallCollision(player); // Gérer la collision avec le joueur
+  } else if (collision(ball, opponent)) {
+      handleBallCollision(opponent); // Gérer la collision avec l'adversaire
+  }
 
-        window.currentTime = new Date().getTime();
-
-        // Only play the sound if enough time has passed since the last hit
-        if (currentTime - window.lastHitTime > window.soundCooldown) {
-            if (window.sound_ball_choice % 2) {
-                window.hitSoundOne.currentTime = 0;
-                window.hitSoundOne.play();
-            } else {
-                window.hitSoundTwo.currentTime = 0;
-                window.hitSoundTwo.play();
-            }
-
-            // Update the last hit time
-            window.lastHitTime = currentTime;
-
-            // Toggle sound choice for next hit
-            window.sound_ball_choice = (window.sound_ball_choice + 1) % 2;
-        }
-
-        // Check where the ball hits the paddle
-        let collidePoint = (ball.y - (player.y + player.height / 2));
-        // Normalize the value of collidePoint, to get numbers between -1 and 1.
-        collidePoint = collidePoint / (player.height / 2);
-
-        // When the ball hits the top of a paddle we want the ball, to take a -45 degrees angle
-        // When the ball hits the center of the paddle we want the ball to take a 0 degrees angle
-        // When the ball hits the bottom of the paddle we want the ball to take a 45 degrees
-        // Math.PI/4 = 45degrees
-        let angleRad = (Math.PI / 4) * collidePoint;
-
-        // Change the X and Y velocity direction
-        let direction = (ball.x + ball.radius < canvas.width / 2) ? 1 : -1;
-        ball.velocityX = direction * ball.speed * Math.cos(angleRad);
-        ball.velocityY = ball.speed * Math.sin(angleRad);
-
-        // Speed up the ball every time a paddle hits it.
-        ball.speed += 0.5;
-    }
-
-    // Limit the ball speed so that it doesn't go trough the paddles
-    if (ball.speed >= 30) {
-        ball.speed = 30;
-    }
+  // Limite la vitesse de la balle
+  if (ball.speed >= MAX_BALL_SPEED) {
+      ball.speed = MAX_BALL_SPEED;
+  }
 }
+
+// Fonction pour gérer la collision avec un paddle
+function handleBallCollision(paddle) {
+  // Point de collision entre la balle et le paddle
+  let collidePoint = (ball.y - (paddle.y + paddle.height / 2));
+  collidePoint = collidePoint / (paddle.height / 2); // Normalisation entre -1 et 1
+
+  // Calculer l'angle de rebond en fonction de l'endroit où la balle touche le paddle
+  let angleRad = (Math.PI / 4) * collidePoint; // 45 degrés
+
+  // Inverser la direction de la balle
+  let direction = (ball.x + ball.radius < canvas.width / 2) ? 1 : -1; 
+  ball.velocityX = direction * ball.speed * Math.cos(angleRad);
+  ball.velocityY = ball.speed * Math.sin(angleRad);
+
+  // Augmenter la vitesse de la balle après chaque rebond
+  ball.speed += 0.5;
+}
+
 
 // Render the Game
 function render() {
@@ -352,8 +367,8 @@ function render() {
     drawNet();
 
     //Draw the score
-    drawText(user.score, canvas.width / 4, canvas.height / 8, "WHITE");
-    drawText(com.score, 3 * canvas.width / 4, canvas.height / 8, "WHITE");
+    drawText(user.score, canvas.width / 4, canvas.height / INITIAL_BALL_SPEED, "WHITE");
+    drawText(com.score, 3 * canvas.width / 4, canvas.height / INITIAL_BALL_SPEED, "WHITE");
 
     // Draw the user and computer paddle
     drawRect(user.x, user.y, user.width, user.height, user.color);
@@ -363,18 +378,21 @@ function render() {
     drawCircle(ball.x, ball.y, ball.radius, ball.color);
 }
 
-// Game Init
 function game() {
-    update();
-    render();
+  if (modePlay === 'local') {
+      update();
+  } else {
+      interpolateGameState();
+  }
+  render();
 }
 
 // Loop
 if (window.framePerSecond) {
-    window.framePerSecond = 60;
+    window.framePerSecond = FRAME_PER_SECOND;
 } else {
-    const framePerSecond = 60;
-    window.framePerSecond = 60;
+    const framePerSecond = FRAME_PER_SECOND;
+    window.framePerSecond = FRAME_PER_SECOND;
 }
 // Sélectionne le bouton Play
 
@@ -385,18 +403,21 @@ if (playButton !== undefined) {
 }
 
 document.getElementById("pauseButton").addEventListener("click", function () {
-    if (window.gameInterval) {
+  if (modePlay === "local") {
+      if (window.gameInterval) {
         clearInterval(window.gameInterval); // Arrête le jeu
     }
 
     this.style.display = "none"; // Cache le bouton Pause
     document.getElementById("playButton").style.display = "block"; // Affiche le bouton Play
+  }
+    
 });
 
 window.launchFirstTimeGame = true;
 
-// Ajoute un événement au bouton pour lancer le jeu au clic
 playButton.addEventListener("click", function () {
+    modePlay = "local";
     document.querySelector(".pong-container").style.display = "block";
     if (window.gameInterval) {
         clearInterval(window.gameInterval);
@@ -408,7 +429,6 @@ playButton.addEventListener("click", function () {
     window.gameInterval = setInterval(game, 1000 / window.framePerSecond);
     if (window.launchFirstTimeGame) {
         window.launchFirstTimeGame = false;
-        window.ostGame.play();
     }
 });
 
@@ -420,7 +440,7 @@ if (window.keydownFlag === undefined) {
 document.addEventListener("keydown", function (event) {
     let urlG = location.href;
 
-    if (!window.keydownFlag && event.keyCode === 32 && urlG.includes('pong'))
+    if (!window.keydownFlag && event.keyCode === 32 && urlG.includes('pong') && modePlay === "local")
     {
         event.preventDefault();
         window.keydownFlag = true;
@@ -435,16 +455,166 @@ document.addEventListener("keydown", function (event) {
 document.addEventListener("keyup", function (event) {
     let urlG = location.href;
 
-    if (event.keyCode === 32 && urlG.includes('pong')) {
+    if (event.keyCode === 32 && urlG.includes('pong') && modePlay === "local") {
         event.preventDefault();
         window.keydownFlag = false;
     }
 });
 
 document.querySelector("#pong").addEventListener("click", function () {
+
+  if (modePlay === "local") {
     if (document.getElementById("pauseButton").style.display !== "none") {
-        document.getElementById("pauseButton").click();
+      document.getElementById("pauseButton").click();
     } else {
         document.getElementById("playButton").click();
     }
+  }
+    
 })
+
+
+/****** ONLINE PLAY ******/
+
+let socketPong = null;
+let isPlayerLeft = false; // Définit si le joueur est à gauche (true) ou à droite (false)
+
+function closeWebSocket() {
+  if (socketPong) {
+      socketPong.close();
+      socketPong = null;
+      console.log("WebSocket fermé proprement.");
+  }
+}
+
+document.querySelector(".launch-button-game-content").addEventListener("click", function () {
+    modePlay = 'online';
+    socketPong = new WebSocket("wss://localhost:4443/ws/pong/");
+    openMatchmakingModal();
+
+    socketPong.onopen = function () {
+        console.log("Connecté au WebSocket Pong Server");
+        socketPong.send(JSON.stringify({
+            'type': 'start_game'
+        }));
+    };
+
+    socketPong.onmessage = function (event) {
+      let data = JSON.parse(event.data);
+  
+      // Réception des informations de démarrage pour savoir si le joueur est à gauche ou à droite
+      if (data.type === 'player_position') {
+          isPlayerLeft = data.isPlayerLeft; // Si true, le joueur est à gauche
+          console.log("Votre position :", isPlayerLeft ? "Gauche" : "Droite");
+      }
+  
+      if (data.message === "La partie commence!") {
+          closeMatchmakingModal();
+          showGamePage();
+          lastServerUpdateTime = Date.now();
+          startGame();
+      }
+  
+      if (data.type === 'game_finished') {
+          let winnerName = data.winner_name; // Utilise 'winner_name'
+          let winnerId = data.winner_id;     // Utilise 'winner_id'
+  
+          // Vérifie si le joueur est le gagnant
+          let currentUserId = document.querySelector(".user-pseudo-header").getAttribute('data-user-id');
+          let resultModal = document.querySelector("#resultModal");
+          let resultText = document.querySelector("#resultText");
+          closeWebSocket();
+          if (winnerId.toString() === currentUserId) {
+            resultText.innerHTML = "You win 😻 !";
+            resultModal.style.display = "contents";
+          } else {
+            resultText.innerHTML = "You lose 😿 !";
+              resultModal.style.display = "contents";
+          }
+  
+          // Arrête le jeu
+          if (window.gameInterval) {
+              clearInterval(window.gameInterval);
+              }
+          }
+      
+          // Réception des mises à jour de position des paddles/balles du joueur opposé
+          if (data.type === 'game_update') {
+              updateGameState(data);
+          }
+      };
+  
+  
+
+    socketPong.onclose = function () {
+        closeWebSocket()
+        console.log("Déconnecté du WebSocket Pong Server");
+    };
+});
+
+
+function updateGameState(data) {
+  lastServerUpdateTime = Date.now();
+
+  // Mise à jour des scores
+  if (isPlayerLeft) {
+      window.user.score = data.leftScore;
+      window.com.score = data.rightScore;
+  } else {
+      window.user.score = data.rightScore;
+      window.com.score = data.leftScore;
+  }
+
+  // Inverser la position X de la balle pour le joueur de droite
+  let ballX = isPlayerLeft ? data.ballX : canvas.width - data.ballX;
+  serverState = {
+      ballX: ballX,
+      ballY: data.ballY,
+      playerLeftPaddleY: data.playerLeftPaddleY,
+      playerRightPaddleY: data.playerRightPaddleY
+  };
+
+}
+
+
+
+
+let serverState = null;
+
+function interpolateGameState() {
+  if (!serverState) return;
+
+  // Facteur de lissage fixe
+  let alpha = SMOOTHING_FACTOR;  // Ajustez cette valeur entre 0 et 1
+
+
+  // Interpolation de la balle
+  window.ball.x = window.ball.x + (serverState.ballX - window.ball.x) * alpha;
+  window.ball.y = window.ball.y + (serverState.ballY - window.ball.y) * alpha;
+
+  // Interpolation des paddles
+  if (isPlayerLeft) {
+      window.user.y = window.user.y + (serverState.playerLeftPaddleY - window.user.y) * alpha;
+      window.com.y = window.com.y + (serverState.playerRightPaddleY - window.com.y) * alpha;
+  } else {
+      window.user.y = window.user.y + (serverState.playerRightPaddleY - window.user.y) * alpha;
+      window.com.y = window.com.y + (serverState.playerLeftPaddleY - window.com.y) * alpha;
+  }
+}
+
+
+
+function startGame() {
+  if (modePlay !== 'local') {
+      window.gameInterval = setInterval(() => {
+          game();
+      }, 1000 / window.framePerSecond);
+  }
+}
+
+function showGamePage() {
+  document.querySelector(".lobby-include").style.display = 'none';
+  document.querySelector(".left-header-pong").style.display = 'none';
+  document.querySelector(".pong-container").style.display = "block";
+  document.querySelector(".pong-include" ).style.display = "block";
+}

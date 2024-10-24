@@ -92,7 +92,7 @@ function initDashboard(userData) {
         document.querySelector(".dashboard-picture-header.not-s.not-g.icon").setAttribute('src', userData['coalition_image_url']);
     }
 
-    injectFriends();
+    
     document.querySelector(".profile-dropdown-btn span").innerHTML = userData['pseudo']
     document.querySelector(".pseudo-container span").innerHTML = userData['pseudo']
     document.querySelector("#pseudo").value = userData['pseudo']
@@ -103,6 +103,9 @@ function initDashboard(userData) {
     document.querySelector("#last-name").value = userData['last_name']
     document.querySelector("#birth-city").value = userData['birth_city']
     document.querySelector("#phone").value = userData['phone_number']
+    document.querySelector(".user-pseudo-header").setAttribute("data-user-id", userData['id']);
+    document.querySelector(".user-pseudo-header").setAttribute("data-profile-url", "/media/" + userData['profile_picture']);
+
     let phoneNumber = userData['phone_number'];
     if (phoneNumber) {
         let formattedPhoneNumber = phoneNumber.replace(/(\d{2})(?=\d)/g, "$1 ");
@@ -126,6 +129,10 @@ function initDashboard(userData) {
     document.querySelector("#profile-img").style = "background-image: url('/media/" + userData['profile_picture'] + "');";
     document.querySelector("img.dashboard-picture-header.not-s.not-g").src = "/media/" + userData['profile_picture'];
     document.querySelector("#profile-pic-preview").src = "/media/" + userData['profile_picture'];
+
+    injectFriends();
+    injectRanking();
+    injectGameHistory();
 
 }
 

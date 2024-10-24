@@ -53,6 +53,14 @@ function displayPage() {
         initPageChat();
     }
 
+    if (currentPageClick === "pong") {
+        resetAllGame();
+        document.querySelector(".pong-container").style.display = "none";
+        document.getElementById("playButton").style.display = "block";
+        document.getElementById("pauseButton").style.display = "none";
+        document.querySelector(".left-header-pong").style.display = 'block';
+    }
+
     if (currentPageClick === "dashboard") {
         document.getElementById("search-bar-friends").value = '';
         let oldActiveButton = document.querySelector(".option-friend-button.active");
@@ -62,6 +70,8 @@ function displayPage() {
             oldActiveButton.classList.add("active");
         }
         injectFriends();
+        injectRanking();
+        injectGameHistory();
     }
 
     if (currentPageClick in mapPage) {
@@ -213,7 +223,9 @@ if (profileDropdownList) {
             .then(html => {
 
                 history.pushState(null, '', "/login");
-                currentPageClick = "login"
+                currentPageClick = "login";
+                document.querySelector(".side-bar").classList.remove("d-block");
+                document.querySelector(".side-bar").style.display = "none";
                 displayPage();
 
             })

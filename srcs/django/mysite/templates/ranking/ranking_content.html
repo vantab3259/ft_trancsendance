@@ -4,139 +4,25 @@
 <div class="leaderboard-container">
     <div class="top-contributors">
         <h2 class="board-title">RANKING</h2>
-        <ul class="contributor-list">
+        <ul class="contributor-list ranking">
 
-            <li class="contributor-item">
-                <span class="position-number">1</span>
-                <img src="https://www.w3schools.com/howto/img_avatar.png" alt="John Doe">
-                <div class="contributor-details">
-                    <span class="contributor-name">John Doe</span>
-                    <span class="contributor-username">jdoe</span>
-                </div>
-                <div class="performance-stats">
-                    <span class="matches-won">Matches Won: 30</span>
-                    <span class="titles-won">Titles Won: 5</span>
-                </div>
-            </li>
+            {% for player in request.user.getRanking %}
+                <li class="contributor-item {% if player.id == request.user.id %}highlight{% endif %}">
+                    <span class="position-number">{{ forloop.counter }}</span>
+                    <img src="{{ player.profile_picture_url }}" alt="{{ player.first_name }}">
+                    <div class="contributor-details">
+                        <span class="contributor-name">{{ player.first_name|lower|capfirst }} {{ player.last_name|lower|capfirst }}</span>
+                        <span class="contributor-username">@{{ player.pseudo|lower }}</span>
+                    </div>
+                    <div class="performance-stats">
+                        <span class="matches-won">Matches Won: {{ player.matches_won }}</span>
+                        <span class="titles-won">Titles Won: {{ player.titles_won }}</span>
+                    </div>
+                </li>
+            {% empty %}
+                <li class="label-no-games-found">No players found in the ranking.</li>
+            {% endfor %}
 
-            <li class="contributor-item">
-                <span class="position-number">2</span>
-                <img src="https://www.w3schools.com/howto/img_avatar2.png" alt="Jane Smith">
-                <div class="contributor-details">
-                    <span class="contributor-name">Jane Smith</span>
-                    <span class="contributor-username">jsmith</span>
-                </div>
-                <div class="performance-stats">
-                    <span class="matches-won">Matches Won: 28</span>
-                    <span class="titles-won">Titles Won: 4</span>
-                </div>
-            </li>
-
-            <li class="contributor-item highlight">
-                <span class="position-number">3</span>
-                <img src="{{ request.user.get_profile_picture_url }}" alt="David Brown">
-                <div class="contributor-details">
-                    <span class="contributor-name">{{ request.user.first_name|lower|capfirst }} {{ request.user.last_name|lower|capfirst  }}</span>
-                    <span class="contributor-username">{{ request.user.pseudo|lower }}</span>
-                </div>
-                <div class="performance-stats">
-                    <span class="matches-won">Matches Won: 25</span>
-                    <span class="titles-won">Titles Won: 3</span>
-                </div>
-            </li>
-
-            <li class="contributor-item">
-                <span class="position-number">4</span>
-                <img src="https://www.w3schools.com/w3images/avatar2.png" alt="Emily Davis">
-                <div class="contributor-details">
-                    <span class="contributor-name">Emily Davis</span>
-                    <span class="contributor-username">edavis</span>
-                </div>
-                <div class="performance-stats">
-                    <span class="matches-won">Matches Won: 22</span>
-                    <span class="titles-won">Titles Won: 2</span>
-                </div>
-            </li>
-
-            <li class="contributor-item">
-                <span class="position-number">5</span>
-                <img src="https://www.w3schools.com/w3images/avatar6.png" alt="Michael Johnson">
-                <div class="contributor-details">
-                    <span class="contributor-name">Michael Johnson</span>
-                    <span class="contributor-username">mjohnson</span>
-                </div>
-                <div class="performance-stats">
-                    <span class="matches-won">Matches Won: 20</span>
-                    <span class="titles-won">Titles Won: 1</span>
-                </div>
-            </li>
-            
-            <li class="contributor-item">
-                <span class="position-number">6</span>
-                <img src="https://www.w3schools.com/howto/img_avatar.png" alt="John Doe">
-                <div class="contributor-details">
-                    <span class="contributor-name">John Doe</span>
-                    <span class="contributor-username">jdoe</span>
-                </div>
-                <div class="performance-stats">
-                    <span class="matches-won">Matches Won: 30</span>
-                    <span class="titles-won">Titles Won: 5</span>
-                </div>
-            </li>
-            
-            <li class="contributor-item">
-                <span class="position-number">7</span>
-                <img src="https://www.w3schools.com/howto/img_avatar2.png" alt="Jane Smith">
-                <div class="contributor-details">
-                    <span class="contributor-name">Jane Smith</span>
-                    <span class="contributor-username">jsmith</span>
-                </div>
-                <div class="performance-stats">
-                    <span class="matches-won">Matches Won: 28</span>
-                    <span class="titles-won">Titles Won: 4</span>
-                </div>
-            </li>
-            
-            <li class="contributor-item highlight">
-                <span class="position-number">8</span>
-                <img src="{{ request.user.get_profile_picture_url }}" alt="David Brown">
-                <div class="contributor-details">
-                    <span class="contributor-name">{{ request.user.first_name|lower|capfirst }} {{ request.user.last_name|lower|capfirst  }}</span>
-                    <span class="contributor-username">{{ request.user.pseudo|lower }}</span>
-                </div>
-                <div class="performance-stats">
-                    <span class="matches-won">Matches Won: 25</span>
-                    <span class="titles-won">Titles Won: 3</span>
-                </div>
-            </li>
-            
-            <li class="contributor-item">
-                <span class="position-number">9</span>
-                <img src="https://www.w3schools.com/w3images/avatar2.png" alt="Emily Davis">
-                <div class="contributor-details">
-                    <span class="contributor-name">Emily Davis</span>
-                    <span class="contributor-username">edavis</span>
-                </div>
-                <div class="performance-stats">
-                    <span class="matches-won">Matches Won: 22</span>
-                    <span class="titles-won">Titles Won: 2</span>
-                </div>
-            </li>
-            
-            <li class="contributor-item">
-                <span class="position-number">10</span>
-                <img src="https://www.w3schools.com/w3images/avatar6.png" alt="Michael Johnson">
-                <div class="contributor-details">
-                    <span class="contributor-name">Michael Johnson</span>
-                    <span class="contributor-username">mjohnson</span>
-                </div>
-                <div class="performance-stats">
-                    <span class="matches-won">Matches Won: 20</span>
-                    <span class="titles-won">Titles Won: 1</span>
-                </div>
-            </li>
-            
         </ul>
     </div>
 </div>
-
