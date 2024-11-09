@@ -3,6 +3,7 @@ from django.urls import path
 from . import views
 from .controllers import *
 from .controllers import chat_controller
+from .controllers import tournament_controller
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -50,6 +51,12 @@ urlpatterns = [
 
     path('get-ranking/', user_controller.getRanking, name='getRanking'),
     path('get-history-game/', user_controller.get_history_game, name='get_history_game'),
+
+    path('tournament/create/', tournament_controller.create_tournament, name='create_tournament'),
+    path('tournament/<int:tournament_id>/join/', tournament_controller.join_tournament, name='join_tournament'),
+    path('tournament/<int:tournament_id>/start-next-round/', tournament_controller.start_next_round, name='start_next_round'),
+    path('tournament/match/<int:match_id>/finish/', tournament_controller.finish_match, name='finish_match'),
+    path('tournament/<int:tournament_id>/details/', tournament_controller.tournament_details, name='tournament_details'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
