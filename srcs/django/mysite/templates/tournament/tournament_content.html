@@ -6,23 +6,32 @@
 
 
 <div class="connexion-tournament">
-  <div class="create-options-tournament">
-      <div class="players-selection">
-          <label>Players :</label>
-          <button class="arrow-button" onclick="decrementPlayers()">◄</button>
-          <input type="text" class="number-tournament" id="player-count" value="4" readonly>
-          <button class="arrow-button" onclick="incrementPlayers()">►</button>
+    <div class="create-options-tournament">
+        <label>Tournament Name:</label>
+        <input type="text" id="tournament-name" placeholder="Enter Tournament Name">
+        <div class="players-selection">
+            <label>Players:</label>
+            <button class="arrow-button" onclick="decrementPlayers()">◄</button>
+            <input type="text" class="number-tournament" id="player-count" value="4" readonly>
+            <button class="arrow-button" onclick="incrementPlayers()">►</button>
+        </div>
+        <button class="play-button" onclick="onCreateTournament()">CREATE</button>
+    </div>
+    
+    <div class="or-divider">OR</div>
+    
+    <div class="join-options-tournament">
+        <input type="text" id="join-tournament-id" placeholder="Enter Tournament Code">
+        <button class="play-button" onclick="onJoinTournament()">JOIN</button>
+    </div>
+  </div>
+  
+  <div class="tournament-container theme theme-dark">
+      <div class="title-tournament">TOURNAMENT</div>
+      <div class="tournament-content bracket disable-image" id="tournament-bracket">
       </div>
-      <button class="play-button">CREATE</button>
   </div>
   
-  <div class="or-divider">OR</div>
-  
-  <div class="join-options-tournament">
-      <input type="text" class="input-join-code-tournament" placeholder="Code...">
-      <button class="play-button">JOIN</button>
-  </div>
-</div>
 
 
 <div class="tournament-container theme theme-dark">
