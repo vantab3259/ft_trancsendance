@@ -57,6 +57,6 @@ urlpatterns = [
     path('tournament/<int:tournament_id>/start-next-round/', tournament_controller.start_next_round, name='start_next_round'),
     path('tournament/match/<int:match_id>/finish/', tournament_controller.finish_match, name='finish_match'),
     path('tournament/<int:tournament_id>/details/', tournament_controller.tournament_details, name='tournament_details'),
-
+    path('tournament/game/<int:match_id>/', tournament_controller.tournament_game_view, name='tournament_game'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

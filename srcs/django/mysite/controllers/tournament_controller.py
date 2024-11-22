@@ -4,6 +4,9 @@ from django.utils.decorators import method_decorator
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
 import json
+from django.db.models import Q
+from django.db import transaction
+
 
 from mysite.models import Tournament, TournamentRound, TournamentMatch, Game, CustomUser
 from mysite.views import require_jwt
@@ -12,6 +15,20 @@ def get_current_round(tournament):
     return tournament.rounds.last()
 
 def initialize_next_round(tournament, winners):
+    if len(winners) == 2:
+        next_round = TournamentRound.objects.create(
+            tournament=tournament,
+            round_number=get_current_round(tournament).round_number + 1
+        )
+        game = Game.objects.create()
+        TournamentMatch.objects.create(
+            tournament_round=next_round,
+            player1=winners[0],
+            player2=winners[1],
+            game=game
+        )
+        return next_round
+
     next_round = TournamentRound.objects.create(
         tournament=tournament,
         round_number=get_current_round(tournament).round_number + 1
@@ -34,38 +51,71 @@ def initialize_next_round(tournament, winners):
 def create_tournament(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        name = data.get('name')
-        if not name:
-            return JsonResponse({'error': 'Tournament name is required'}, status=400)
+        name = data.get('name', 'Tournament')
+
+        user = request.user
 
         tournament = Tournament.objects.create(name=name)
-        TournamentRound.objects.create(tournament=tournament, round_number=1)
-        
+        first_round = TournamentRound.objects.create(tournament=tournament, round_number=1)
+
+        TournamentMatch.objects.create(tournament_round=first_round, player1=user)
+
         return JsonResponse({'status': 'success', 'tournament_id': tournament.id}, status=201)
     return JsonResponse({'error': 'Invalid method'}, status=400)
 
 
 @csrf_exempt
 @require_jwt
+def tournament_game_view(request, match_id):
+    match = get_object_or_404(TournamentMatch, id=match_id)
+
+    if request.user not in [match.player1, match.player2]:
+        return HttpResponseForbidden("You are not authorized to view this match.")
+
+    return render(request, 'tournament_game.html', {'match_id': match_id})
+
+
+
+@csrf_exempt
+@require_jwt
 def join_tournament(request, tournament_id):
-    user = request.user
-    tournament = get_object_or_404(Tournament, id=tournament_id, is_active=True)
+    try:
+        user = request.user 
+        if not user.is_authenticated:
+            return JsonResponse({'error': 'User not authenticated'}, status=401)
 
-    if tournament.rounds.exists() and tournament.rounds.first().matches.exists():
-        return JsonResponse({'error': 'Tournament has already started.'}, status=400)
+        tournament = get_object_or_404(Tournament, id=tournament_id, is_active=True)
 
-    if any(match.player1 == user or match.player2 == user for match in tournament.rounds.first().matches.all()):
-        return JsonResponse({'error': 'User is already in the tournament.'}, status=400)
+        current_round = get_current_round(tournament)
 
-    current_round = get_current_round(tournament)
-    if current_round.matches.count() % 2 == 0:
-        TournamentMatch.objects.create(tournament_round=current_round, player1=user)
-    else:
-        current_match = current_round.matches.last()
-        current_match.player2 = user
-        current_match.save()
+        player_ids = set()
+        for p1_id, p2_id in current_round.matches.values_list('player1_id', 'player2_id'):
+            if p1_id:
+                player_ids.add(p1_id)
+            if p2_id:
+                player_ids.add(p2_id)
+        total_players = len(player_ids)
 
-    return JsonResponse({'status': 'success', 'message': 'Joined tournament'}, status=200)
+        if total_players >= 4:
+            return JsonResponse({'error': 'Tournament is already full.'}, status=400)
+
+        if user.id in player_ids:
+            return JsonResponse({'error': 'You have already joined this tournament.'}, status=400)
+
+        with transaction.atomic():
+            current_match = current_round.matches.select_for_update().filter(player2__isnull=True).first()
+            if current_match:
+                current_match.player2 = user
+                current_match.save()
+            else:
+                TournamentMatch.objects.create(tournament_round=current_round, player1=user)
+
+        return JsonResponse({'status': 'success', 'message': 'Joined tournament'}, status=200)
+
+    except Exception as e:
+        print(f"Error in join_tournament: {str(e)}")
+        return JsonResponse({'error': 'An error occurred while joining the tournament.'}, status=500)
+
 
 
 @csrf_exempt
@@ -78,14 +128,19 @@ def start_next_round(request, tournament_id):
         return JsonResponse({'error': 'Current round is not complete.'}, status=400)
 
     winners = [match.winner for match in current_round.matches.all() if match.winner]
-    if len(winners) == 1:
+    if len(winners) != 2 and len(winners) != 4:
+        return JsonResponse({'error': 'Invalid number of players for the next round.'}, status=400)
+
+    if len(winners) == 2:
+        next_round = initialize_next_round(tournament, winners)
         tournament.is_active = False
         tournament.date_finished = timezone.now()
         tournament.save()
         return JsonResponse({'status': 'success', 'message': 'Tournament completed', 'winner': winners[0].id})
-    
+
     next_round = initialize_next_round(tournament, winners)
     return JsonResponse({'status': 'success', 'message': 'Next round started', 'round_number': next_round.round_number})
+
 
 
 @csrf_exempt
@@ -109,20 +164,44 @@ def finish_match(request, match_id):
     return JsonResponse({'status': 'success', 'message': 'Match finished', 'winner_id': winner.id})
 
 
+
 @csrf_exempt
 @require_jwt
 def tournament_details(request, tournament_id):
+    def serialize_user(user):
+        if user:
+            return {
+                'id': user.id,
+                'pseudo': user.pseudo,
+                'email': user.email,
+                'profile_picture_url': user.get_profile_picture_url()
+            }
+        return None
+
     tournament = get_object_or_404(Tournament, id=tournament_id)
+    current_user_id = request.user.id
+
+
+    players = set()
+    for match in tournament.rounds.first().matches.all():
+        if match.player1:
+            players.add(match.player1)
+        if match.player2:
+            players.add(match.player2)
+
     rounds = [
         {
             'round_number': rnd.round_number,
             'matches': [
                 {
                     'match_id': match.id,
-                    'player1': match.player1.get_short_name() if match.player1 else None,
-                    'player2': match.player2.get_short_name() if match.player2 else None,
-                    'winner': match.winner.get_short_name() if match.winner else None,
-                    'is_complete': match.is_complete
+                    'player1': serialize_user(match.player1),
+                    'player2': serialize_user(match.player2),
+                    'winner': serialize_user(match.winner),
+                    'is_complete': match.is_complete,
+                    'is_current_user_in_match': (
+                        (match.player1_id == current_user_id) or (match.player2_id == current_user_id)
+                    )
                 }
                 for match in rnd.matches.all()
             ]
@@ -136,8 +215,9 @@ def tournament_details(request, tournament_id):
             'id': tournament.id,
             'name': tournament.name,
             'is_active': tournament.is_active,
-            'date_created': tournament.date_created,
-            'date_finished': tournament.date_finished,
+            'date_created': tournament.date_created.isoformat(),
+            'date_finished': tournament.date_finished.isoformat() if tournament.date_finished else None,
             'rounds': rounds,
+            'players': [serialize_user(player) for player in players]
         }
     }, status=200)

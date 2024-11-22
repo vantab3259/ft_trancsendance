@@ -3,18 +3,10 @@
 <script src="{% static 'js/tournament/tournament.js' %}"></script>
 
 
-
-
-<div class="connexion-tournament">
+<div class="connexion-tournament" id="create-or-join-section">
     <div class="create-options-tournament">
         <label>Tournament Name:</label>
-        <input type="text" id="tournament-name" placeholder="Enter Tournament Name">
-        <div class="players-selection">
-            <label>Players:</label>
-            <button class="arrow-button" onclick="decrementPlayers()">◄</button>
-            <input type="text" class="number-tournament" id="player-count" value="4" readonly>
-            <button class="arrow-button" onclick="incrementPlayers()">►</button>
-        </div>
+        <input type="text" id="tournament-name" placeholder="Tournament Name">
         <button class="play-button" onclick="onCreateTournament()">CREATE</button>
     </div>
     
@@ -24,193 +16,23 @@
         <input type="text" id="join-tournament-id" placeholder="Enter Tournament Code">
         <button class="play-button" onclick="onJoinTournament()">JOIN</button>
     </div>
-  </div>
-  
-  <div class="tournament-container theme theme-dark">
-      <div class="title-tournament">TOURNAMENT</div>
-      <div class="tournament-content bracket disable-image" id="tournament-bracket">
-      </div>
-  </div>
-  
+</div>
 
-
-<div class="tournament-container theme theme-dark">
-    <div class="title-tournament">
-        TOURNAMENT
+<div id="waiting-room" style="display:none;">
+    <h2>Waiting Room</h2>
+    <p id="waiting-room-message">Waiting for players to join...</p>
+    <div id="player-list">
+        <h3>Players Joined:</h3>
+        <ul id="player-names"></ul>
     </div>
-    <div class="tournament-content bracket disable-image">
-        <div class="column one">
-            <div class="match winner-top">
-                <div class="match-top team bracket-victory">
-                    <span class="image"></span>
-                    <span class="seed">1</span>
-                    <img src="{{ request.user.get_profile_picture_url }}" alt="{{ request.user.pseudo|lower }}">
-                    <span class="name">{{ request.user.pseudo|lower }}</span>
-                    <span class="score">2</span>
-                </div>
-                <div class="match-bottom team bracket-defeat">
-                    <span class="image"></span>
-                    <span class="seed">8</span>
-                    <img src="https://www.w3schools.com/w3images/avatar2.png" alt="John Doe">
-                    <span class="name">John Doe</span>
-                    <span class="score">1</span>
-                </div>
-                <div class="match-lines">
-                    <div class="line one"></div>
-                    <div class="line two"></div>
-                </div>
-                <div class="match-lines alt">
-                    <div class="line one"></div>
-                </div>
-            </div>
+</div>
 
-            <div class="match winner-bottom">
-                <div class="match-top team bracket-defeat">
-                    <span class="image"></span>
-                    <span class="seed">4</span>
-                    <img src="https://www.w3schools.com/howto/img_avatar2.png" alt="Jane Smith">
-                    <span class="name">Jane Smith</span>
-                    <span class="score">1</span>
-                </div>
-                <div class="match-bottom team bracket-victory">
-                    <span class="image"></span>
-                    <span class="seed">5</span>
-                    <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Emily Johnson">
-                    <span class="name">Emily Johnson</span>
-                    <span class="score">2</span>
-                </div>
-                <div class="match-lines">
-                    <div class="line one"></div>
-                    <div class="line two"></div>
-                </div>
-                <div class="match-lines alt">
-                    <div class="line one"></div>
-                </div>
-            </div>
+<div class="tournament-container theme theme-dark" id="tournament-section" style="display:none;">
+    <div class="title-tournament">TOURNAMENT</div>
+    <div class="tournament-content bracket disable-image" id="tournament-bracket"></div>
+</div>
 
-            <div class="match winner-top bracket-victory">
-                <div class="match-top team">
-                    <span class="image"></span>
-                    <span class="seed">2</span>
-                    <img src="https://www.w3schools.com/w3images/avatar5.png" alt="Michael Brown">
-                    <span class="name">Michael Brown</span>
-                    <span class="score">2</span>
-                </div>
-                <div class="match-bottom team bracket-defeat">
-                    <span class="image"></span>
-                    <span class="seed">7</span>
-                    <img src="https://www.w3schools.com/w3images/avatar6.png" alt="David Wilson">
-                    <span class="name">David Wilson</span>
-                    <span class="score">0</span>
-                </div>
-                <div class="match-lines">
-                    <div class="line one"></div>
-                    <div class="line two"></div>
-                </div>
-                <div class="match-lines alt">
-                    <div class="line one"></div>
-                </div>
-            </div>
 
-            <div class="match winner-top">
-                <div class="match-top team bracket-defeat">
-                    <span class="image"></span>
-                    <span class="seed">3</span>
-                    <img src="https://www.w3schools.com/w3images/avatar2.png" alt="Chris Martin">
-                    <span class="name">Chris Martin</span>
-                    <span class="score">2</span>
-                </div>
-                <div class="match-bottom team bracket-victory">
-                    <span class="image"></span>
-                    <span class="seed">6</span>
-                    <img src="https://www.w3schools.com/w3images/avatar6.png" alt="Sarah Lee">
-                    <span class="name">Sarah Lee</span>
-                    <span class="score">1</span>
-                </div>
-                <div class="match-lines">
-                    <div class="line one"></div>
-                    <div class="line two"></div>
-                </div>
-                <div class="match-lines alt">
-                    <div class="line one"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="column two">
-            <div class="match winner-bottom">
-                <div class="match-top team bracket-victory">
-                    <span class="image"></span>
-                    <span class="seed">1</span>
-                    <img src="https://www.w3schools.com/w3images/avatar5.png" alt="Michael Brown">
-                    <span class="name">Michael Brown</span>
-                    <span class="score">1</span>
-                </div>
-                <div class="match-bottom team bracket-defeat">
-                    <span class="image"></span>
-                    <span class="seed">5</span>
-                    <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Emily Johnson">
-                    <span class="name">Emily Johnson</span>
-                    <span class="score">2</span>
-                </div>
-                <div class="match-lines">
-                    <div class="line one"></div>
-                    <div class="line two"></div>
-                </div>
-                <div class="match-lines alt">
-                    <div class="line one"></div>
-                </div>
-            </div>
-
-            <div class="match winner-bottom">
-                <div class="match-top team bracket-victory">
-                    <span class="image"></span>
-                    <span class="seed">2</span>
-                    <img src="https://www.w3schools.com/w3images/avatar6.png" alt="Michael Brown">
-                    <span class="name">Michael Brown</span>
-                    <span class="score">1</span>
-                </div>
-                <div class="match-bottom team bracket-defeat">
-                    <span class="image"></span>
-                    <span class="seed">3</span>
-                    <img src="https://www.w3schools.com/w3images/avatar2.png" alt="Chris Martin">
-                    <span class="name">Chris Martin</span>
-                    <span class="score">2</span>
-                </div>
-                <div class="match-lines">
-                    <div class="line one"></div>
-                    <div class="line two"></div>
-                </div>
-                <div class="match-lines alt">
-                    <div class="line one"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="column three">
-            <div class="match winner-top">
-                <div class="match-top team bracket-victory">
-                    <span class="image"></span>
-                    <span class="seed">5</span>
-                    <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Emily Johnson">
-                    <span class="name">Emily Johnson</span>
-                    <span class="score">3</span>
-                </div>
-                <div class="match-bottom team bracket-defeat">
-                    <span class="image"></span>
-                    <span class="seed">3</span>
-                    <img src="https://www.w3schools.com/w3images/avatar2.png" alt="Chris Martin">
-                    <span class="name">Chris Martin</span>
-                    <span class="score">2</span>
-                </div>
-                <div class="match-lines">
-                    <div class="line one"></div>
-                    <div class="line two"></div>
-                </div>
-                <div class="match-lines alt">
-                    <div class="line one"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="tournament-game-container" style="display: none;">
+    <canvas id="tournamentPongCanvas" width="600" height="400"></canvas>
 </div>

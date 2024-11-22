@@ -10,37 +10,32 @@ class Tournament(models.Model):
     date_finished = models.DateTimeField(null=True, blank=True, verbose_name="Date Finished")
 
     def start_next_round(self):
-        """Advances the tournament to the next round by pairing winners from the last round."""
         current_round = self.rounds.last()
         if not current_round or current_round.matches.filter(winner__isnull=True).exists():
             raise ValueError("Current round not complete or does not exist.")
 
         winners = [match.winner for match in current_round.matches.all() if match.winner]
-        
         if len(winners) == 1:
             self.is_active = False
             self.date_finished = timezone.now()
             self.save()
             return
-    
+
+        if len(winners) > 4:
+            raise ValueError("Tournaments cannot have more than 4 players.")
+
         next_round = TournamentRound.objects.create(tournament=self, round_number=current_round.round_number + 1)
-        
         for i in range(0, len(winners), 2):
-            if i + 1 < len(winners):
-                player1, player2 = winners[i], winners[i + 1]
-                game = Game.objects.create()
-                TournamentMatch.objects.create(
-                    tournament_round=next_round,
-                    player1=player1,
-                    player2=player2,
-                    game=game
-                )
-            else:
-                TournamentMatch.objects.create(
-                    tournament_round=next_round,
-                    player1=winners[i],
-                    game=None
-                )
+            player1 = winners[i]
+            player2 = winners[i + 1] if i + 1 < len(winners) else None
+            game = Game.objects.create()
+            TournamentMatch.objects.create(
+                tournament_round=next_round,
+                player1=player1,
+                player2=player2,
+                game=game
+            )
+
 
     def __str__(self):
         return f"Tournament {self.name} (Active: {self.is_active})"
@@ -57,8 +52,18 @@ class TournamentRound(models.Model):
 
 class TournamentMatch(models.Model):
     tournament_round = models.ForeignKey(TournamentRound, related_name="matches", on_delete=models.CASCADE)
-    player1 = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="matches_as_player1")
-    player2 = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, related_name="matches_as_player2")
+    player1 = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="matches_as_player1"
+    )
+    player2 = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="matches_as_player2"
+    )
     winner = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, related_name="won_matches", on_delete=models.SET_NULL)
     game = models.OneToOneField(Game, on_delete=models.CASCADE, null=True, blank=True)
     is_complete = models.BooleanField(default=False, verbose_name="Is Match Complete?")
