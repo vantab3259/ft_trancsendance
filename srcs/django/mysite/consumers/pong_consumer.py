@@ -6,6 +6,7 @@ import math
 from mysite.models.game import Game, PlayerGameLink
 from django.contrib.auth import get_user_model
 from channels.db import database_sync_to_async
+import random
 
 User = get_user_model()
 
@@ -31,10 +32,69 @@ SCORE_TO_WIN = 2
 
 UPDATE_INTERVAL = 1
 
+SQUARE_WIDTH = 50
+SQUARE_HEIGHT = 50
+
+SQUARE1_X = SCREEN_WIDTH / 2 + 55
+SQUARE1_Y = SCREEN_HEIGHT / 2 - 25
+
+SQUARE2_X = SCREEN_WIDTH / 2 - 105
+SQUARE2_Y = SCREEN_HEIGHT / 2 - 25
+
+
+
+
+
 connected_players = {}
 rooms = {}
 
 class PongConsumer(AsyncWebsocketConsumer):
+
+    def ball_square_collision(self, ball, square):
+        closest_x = max(square['x'], min(ball['x'], square['x'] + square['width']))
+        closest_y = max(square['y'], min(ball['y'], square['y'] + square['height']))
+
+        distance_x = ball['x'] - closest_x
+        distance_y = ball['y'] - closest_y
+
+        distance_squared = distance_x ** 2 + distance_y ** 2
+
+        return distance_squared < (ball['radius'] ** 2)
+
+    def get_collision_point(self, ball, square):
+        closest_x = max(square['x'], min(ball['x'], square['x'] + square['width']))
+        closest_y = max(square['y'], min(ball['y'], square['y'] + square['height']))
+
+        if closest_y == ball['y']:
+            return 'left' if closest_x == square['x'] else 'right'
+        else:
+            return 'top' if closest_y == square['y'] else 'bottom'
+
+
+    def adjust_ball_position(self, ball, square, collision_point):
+        RANDOMNESS_FACTOR = 0.8
+
+        if collision_point == 'top':
+            ball['velocityY'] = -ball['velocityY']
+            ball['y'] = square['y'] - ball['radius'] - 1
+        elif collision_point == 'bottom':
+            ball['velocityY'] = -ball['velocityY']
+            ball['y'] = square['y'] + square['height'] + ball['radius'] + 1
+        elif collision_point == 'left':
+            ball['velocityX'] = -ball['velocityX']
+            ball['x'] = square['x'] - ball['radius'] - 1
+        elif collision_point == 'right':
+            ball['velocityX'] = -ball['velocityX']
+            ball['x'] = square['x'] + square['width'] + ball['radius'] + 1
+
+        angle_adjustment = random.uniform(-RANDOMNESS_FACTOR, RANDOMNESS_FACTOR)
+
+        speed = (ball['velocityX'] ** 2 + ball['velocityY'] ** 2) ** 0.5
+
+        angle = math.atan2(ball['velocityY'], ball['velocityX']) + angle_adjustment
+        ball['velocityX'] = speed * math.cos(angle)
+        ball['velocityY'] = speed * math.sin(angle)
+
 
     async def connect(self):
         self.player_id = self.scope['user'].id
@@ -226,6 +286,16 @@ class PongConsumer(AsyncWebsocketConsumer):
                 elif ball['y'] + ball['radius'] > SCREEN_HEIGHT:
                     ball['y'] = SCREEN_HEIGHT - ball['radius']
                     ball['velocityY'] = -ball['velocityY']
+
+                if self.map_type:
+                    squares = [
+                        {'x': SQUARE1_X, 'y': SQUARE1_Y, 'width': SQUARE_WIDTH, 'height': SQUARE_HEIGHT},
+                        {'x': SQUARE2_X, 'y': SQUARE2_Y, 'width': SQUARE_WIDTH, 'height': SQUARE_HEIGHT},
+                    ]
+                    for square in squares:
+                        if self.ball_square_collision(ball, square):
+                            collision_point = self.get_collision_point(ball, square)
+                            self.adjust_ball_position(ball, square, collision_point)
 
                 # Check if a point is scored only if no point has been scored yet
                 if not point_scored:
