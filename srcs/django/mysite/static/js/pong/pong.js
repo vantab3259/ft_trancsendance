@@ -36,6 +36,23 @@ function applyConfig(config) {
     window.com.color = config.paddleCom;
     window.net.color = config.net;
     window.backgroundColor = config.background;
+    window.otherMap = true;
+
+    if (window.otherMap) {
+        window.square1 = {
+            x: canvas.width / 2 + 55,
+            y: canvas.height / 2 - 25,
+            width: 50,
+            height: 50
+        };
+
+        window.square2 = {
+            x: canvas.width / 2 - 105,
+            y: canvas.height / 2 - 25,
+            width: 50,
+            height: 50
+        };
+    }
 }
 
 document.getElementById('funConfig').addEventListener('click', function () {
@@ -248,6 +265,18 @@ function resetAllGame() {
   }
 }
 
+function ballSquareCollision(ball, square) {
+    let closestX = Math.max(square.x, Math.min(ball.x, square.x + square.width));
+    let closestY = Math.max(square.y, Math.min(ball.y, square.y + square.height));
+
+    let distanceX = ball.x - closestX;
+    let distanceY = ball.y - closestY;
+
+    let distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+    return distanceSquared < (ball.radius * ball.radius);
+}
+
+
 
 
 // Collision Detection ( b = ball , p = player)
@@ -337,6 +366,11 @@ function update() {
   if (ball.speed >= MAX_BALL_SPEED) {
       ball.speed = MAX_BALL_SPEED;
   }
+
+  if (window.otherMap) {
+        handleSquareCollision(window.square1);
+        handleSquareCollision(window.square2);
+    }
 }
 
 // Fonction pour gérer la collision avec un paddle
@@ -355,6 +389,59 @@ function handleBallCollision(paddle) {
 
   // Augmenter la vitesse de la balle après chaque rebond
   ball.speed += 0.5;
+}
+
+function handleSquareCollision(square) {
+    if (ballSquareCollision(window.ball, square)) {
+        let collisionPoint = getCollisionPoint(window.ball, square);
+
+
+        if (collisionPoint === "top" || collisionPoint === "bottom") {
+            window.ball.velocityY = -window.ball.velocityY; 
+            adjustBallPositionY(square, collisionPoint);
+        } else if (collisionPoint === "left" || collisionPoint === "right") {
+            window.ball.velocityX = -window.ball.velocityX; 
+            adjustBallPositionX(square, collisionPoint);
+        }
+    }
+}
+
+function adjustBallPositionY(square, collisionPoint) {
+    if (collisionPoint === "top") {
+        window.ball.y = square.y - window.ball.radius - 1;
+    } else { 
+        window.ball.y = square.y + square.height + window.ball.radius + 1;
+    }
+}
+
+function adjustBallPositionX(square, collisionPoint) {
+    if (collisionPoint === "left") {
+        window.ball.x = square.x - window.ball.radius - 1;
+    } else { 
+        window.ball.x = square.x + square.width + window.ball.radius + 1;
+    }
+}
+
+function getCollisionPoint(ball, square) {
+
+    let closestX = Math.max(square.x, Math.min(ball.x, square.x + square.width));
+    let closestY = Math.max(square.y, Math.min(ball.y, square.y + square.height));
+
+    if (closestY === ball.y) { 
+        return (closestX === square.x) ? "left" : "right";
+    } else {
+        return (closestY === square.y) ? "top" : "bottom";
+    }
+}
+
+function ballSquareCollision(ball, square) {
+    let closestX = Math.max(square.x, Math.min(ball.x, square.x + square.width));
+    let closestY = Math.max(square.y, Math.min(ball.y, square.y + square.height));
+    let distanceX = ball.x - closestX;
+    let distanceY = ball.y - closestY;
+    let distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+
+    return distanceSquared < (ball.radius * ball.radius);
 }
 
 
@@ -376,6 +463,11 @@ function render() {
 
     // Draw the ball
     drawCircle(ball.x, ball.y, ball.radius, ball.color);
+
+    if (window.otherMap) {
+        drawRect(canvas.width / 2 + 55, canvas.height / 2 - 25, 50, 50, window.ball.color);
+        drawRect(canvas.width / 2 - 105, canvas.height / 2 - 25, 50, 50, window.ball.color);
+    }
 }
 
 function game() {

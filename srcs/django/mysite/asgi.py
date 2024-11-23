@@ -12,7 +12,6 @@ django.setup()  # Initialise Django
 
 from mysite.consumers.pong_consumer import PongConsumer
 from mysite.consumers.chat_consumer import ChatConsumer
-from mysite.consumers.tournament_pong_consumer import TournamentPongConsumer
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
@@ -20,7 +19,6 @@ application = ProtocolTypeRouter({
         URLRouter([
             re_path(r'ws/pong/$', PongConsumer.as_asgi()),
             re_path(r'ws/chat/$', ChatConsumer.as_asgi()),
-            re_path(r'ws/game/tournament/(?P<match_id>\d+)/$', TournamentPongConsumer.as_asgi()),
         ])
     ),
 })
