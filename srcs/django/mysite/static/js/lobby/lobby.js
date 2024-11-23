@@ -51,6 +51,7 @@ function openMatchmakingModal() {
 
 function closeMatchmakingModal() {
     const modal = document.getElementById('matchmakingModal');
+    // document.getElementById('settingslobby').style.display = 'block';
     clearInterval(window.intervalAvatarMatchmaking);
     modal.style.display = 'none';
 }

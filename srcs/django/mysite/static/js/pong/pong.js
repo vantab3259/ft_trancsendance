@@ -612,7 +612,13 @@ document.querySelector(".launch-button-game-content").addEventListener("click", 
         }));
     };
 
+    document.getElementById('settingslobby').style.display = 'none';
+    document.getElementById('goofysettings').style.display = 'none';
+
+
     socketPong.onmessage = function (event) {
+        document.getElementById('goofysettings').style.display = 'none';
+
       let data = JSON.parse(event.data);
   
       // Réception des informations de démarrage pour savoir si le joueur est à gauche ou à droite
@@ -624,11 +630,20 @@ document.querySelector(".launch-button-game-content").addEventListener("click", 
       if (data.message === "La partie commence!") {
           closeMatchmakingModal();
           showGamePage();
+          document.getElementById('settingslobby').style.display = 'none';
           lastServerUpdateTime = Date.now();
           startGame();
+          document.getElementById('goofysettings').style.display = 'none';
+
+          document.getElementById('settingslobby').style.display = 'none';
+
       }
   
       if (data.type === 'game_finished') {
+        document.getElementById('goofysettings').style.display = 'block';
+
+        document.getElementById('settingslobby').style.display = 'block';
+
           let winnerName = data.winner_name; // Utilise 'winner_name'
           let winnerId = data.winner_id;     // Utilise 'winner_id'
   
@@ -654,6 +669,7 @@ document.querySelector(".launch-button-game-content").addEventListener("click", 
           // Réception des mises à jour de position des paddles/balles du joueur opposé
           if (data.type === 'game_update') {
               updateGameState(data);
+              document.getElementById('settingslobby').style.display = 'none';
           }
       };
   
@@ -731,3 +747,4 @@ function showGamePage() {
   document.querySelector(".pong-container").style.display = "block";
   document.querySelector(".pong-include" ).style.display = "block";
 }
+
