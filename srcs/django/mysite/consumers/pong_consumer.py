@@ -39,6 +39,8 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.player_id = self.scope['user'].id
         self.user = self.scope['user']
+        map_type_str = self.scope['url_route']['kwargs']['map_type']
+        self.map_type = map_type_str.lower() == 'true'
 
         if self.player_id in connected_players:
             await self.close()
@@ -48,7 +50,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         room_found = False
         for room_name, room_data in rooms.items():
-            if len(room_data['players']) < MAX_PLAYERS_PER_ROOM:
+            if len(room_data['players']) < MAX_PLAYERS_PER_ROOM and room_data['map_type'] == self.map_type:
                 self.room_group_name = room_name
                 room_data['players'].append({'player_id': self.player_id, 'channel_name': self.channel_name})
                 room_found = True
@@ -58,6 +60,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.room_group_name = f"room_{uuid.uuid4().hex}"
             rooms[self.room_group_name] = {
                 'players': [{'player_id': self.player_id, 'channel_name': self.channel_name}],
+                'map_type': self.map_type,
                 'game_state': {
                     'ball': {
                         'x': BALL_INITIAL_X,
@@ -80,7 +83,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             }
 
             # Create a new Game instance asynchronously
-            game = await database_sync_to_async(Game.objects.create)()
+            game = await database_sync_to_async(Game.objects.create)(map_type=self.map_type)
             rooms[self.room_group_name]['game'] = game
 
         await self.accept()
@@ -167,6 +170,9 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def start_game(self, event):
+        game = rooms[self.room_group_name]['game']
+        await database_sync_to_async(game.set_map_type)(self.map_type)
+
         if self.channel_name == event['player_left_channel']:
             await self.send(text_data=json.dumps({
                 'message': event['message'],
@@ -290,7 +296,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
 
-    import asyncio
 
     async def end_game(self, winner_link):
         """End the game, mark the winner, and notify players without closing the WebSocket."""

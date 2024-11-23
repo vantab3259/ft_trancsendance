@@ -9,6 +9,7 @@ const INITIAL_BALL_SPEED = 2;
 const MAX_BALL_SPEED = 20;
 const FRAME_PER_SECOND = 60;
 const SMOOTHING_FACTOR = 1;
+window.otherMap = false;
 
 // modePlay = local => contre IA ou online sur un serveur webscoket 
 
@@ -24,6 +25,21 @@ window.classicConfig = {
     "ball": "#ffffff", "paddleUser": "#ffffff", "paddleCom": "#ffffff", "background": "#000000", "net": "#ffffff",
 };
 
+
+window.square1 = {
+    x: 600 / 2 + 55,
+    y: 400 / 2 - 25,
+    width: 50,
+    height: 50
+};
+
+window.square2 = {
+    x: 600 / 2 - 105,
+    y: 400 / 2 - 25,
+    width: 50,
+    height: 50
+};
+
 function applyConfig(config) {
     document.getElementById("ballColor").value = config.ball;
     document.getElementById("userPaddleColor").value = config.paddleUser;
@@ -36,23 +52,6 @@ function applyConfig(config) {
     window.com.color = config.paddleCom;
     window.net.color = config.net;
     window.backgroundColor = config.background;
-    window.otherMap = true;
-
-    if (window.otherMap) {
-        window.square1 = {
-            x: canvas.width / 2 + 55,
-            y: canvas.height / 2 - 25,
-            width: 50,
-            height: 50
-        };
-
-        window.square2 = {
-            x: canvas.width / 2 - 105,
-            y: canvas.height / 2 - 25,
-            width: 50,
-            height: 50
-        };
-    }
 }
 
 document.getElementById('funConfig').addEventListener('click', function () {
@@ -66,6 +65,26 @@ document.getElementById('classicConfig').addEventListener('click', function () {
     document.querySelector('.row-config.active').classList.remove('active');
     this.classList.add('active');
 });
+
+document.getElementById('map1').addEventListener('click', function () {
+    window.otherMap = true
+    document.querySelector('.row-config-2.active').classList.remove('active');
+    this.classList.add('active');
+});
+
+document.getElementById('map0').addEventListener('click', function () {
+    window.otherMap = false;
+    document.querySelector('.row-config-2.active').classList.remove('active');
+    this.classList.add('active');
+});
+
+// document.querySelectorAll('.row-config-2').forEach(button => {
+//     button.addEventListener('click', function() {
+//         const mapType = this.getAttribute('data-map-type') === 'true';
+//         connectWebSocket(mapType);
+//     });
+// });
+
 
 
 if (window.canvas) {
@@ -367,7 +386,7 @@ function update() {
       ball.speed = MAX_BALL_SPEED;
   }
 
-  if (window.otherMap) {
+  if (window.otherMap && modePlay != 'online') {
         handleSquareCollision(window.square1);
         handleSquareCollision(window.square2);
     }
@@ -581,7 +600,9 @@ function closeWebSocket() {
 
 document.querySelector(".launch-button-game-content").addEventListener("click", function () {
     modePlay = 'online';
-    socketPong = new WebSocket("wss://localhost:4443/ws/pong/");
+    const mapType = window.otherMap;
+    const mapTypeStr = mapType ? 'true' : 'false';
+    socketPong = new WebSocket(`wss://localhost:4443/ws/pong/${mapTypeStr}/`);
     openMatchmakingModal();
 
     socketPong.onopen = function () {
