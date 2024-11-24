@@ -700,6 +700,7 @@ document.querySelector(".launch-button-game-content").addEventListener("click", 
 });
 
 
+
 function updateGameState(data) {
     lastServerUpdateTime = Date.now();
 

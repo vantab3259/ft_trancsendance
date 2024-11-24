@@ -141,6 +141,36 @@ def start_next_round(request, tournament_id):
     next_round = initialize_next_round(tournament, winners)
     return JsonResponse({'status': 'success', 'message': 'Next round started', 'round_number': next_round.round_number})
 
+def update_tournament_progress(tournament, match):
+    """
+    Updates the progress of a tournament based on the completion of a match.
+    
+    Args:
+        tournament (Tournament): The tournament to update.
+        match (TournamentMatch): The recently completed match.
+    """
+    match.is_complete = True
+    match.save()
+
+    current_round = get_current_round(tournament)
+    if current_round.matches.filter(is_complete=False).exists():
+        return
+
+    winners = [m.winner for m in current_round.matches.all() if m.winner]
+
+    if len(winners) == 1:
+        tournament.is_active = False
+        tournament.date_finished = timezone.now()
+        tournament.save()
+        print(f"Tournament {tournament.name} completed. Winner: {winners[0].id}")
+        return
+
+    if len(winners) in [2, 4]:
+        next_round = initialize_next_round(tournament, winners)
+        print(f"Next round {next_round.round_number} initialized for Tournament {tournament.name}.")
+    else:
+        raise ValueError("Invalid number of winners to proceed to the next round.")
+
 
 
 @csrf_exempt
@@ -148,7 +178,7 @@ def start_next_round(request, tournament_id):
 def finish_match(request, match_id):
     data = json.loads(request.body)
     winner_id = data.get('winner_id')
-    
+
     match = get_object_or_404(TournamentMatch, id=match_id)
     winner = get_object_or_404(CustomUser, id=winner_id)
 
@@ -157,11 +187,11 @@ def finish_match(request, match_id):
 
     match.finish_match(winner)
 
-    current_round = match.tournament_round
-    if not current_round.matches.filter(is_complete=False).exists():
-        current_round.check_and_start_next_round()
+    tournament = match.tournament_round.tournament
+    update_tournament_progress(tournament, match)
 
     return JsonResponse({'status': 'success', 'message': 'Match finished', 'winner_id': winner.id})
+
 
 
 
