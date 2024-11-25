@@ -4,11 +4,14 @@ import uuid
 import asyncio
 import math
 from mysite.models.game import Game, PlayerGameLink
-from mysite.models.tournament import TournamentMatch
+from mysite.models.tournament import TournamentMatch, TournamentRound
 from django.contrib.auth import get_user_model
 from channels.db import database_sync_to_async
 import random
 import logging
+from django.db import transaction
+from django.utils import timezone
+
 
 User = get_user_model()
 
@@ -49,6 +52,42 @@ SQUARE2_Y = SCREEN_HEIGHT / 2 - 25
 
 connected_players = {}
 rooms = {}
+
+
+
+def advance_tournament_round(tournament):
+    """Advances the tournament to the next round or ends it."""
+    current_round = tournament.rounds.last()
+
+    if current_round.matches.filter(is_complete=False).exists():
+        logging.info(f"Round {current_round.round_number} is not yet complete.")
+        return
+
+    winners = [match.winner for match in current_round.matches.all() if match.winner]
+    logging.info(f"Winners from Round {current_round.round_number}: {[w.id for w in winners]}")
+
+    if len(winners) == 1:
+        tournament.is_active = False
+        tournament.date_finished = timezone.now()
+        tournament.save()
+        logging.info(f"Tournament {tournament.name} completed. Winner: {winners[0].id}")
+        return
+
+    if len(winners) == 2:
+        next_round = TournamentRound.objects.create(
+            tournament=tournament,
+            round_number=current_round.round_number + 1
+        )
+        game = Game.objects.create()
+        TournamentMatch.objects.create(
+            tournament_round=next_round,
+            player1=winners[0],
+            player2=winners[1],
+            game=game
+        )
+        logging.info(f"Next round {next_round.round_number} initialized for Tournament {tournament.name}.")
+    else:
+        raise ValueError(f"Unexpected number of winners: {len(winners)}")
 
 class TournamentConsumer(AsyncWebsocketConsumer):
 
@@ -171,6 +210,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
             game = await database_sync_to_async(Game.objects.create)(map_type=self.map_type)
             rooms[self.room_group_name]['game'] = game
+            match = await database_sync_to_async(TournamentMatch.objects.get)(id=self.match_id)
+            match.game = game
+            await database_sync_to_async(match.save)()
 
         await self.accept()
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
@@ -190,9 +232,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
               )
 
               if created:
-                  print(f"Le joueur {user} a été associé à la partie {game} avec l'équipe {team}.")
+                  logging.info(f"Le joueur {user} a été associé à la partie {game} avec l'équipe {team}.")
               else:
-                  print(f"Le joueur {user} est déjà associé à la partie {game}.")
+                  logging.info(f"Le joueur {user} est déjà associé à la partie {game}.")
 
           await self.channel_layer.group_send(
               self.room_group_name,
@@ -341,7 +383,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                         self.room_group_name,
                         {
                             'type': 'game_update',
-                            'game_state': game_state  # Send the game state
+                            'game_state': game_state
                         }
                     )
             else:
@@ -377,9 +419,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
 
 
-
     async def end_game(self, winner_link):
-        """End the game, mark the winner, update tournament progress, and notify players without closing the WebSocket."""
+        """End the game, mark the winner, update tournament progress, and notify players."""
+        logging.info("\n\n\n\nEND GAME CALLED\n\n\n\n\n\n\n")
 
         game = await database_sync_to_async(lambda: winner_link.game)()
         winner_link.is_winner = True
@@ -404,22 +446,25 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             }
         )
 
-
         match = await database_sync_to_async(TournamentMatch.objects.filter(game=game).first)()
         if match:
+            logging.info("\n\n\n\nIF MATCH CALLED\n\n\n\n\n\n\n")
             match.winner = await database_sync_to_async(lambda: winner_link.player)()
             match.is_complete = True
             await database_sync_to_async(match.save)()
 
-            tournament = match.tournament_round.tournament
-            await database_sync_to_async(update_tournament_progress)(tournament, match)
-
-        players = rooms[self.room_group_name]['players']
-        for player in players:
-            await self.channel_layer.group_discard(self.room_group_name, player['channel_name'])
+            tournament = await database_sync_to_async(lambda: match.tournament_round.tournament)()
+            logging.info(f"Advancing tournament: {tournament.name}")
+            await database_sync_to_async(advance_tournament_round)(tournament)
 
         if self.room_group_name in rooms:
+            players = rooms[self.room_group_name].get('players', [])
+            for player in players:
+                await self.channel_layer.group_discard(self.room_group_name, player['channel_name'])
+
             del rooms[self.room_group_name]
+
+
 
 
     async def game_finished(self, event):

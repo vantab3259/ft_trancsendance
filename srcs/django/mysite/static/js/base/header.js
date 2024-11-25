@@ -176,6 +176,8 @@ if (profileDropdownList) {
             '/static/js/pong/pong.js',
             '/static/js/pong/confirm_leave_pong_modal.js'
         ]);
+        document.getElementById("goofysettings").style.display = "block";
+        document.getElementById("settingslobby").style.display = "block";
 
     });
 
@@ -189,6 +191,8 @@ if (profileDropdownList) {
         e.preventDefault();
         currentPageClick = "lobby"
         loadContent('/lobby', 'Lobby', 'lobby', ['/static/js/lobby/lobby.js']);
+        document.getElementById("goofysettings").style.display = "block";
+        document.getElementById("settingslobby").style.display = "block";
     });
 
     editHeaderLink.addEventListener("click", function (e) {

@@ -415,7 +415,7 @@ function update() {
         ball.speed = MAX_BALL_SPEED;
     }
 
-    if (window.otherMap && modePlay != 'online') {
+    if (window.otherMap && (modePlay != 'online'  || modePlay != 'tournament')) {
         handleSquareCollision(window.square1);
         handleSquareCollision(window.square2);
     }
@@ -660,8 +660,10 @@ document.querySelector(".launch-button-game-content").addEventListener("click", 
         }
 
         if (data.type === 'game_finished') {
+            if (modePlay != 'tournament') {
             document.getElementById("goofysettings").style.display = "block";
             document.getElementById("settingslobby").style.display = "block";
+            }
 
             let winnerName = data.winner_name; // Utilise 'winner_name'
             let winnerId = data.winner_id;     // Utilise 'winner_id'

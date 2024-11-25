@@ -196,7 +196,7 @@ function displayTournamentDetails(tournament) {
 
             // Use the flag provided by the server
             if (!match.is_complete && match.is_current_user_in_match) {
-                playButtonHtml = `<button id="play-button-${match.match_id}" onclick="startTournamentGame(${match.match_id})">Ready</button>`;
+                playButtonHtml = `<button id="play-button-${match.match_id}" onclick="startTournamentGame(${match.match_id}, ${tournament.id})">Ready</button>`;
             }
 
             const matchHtml = `
@@ -222,7 +222,7 @@ function displayTournamentDetails(tournament) {
 
 
 
-function startTournamentGame(matchId) {
+function startTournamentGame(matchId, tournamentId) {
     if (!matchId) {
         console.error("No match ID provided for matchmaking.");
         alert("Unable to start the game. Please try again.");
@@ -232,7 +232,7 @@ function startTournamentGame(matchId) {
     console.log("Starting matchmaking for tournament match:", matchId);
 
 
-    modePlay = 'online';
+    modePlay = 'tournament';
     const mapType = window.otherMap;
     const mapTypeStr = mapType ? 'true' : 'false';
     socketPong = new WebSocket(`wss://localhost:4443/ws/tournament/match/${matchId}/`);
@@ -271,27 +271,19 @@ function startTournamentGame(matchId) {
         }
 
         if (data.type === 'game_finished') {
-            document.getElementById("goofysettings").style.display = "block";
-            document.getElementById("settingslobby").style.display = "block";
+
 
             let winnerName = data.winner_name; 
             let winnerId = data.winner_id;    
 
-            let currentUserId = document.querySelector(".user-pseudo-header").getAttribute('data-user-id');
-            let resultModal = document.querySelector("#resultModal");
-            let resultText = document.querySelector("#resultText");
             closeWebSocket();
-            if (winnerId.toString() === currentUserId) {
-                resultText.innerHTML = "You win 😻 !";
-                resultModal.style.display = "contents";
-            } else {
-                resultText.innerHTML = "You lose 😿 !";
-                resultModal.style.display = "contents";
-            }
+
 
             if (window.gameInterval) {
                 clearInterval(window.gameInterval);
             }
+
+            pollTournamentUpdates(tournamentId);
         }
 
         if (data.type === 'game_update') {
@@ -307,3 +299,83 @@ function startTournamentGame(matchId) {
     };
  
 }
+
+
+async function updateTournamentBracket(tournamentId) {
+    try {
+        console.log('Updating tournament bracket for:', tournamentId);
+
+        const response = await fetch(`/tournament/${tournamentId}/details/`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to load tournament details.');
+        }
+
+        const data = await response.json();
+
+        if (data.status === 'success') {
+            console.log('Tournament details updated:', data);
+
+            const tournament = data.tournament;
+            displayTournamentDetails(tournament);
+        } else {
+            throw new Error(data.error || 'Failed to update tournament bracket.');
+        }
+    } catch (error) {
+        console.error('Error updating tournament bracket:', error);
+        alert(error.message);
+    }
+}
+
+
+async function pollTournamentUpdates(tournamentId) {
+    console.log('Polling tournament updates for:', tournamentId);
+
+    const interval = setInterval(async () => {
+        try {
+            const response = await fetch(`/tournament/${tournamentId}/details/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+            if (!response.ok) {
+                console.error('Error fetching tournament details:', response.status);
+                clearInterval(interval);
+                alert('Failed to fetch tournament updates.');
+                return;
+            }
+
+            const data = await response.json();
+            console.log('Received updated tournament data:', data);
+
+            if (data.status === 'success') {
+                const tournament = data.tournament;
+                displayTournamentDetails(tournament);
+
+                if (tournament.is_completed) {
+                    console.log('Tournament completed. Stopping updates.');
+                    document.getElementById("goofysettings").style.display = "block";
+                    document.getElementById("settingslobby").style.display = "block";
+                    clearInterval(interval);
+                    alert('The tournament is over!');
+                }
+            } else {
+                console.error('Error in tournament updates:', data.error);
+                clearInterval(interval);
+                alert(data.error);
+            }
+        } catch (error) {
+            console.error('Error during tournament update polling:', error);
+            clearInterval(interval);
+        }
+    }, 5000);
+}
+
