@@ -59,4 +59,9 @@ urlpatterns = [
     path('tournament/<int:tournament_id>/details/', tournament_controller.tournament_details, name='tournament_details'),
     path('tournament/game/<int:match_id>/', tournament_controller.tournament_game_view, name='tournament_game'),
 
+
+    path('get-blocked-list/', user_controller.get_blocked_list, name='get_blocked_list'),
+    path('add-to-blocked-list/', user_controller.add_to_blocked_list, name='add_to_blocked_list'),
+    path('remove-from-blocked-list/', user_controller.remove_from_blocked_list, name='remove_from_blocked_list'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

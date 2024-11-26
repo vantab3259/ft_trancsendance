@@ -111,6 +111,16 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_online = models.BooleanField(_('active'), default=False)
     last_time_check_is_online = models.DateTimeField(auto_now=True)
 
+    
+    
+    blocked_list = ArrayField(
+        models.IntegerField(blank=True),
+        default=list,
+        blank=True,
+        verbose_name='Blocked List'
+    )
+
+
 
     objects = CustomUserManager()
 

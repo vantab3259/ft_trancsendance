@@ -548,3 +548,81 @@ def get_history_game(request):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
+
+
+@require_jwt
+@csrf_exempt
+def get_blocked_list(request):
+    if request.method == 'GET':
+        user = request.user
+        blocked_list = user.blocked_list
+
+        blocked_users = CustomUser.objects.filter(id__in=blocked_list)
+        user_data = [
+            {
+                'id': user.id,
+                'pseudo': user.pseudo,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'profile_picture': user.get_profile_picture_url(),
+                'is_online': user.is_online,
+            }
+            for user in blocked_users
+        ]
+
+        return JsonResponse({'status': 'success', 'blocked_users': user_data}, status=200)
+
+    return JsonResponse({'error': 'Invalid request method. Use GET.'}, status=400)
+
+@require_jwt
+@csrf_exempt
+def add_to_blocked_list(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        user_to_block_id = data.get('id', None)
+
+        if not user_to_block_id:
+            return JsonResponse({'error': 'User ID not provided.'}, status=400)
+
+        try:
+            user_to_block = CustomUser.objects.get(id=user_to_block_id)
+            user = request.user
+
+            if user_to_block.id == user.id:
+                return JsonResponse({'error': 'You cannot block yourself.'}, status=400)
+
+            if user_to_block.id not in user.blocked_list:
+                user.blocked_list.append(user_to_block.id)
+                user.save()
+            return JsonResponse({'status': 'success', 'message': 'User added to blocked list.'}, status=200)
+
+        except CustomUser.DoesNotExist:
+            return JsonResponse({'error': 'User does not exist.'}, status=404)
+
+    return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
+
+@require_jwt
+@csrf_exempt
+def remove_from_blocked_list(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        user_to_unblock_id = data.get('id', None)
+
+        if not user_to_unblock_id:
+            return JsonResponse({'error': 'User ID not provided.'}, status=400)
+
+        try:
+            user_to_unblock = CustomUser.objects.get(id=user_to_unblock_id)
+            user = request.user
+
+            if user_to_unblock.id in user.blocked_list:
+                user.blocked_list.remove(user_to_unblock.id)
+                user.save()
+            return JsonResponse({'status': 'success', 'message': 'User removed from blocked list.'}, status=200)
+
+        except CustomUser.DoesNotExist:
+            return JsonResponse({'error': 'User does not exist.'}, status=404)
+
+    return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
+
