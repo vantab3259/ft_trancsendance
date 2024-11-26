@@ -1,5 +1,7 @@
 async function onCreateTournament() {
     const tournamentName = document.getElementById('tournament-name').value;
+    const nickname = document.getElementById('tournament-player-nickname').value;
+    
     if (!tournamentName) {
         alert("Please enter a tournament name.");
         return;
@@ -13,7 +15,7 @@ async function onCreateTournament() {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify({ name: tournamentName })
+        body: JSON.stringify({ name: tournamentName, nickname })
     });
 
     const data = await response.json();
@@ -33,6 +35,8 @@ async function onCreateTournament() {
 
 async function onJoinTournament() {
     const tournamentId = document.getElementById('join-tournament-id').value;
+    const nickname = document.getElementById('tournament-player-nickname').value;
+    
     if (!tournamentId) {
         alert("Please enter a tournament code.");
         return;
@@ -45,7 +49,8 @@ async function onJoinTournament() {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+        },
+        body: JSON.stringify({ nickname })
     });
 
     const data = await response.json();
@@ -66,6 +71,7 @@ function showWaitingRoom() {
     console.log('Switching to the waiting room.');
     document.getElementById('create-or-join-section').style.display = 'none';
     document.getElementById('waiting-room').style.display = 'block';
+    document.getElementById("settingsTOUR").style.display = "none";
 }
 
 
@@ -75,6 +81,7 @@ function showTournamentBracket() {
 }
 
 async function pollForPlayers(tournamentId) {
+
     console.log('Polling for players in tournament:', tournamentId);
 
     const playerListElement = document.getElementById('player-names');
@@ -172,18 +179,13 @@ async function loadTournamentDetails(tournamentId) {
 
 function displayTournamentDetails(tournament) {
     const bracketContainer = document.getElementById('tournament-bracket');
-    bracketContainer.innerHTML = ''; // Clear previous content
+    bracketContainer.innerHTML = '';
 
-    // No need to retrieve currentUserId from localStorage
-    // const currentUserId = parseInt(localStorage.getItem('user_id'), 10);
-
-    // Iterate over rounds
     tournament.rounds.forEach(round => {
         const roundDiv = document.createElement('div');
         roundDiv.classList.add('column');
         roundDiv.innerHTML = `<h3>Round ${round.round_number}</h3>`;
 
-        // Iterate over matches in the round
         round.matches.forEach(match => {
             const matchDiv = document.createElement('div');
             matchDiv.classList.add('match');
@@ -194,7 +196,6 @@ function displayTournamentDetails(tournament) {
 
             let playButtonHtml = '';
 
-            // Use the flag provided by the server
             if (!match.is_complete && match.is_current_user_in_match) {
                 playButtonHtml = `<button id="play-button-${match.match_id}" onclick="startTournamentGame(${match.match_id}, ${tournament.id})">Ready</button>`;
             }
@@ -337,6 +338,8 @@ async function updateTournamentBracket(tournamentId) {
 async function pollTournamentUpdates(tournamentId) {
     console.log('Polling tournament updates for:', tournamentId);
 
+    let hasBeenNotified = false;
+
     const interval = setInterval(async () => {
         try {
             const response = await fetch(`/tournament/${tournamentId}/details/`, {
@@ -360,10 +363,20 @@ async function pollTournamentUpdates(tournamentId) {
                 const tournament = data.tournament;
                 displayTournamentDetails(tournament);
 
+                tournament.rounds.forEach(round => {
+                    round.matches.forEach(match => {
+                        if (!match.is_complete && match.is_current_user_in_match && !hasBeenNotified) {
+                            alert("Tournament system: You are expected for the game!")
+                            hasBeenNotified = true;
+                        }
+                    });
+                });
+
                 if (tournament.is_completed) {
                     console.log('Tournament completed. Stopping updates.');
                     document.getElementById("goofysettings").style.display = "block";
                     document.getElementById("settingslobby").style.display = "block";
+                    document.getElementById("settingsTOUR").style.display = "block";
                     clearInterval(interval);
                     alert('The tournament is over!');
                 }
@@ -378,4 +391,3 @@ async function pollTournamentUpdates(tournamentId) {
         }
     }, 5000);
 }
-

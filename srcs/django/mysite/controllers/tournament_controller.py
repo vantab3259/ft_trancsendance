@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.db import transaction
 
 
-from mysite.models import Tournament, TournamentRound, TournamentMatch, Game, CustomUser
+from mysite.models import Tournament, TournamentRound, TournamentMatch, Game, CustomUser, TournamentParticipant
 from mysite.views import require_jwt
 
 def get_current_round(tournament):
@@ -52,16 +52,19 @@ def create_tournament(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         name = data.get('name', 'Tournament')
-
+        nickname = data.get('nickname', '').strip() or request.user.pseudo
         user = request.user
 
         tournament = Tournament.objects.create(name=name)
         first_round = TournamentRound.objects.create(tournament=tournament, round_number=1)
 
+        TournamentParticipant.objects.create(tournament=tournament, user=user, nickname=nickname)
+
         TournamentMatch.objects.create(tournament_round=first_round, player1=user)
 
         return JsonResponse({'status': 'success', 'tournament_id': tournament.id}, status=201)
     return JsonResponse({'error': 'Invalid method'}, status=400)
+
 
 
 @csrf_exempt
@@ -83,6 +86,9 @@ def join_tournament(request, tournament_id):
         user = request.user 
         if not user.is_authenticated:
             return JsonResponse({'error': 'User not authenticated'}, status=401)
+
+        data = json.loads(request.body)
+        nickname = data.get('nickname', '').strip() or request.user.pseudo
 
         tournament = get_object_or_404(Tournament, id=tournament_id, is_active=True)
 
@@ -109,6 +115,8 @@ def join_tournament(request, tournament_id):
                 current_match.save()
             else:
                 TournamentMatch.objects.create(tournament_round=current_round, player1=user)
+
+            TournamentParticipant.objects.get_or_create(tournament=tournament, user=user, defaults={'nickname': nickname})
 
         return JsonResponse({'status': 'success', 'message': 'Joined tournament'}, status=200)
 
@@ -198,11 +206,13 @@ def finish_match(request, match_id):
 @csrf_exempt
 @require_jwt
 def tournament_details(request, tournament_id):
-    def serialize_user(user):
+    def serialize_user(user, tournament):
         if user:
+            participant = TournamentParticipant.objects.filter(tournament=tournament, user=user).first()
+            nickname = participant.nickname if participant else user.pseudo
             return {
                 'id': user.id,
-                'pseudo': user.pseudo,
+                'pseudo': nickname,
                 'email': user.email,
                 'profile_picture_url': user.get_profile_picture_url()
             }
@@ -225,9 +235,9 @@ def tournament_details(request, tournament_id):
             'matches': [
                 {
                     'match_id': match.id,
-                    'player1': serialize_user(match.player1),
-                    'player2': serialize_user(match.player2),
-                    'winner': serialize_user(match.winner),
+                    'player1': serialize_user(match.player1, tournament),
+                    'player2': serialize_user(match.player2, tournament),
+                    'winner': serialize_user(match.winner, tournament),
                     'is_complete': match.is_complete,
                     'is_current_user_in_match': (
                         (match.player1_id == current_user_id) or (match.player2_id == current_user_id)
@@ -248,6 +258,6 @@ def tournament_details(request, tournament_id):
             'date_created': tournament.date_created.isoformat(),
             'date_finished': tournament.date_finished.isoformat() if tournament.date_finished else None,
             'rounds': rounds,
-            'players': [serialize_user(player) for player in players]
+            'players': [serialize_user(player, tournament) for player in players]
         }
     }, status=200)

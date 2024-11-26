@@ -83,3 +83,15 @@ class TournamentMatch(models.Model):
 
     def __str__(self):
         return f"Match between {self.player1} and {self.player2} in Round {self.tournament_round.round_number}"
+
+
+class TournamentParticipant(models.Model):
+    tournament = models.ForeignKey('Tournament', related_name='participants', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    nickname = models.CharField(max_length=100)
+
+    class Meta:
+        unique_together = ('tournament', 'user')
+
+    def __str__(self):
+        return f"{self.nickname} in {self.tournament.name}"

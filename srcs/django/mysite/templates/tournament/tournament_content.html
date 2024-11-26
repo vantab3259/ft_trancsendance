@@ -4,6 +4,10 @@
 
 
 <div class="connexion-tournament" id="create-or-join-section">
+    <div class="" style="margin-bottom: 30px;">
+        <label style="margin-bottom: 10px;">Nickname:</label>
+        <input type="text" id="tournament-player-nickname" placeholder="Your nickname">
+    </div>
     <div class="create-options-tournament">
         <label>Tournament Name:</label>
         <input type="text" id="tournament-name" placeholder="Tournament Name">
@@ -20,6 +24,8 @@
 
 <div id="waiting-room" style="display:none;">
     <h2>Waiting Room</h2>
+    <p id="tournament-room-name"></p>
+    <p id="tournament-room-id"></p>
     <p id="waiting-room-message">Waiting for players to join...</p>
     <div id="player-list">
         <h3>Players Joined:</h3>
@@ -35,4 +41,45 @@
 
 <div class="tournament-game-container" style="display: none;">
     <canvas id="tournamentPongCanvas" width="600" height="400"></canvas>
+</div>
+
+
+<div class="content-pong">
+
+    <div class="left-header-pong" id="settingsTOUR">
+
+        <div class="title-options-game">
+
+            <div class="title-options">
+                SETTINGS
+            </div>
+        </div>
+        <div class="options-games">
+
+            <div class="pre-config-color-pong">
+                <div class="row-config active classic" id="tournamentConfigClassic">
+                    <span>CLASSIC</span>
+                </div>
+
+                <div class="row-config fun" id="tournamentConfigFun">
+                    <span>FUN</span>
+                </div>
+
+            </div>
+<!-- 
+            <div class="pre-config-color-pong">
+                <div class="row-config-2 active classic" id="tournamentMap0" data-map-type="false">
+                    <span>Map 0</span>
+                </div>
+
+                <div class="row-config-2 fun" id="tournamentMap1" data-map-type="true">
+                    <span>Map 1</span>
+                </div>
+
+            </div> -->
+
+        </div>
+
+    </div>
+
 </div>

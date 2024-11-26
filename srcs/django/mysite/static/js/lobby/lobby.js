@@ -52,6 +52,7 @@ function openMatchmakingModal() {
 function closeMatchmakingModal() {
     const modal = document.getElementById('matchmakingModal');
     document.getElementById('settingslobby').style.display = 'block';
+    document.getElementById('settingsTOUR').style.display = 'block';
     clearInterval(window.intervalAvatarMatchmaking);
     modal.style.display = 'none';
 }

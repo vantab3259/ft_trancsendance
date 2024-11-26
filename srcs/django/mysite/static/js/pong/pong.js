@@ -147,8 +147,10 @@ function updateActiveClasses() {
 
     if (window.otherMap) {
         document.getElementById('map1').classList.add('active');
+        // document.getElementById('tournamentMap1').classList.add('active');
     } else {
         document.getElementById('map0').classList.add('active');
+        // document.getElementById('tournamentMap0').classList.add('active');
     }
 
     if (window.otherMap) {
@@ -159,8 +161,10 @@ function updateActiveClasses() {
 
     if (window.funMode) {
         document.getElementById('funConfig').classList.add('active');
+        document.getElementById('tournamentConfigFun').classList.add('active');
     } else {
         document.getElementById('classicConfig').classList.add('active');
+        document.getElementById('tournamentConfigClassic').classList.add('active');
     }
 
     if (window.funMode) {
@@ -200,7 +204,7 @@ document.getElementById('map0').addEventListener('click', function () {
 });
 
 document.getElementById('funConfig').addEventListener('click', function () {
-    window.funMode = true; // Assuming you have a variable to track fun mode
+    window.funMode = true;
     // applyConfig(window.configurationPongFun);
     updateActiveClasses();
 });
@@ -210,6 +214,42 @@ document.getElementById('classicConfig').addEventListener('click', function () {
     // applyConfig(window.classicConfig);
     updateActiveClasses();
 });
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    // const tournamentMap1 = document.getElementById('tournamentMap1');
+    // if (tournamentMap1) {
+    //     tournamentMap1.addEventListener('click', function () {
+    //         window.otherMap = true;
+    //         updateActiveClasses();
+    //     });
+    // }
+
+    // const tournamentMap0 = document.getElementById('tournamentMap0');
+    // if (tournamentMap0) {
+    //     tournamentMap0.addEventListener('click', function () {
+    //         window.otherMap = false;
+    //         updateActiveClasses();
+    //     });
+    // }
+
+    const tournamentConfigFun = document.getElementById('tournamentConfigFun');
+    if (tournamentConfigFun) {
+        tournamentConfigFun.addEventListener('click', function () {
+            window.funMode = true;
+            updateActiveClasses();
+        });
+    }
+
+    const tournamentConfigClassic = document.getElementById('tournamentConfigClassic');
+    if (tournamentConfigClassic) {
+        tournamentConfigClassic.addEventListener('click', function () {
+            window.funMode = false;
+            updateActiveClasses();
+        });
+    }
+});
+
 
 
 document.getElementById('locmap1').addEventListener('click', function () {
@@ -663,6 +703,7 @@ document.querySelector(".launch-button-game-content").addEventListener("click", 
             if (modePlay != 'tournament') {
             document.getElementById("goofysettings").style.display = "block";
             document.getElementById("settingslobby").style.display = "block";
+            document.getElementById("settingsTOUR").style.display = "block";
             }
 
             let winnerName = data.winner_name; // Utilise 'winner_name'
