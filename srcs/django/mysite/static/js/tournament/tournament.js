@@ -24,7 +24,7 @@ async function onCreateTournament() {
         console.log('Tournament created successfully:', data.tournament_id);
 
         localStorage.setItem('tournament_id', data.tournament_id);
-        showWaitingRoom();
+        showWaitingRoom(tournamentName, data.tournament_id);
         pollForPlayers(data.tournament_id);
     } else {
         console.error('Error creating tournament:', data.error);
@@ -59,7 +59,7 @@ async function onJoinTournament() {
         console.log('Joined tournament successfully:', tournamentId);
 
         localStorage.setItem('tournament_id', tournamentId);
-        showWaitingRoom();
+        showWaitingRoom(data.tournament_name, data.tournament_id);
         pollForPlayers(tournamentId);
     } else {
         console.error('Error joining tournament:', data.error);
@@ -67,11 +67,18 @@ async function onJoinTournament() {
     }
 }
 
-function showWaitingRoom() {
+function showWaitingRoom(tournamentName = '', tournamentId = '') {
     console.log('Switching to the waiting room.');
     document.getElementById('create-or-join-section').style.display = 'none';
     document.getElementById('waiting-room').style.display = 'block';
     document.getElementById("settingsTOUR").style.display = "none";
+
+    if (tournamentName) {
+        document.getElementById('tournament-room-name').textContent = `Tournament Name: ${tournamentName}`;
+    }
+    if (tournamentId) {
+        document.getElementById('tournament-room-id').textContent = `Tournament ID: ${tournamentId}`;
+    }
 }
 
 
@@ -391,3 +398,5 @@ async function pollTournamentUpdates(tournamentId) {
         }
     }, 5000);
 }
+
+

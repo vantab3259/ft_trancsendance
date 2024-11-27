@@ -118,7 +118,12 @@ def join_tournament(request, tournament_id):
 
             TournamentParticipant.objects.get_or_create(tournament=tournament, user=user, defaults={'nickname': nickname})
 
-        return JsonResponse({'status': 'success', 'message': 'Joined tournament'}, status=200)
+        return JsonResponse({
+            'status': 'success', 
+            'message': 'Joined tournament',
+            'tournament_name': tournament.name,
+            'tournament_id': tournament.id
+        }, status=200)
 
     except Exception as e:
         print(f"Error in join_tournament: {str(e)}")
