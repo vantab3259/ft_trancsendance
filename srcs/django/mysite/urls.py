@@ -64,4 +64,8 @@ urlpatterns = [
     path('add-to-blocked-list/', user_controller.add_to_blocked_list, name='add_to_blocked_list'),
     path('remove-from-blocked-list/', user_controller.remove_from_blocked_list, name='remove_from_blocked_list'),
 
+    path('get-user-by-id/', user_controller.get_user_by_id, name='get_user_by_id'),
+    path('get-user-match-history/', user_controller.get_user_match_history, name='get_user_match_history'),
+
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -75,7 +75,6 @@ function injectUsersIntoList(users, mode) {
         const userItem = document.createElement('li');
         userItem.classList.add('contributor-item', 'friend');
 
-        // Vérifie si l'utilisateur est en ligne pour définir la couleur du point
         const onlineStatusColor = user.is_online ? 'green' : 'red';
 
         userItem.innerHTML = `
@@ -136,11 +135,9 @@ document.querySelectorAll(".option-friend-button").forEach((e) => {
 
 function addFriend(event) {
 
-    // Get the clicked button element
     const clickedButton = event.target;
     let mode = document.querySelector(".option-friend-button.active span").getAttribute('data-mode')
 
-    // Get the value of data-id attribute
     const userId = clickedButton.dataset.id;
     fetch('/request-friend/', {
         method: "POST", mode: "cors", headers: {
@@ -202,7 +199,6 @@ function injectPlayersIntoRanking(players) {
           playerItem.classList.add('highlight');
       }
 
-      // Assurez-vous que le prénom et le nom ne sont pas vides
       const name = player.name
 
       playerItem.innerHTML = `
@@ -282,4 +278,169 @@ function injectGamesIntoHistory(games) {
       historyList.innerHTML = '<li class="label-no-games-found">No games found.</li>';
   }
 }
+
+
+
+document.getElementById('search-user-btn').addEventListener('click', function () {
+    const userId = document.getElementById('user-id-search').value;
+
+    if (!userId) {
+        alert('Please enter a User ID.');
+        return;
+    }
+
+    fetch(`/get-user-by-id/?user_id=${userId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                populateUserData(data.user);
+                fetchMatchHistory(userId);
+            } else {
+                console.error(data.error);
+                alert('User not found.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+});
+
+
+function populateUserData(user) {
+    const profilePictureElement = document.querySelector('.dashboard-picture-header');
+    profilePictureElement.src = user.profile_picture;
+    profilePictureElement.alt = `${user.pseudo}'s Profile Picture`;
+
+    const pseudoContainer = document.querySelector('.pseudo-container .row-pseudo span');
+    pseudoContainer.innerText = user.first_name || user.last_name
+        ? `${user.first_name} ${user.last_name}`.trim()
+        : user.pseudo;
+
+    const emailElement = document.querySelector('.row-info.mail .data a');
+    emailElement.href = `mailto:${user.email}`;
+    emailElement.innerText = user.email;
+
+    const isOnlineIndicator = document.querySelector('.row-info.city .data');
+    isOnlineIndicator.innerText = user.is_online ? 'Online' : 'Offline';
+
+    const editLink = document.querySelector('.link-edit-profile-dashboard');
+    if (editLink) {
+        editLink.style.display = 'none';
+    }
+}
+
+function fetchMatchHistory(userId) {
+    fetch(`/get-user-match-history/?user_id=${userId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                injectGamesIntoHistory(data.games);
+            } else {
+                console.error(data.error);
+                alert('Unable to fetch match history.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function injectGamesIntoHistory(games) {
+    const historyList = document.querySelector(".match-history-list");
+    historyList.innerHTML = '';
+
+    games.forEach((game) => {
+        const gameItem = document.createElement('li');
+        gameItem.classList.add('match-history-item', game.result);
+
+        gameItem.innerHTML = `
+            <div class="player-info-wrapper">
+                <img src="${game.opponent_image}" alt="Opponent's Profile Picture" class="opponent-image">
+            </div>
+            <div class="content-versus">
+                <span class="versus">Vs</span>
+            </div>
+            <div class="opponent-info-wrapper">
+                <span class="opponent-name">${game.opponent_name}</span>
+                <img src="${game.opponent_image}" alt="Opponent's Profile Picture" class="opponent-image">
+            </div>
+            <div class="match-stats">
+                <span class="match-date">${game.date}</span>
+                <span class="match-score">Score: ${game.score}</span>
+                <span class="match-duration">Duration: ${game.duration}</span>
+            </div>
+        `;
+
+        historyList.appendChild(gameItem);
+    });
+
+    if (games.length === 0) {
+        historyList.innerHTML = '<li class="label-no-games-found">No games found.</li>';
+    }
+}
+
+function renderRankingChart(players) {
+    const chartContainer = document.getElementById('rankingBarChart');
+    chartContainer.innerHTML = '';
+
+    const maxMatches = Math.max(...players.map(player => player.matches_won));
+
+    players.forEach(player => {
+        const barContainer = document.createElement('div');
+        barContainer.classList.add('bar');
+
+        const label = document.createElement('div');
+        label.classList.add('bar-label');
+        label.innerText = player.pseudo;
+
+        const barInnerContainer = document.createElement('div');
+        barInnerContainer.classList.add('bar-container');
+
+        const barVisual = document.createElement('div');
+        barVisual.classList.add('bar-visual');
+        barVisual.style.width = `${(player.matches_won / maxMatches) * 100}%`;
+
+        const value = document.createElement('div');
+        value.classList.add('bar-value');
+        value.innerText = `${player.matches_won} wins`;
+
+        barInnerContainer.appendChild(barVisual);
+        barInnerContainer.appendChild(value);
+
+        barContainer.appendChild(label);
+        barContainer.appendChild(barInnerContainer);
+
+        chartContainer.appendChild(barContainer);
+    });
+}
+
+function fetchAndRenderRankingChart() {
+    fetch('/get-ranking/', {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            renderRankingChart(data.players);
+        } else {
+            console.error("Error: ", data.error);
+        }
+    })
+    .catch(error => console.error('Fetch error:', error));
+}
+
+fetchAndRenderRankingChart();
 
