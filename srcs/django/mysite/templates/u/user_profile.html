@@ -1,0 +1,16 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block overload_css %}
+{% endblock %}
+
+{% block content %}
+
+    {% include 'u/user_profile_content.html' %}
+
+    {% block overload_javascript %}
+    {% endblock %}
+
+{% endblock %}

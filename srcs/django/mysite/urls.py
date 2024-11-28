@@ -64,4 +64,7 @@ urlpatterns = [
     path('add-to-blocked-list/', user_controller.add_to_blocked_list, name='add_to_blocked_list'),
     path('remove-from-blocked-list/', user_controller.remove_from_blocked_list, name='remove_from_blocked_list'),
 
+
+    path('u/<int:id>/', views.user_profile, name='user_profile'),
+    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

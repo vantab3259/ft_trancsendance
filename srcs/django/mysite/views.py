@@ -60,6 +60,13 @@ def two_fa_required(view_func):
     return _wrapped_view
 
 
+
+@login_required(login_url='/login/')
+def user_profile(request, id):    
+    return render(request, 'u/user_profile.html')
+
+
+
 @two_fa_required
 def home(request):
 	return render(request, 'login/login.html')
