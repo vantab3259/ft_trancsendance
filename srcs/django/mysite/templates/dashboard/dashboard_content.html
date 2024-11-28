@@ -1,7 +1,16 @@
 {% load static %}
 
 
+
+<div class="user-search-bar">
+    <input type="text" id="user-id-search" placeholder="Enter User ID">
+    <button id="search-user-btn">Search</button>
+</div>
+
 <div class="dashboard-header">
+
+
+    
 
     <div class="dashboard-picture-header-container not-s not-g ">
          <img class="dashboard-picture-header not-s not-g "
@@ -122,22 +131,27 @@
 </div>
 
 <div class="sub-first-container-dashboard">
+    <div class="sub-first-content-dashboard" >
+        {% include 'history_match/history_match_content.html' %}
+    </div>
     <div class="sub-first-content-dashboard">
         {% include 'ranking/ranking_content.html' %}
     </div>
     
-    <div class="sub-first-content-dashboard" >
-        {% include 'history_match/history_match_content.html' %}
-    </div>
 
-   
+    <div class="sub-first-container-dashboard">
+        <div class="sub-first-content-dashboard">
+            <h3>Player Ranking - Matches Won</h3>
+            <div id="rankingBarChart" class="bar-chart"></div>
+        </div>
+    </div>
 	
     
     
 </div>
 <div class="sub-first-container-dashboard">
 	<div class="sub-first-content-dashboard" >
-        <div class="achievements">
+        <!-- <div class="achievements">
             <div class="achievements-header">
                 <h2 class="board-title">My page</h2>
             </div>
@@ -171,7 +185,7 @@
                     <img src="https://cdn.intra.42.fr/achievement/image/7/PRO002.svg" alt="Code Explorer Icon">
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 	<div class="sub-first-content-dashboard">
         {% include 'friends/friends_content.html' %}
@@ -179,6 +193,52 @@
 </div>
 <link rel="stylesheet" href="{% static 'css/dashboard/dashboard.css' %}">
 <script src="{% static 'js/dashboard/dashboard.js' %}"></script>
+
+<style>
+    .bar-chart {
+        width: 100%;
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 10px;
+        border: 1px solid #ccc;
+        background: #f9f9f9;
+    }
+
+    .bar {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .bar-label {
+        width: 100px;
+        font-size: 14px;
+        padding-right: 10px;
+        text-align: right;
+    }
+
+    .bar-container {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+    }
+
+    .bar-visual {
+        height: 20px;
+        background-color: #4caf50;
+        transition: width 0.3s ease-in-out;
+    }
+
+    .bar-visual:hover {
+        background-color: #45a049;
+    }
+
+    .bar-value {
+        margin-left: 10px;
+        font-size: 12px;
+    }
+</style>
+
 
 
 {% if request.user.coalition_cover_url %}

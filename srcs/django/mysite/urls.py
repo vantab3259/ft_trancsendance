@@ -3,6 +3,7 @@ from django.urls import path
 from . import views
 from .controllers import *
 from .controllers import chat_controller
+from .controllers import tournament_controller
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -50,6 +51,21 @@ urlpatterns = [
 
     path('get-ranking/', user_controller.getRanking, name='getRanking'),
     path('get-history-game/', user_controller.get_history_game, name='get_history_game'),
+
+    path('tournament/create/', tournament_controller.create_tournament, name='create_tournament'),
+    path('tournament/<int:tournament_id>/join/', tournament_controller.join_tournament, name='join_tournament'),
+    path('tournament/<int:tournament_id>/start-next-round/', tournament_controller.start_next_round, name='start_next_round'),
+    path('tournament/match/<int:match_id>/finish/', tournament_controller.finish_match, name='finish_match'),
+    path('tournament/<int:tournament_id>/details/', tournament_controller.tournament_details, name='tournament_details'),
+    path('tournament/game/<int:match_id>/', tournament_controller.tournament_game_view, name='tournament_game'),
+
+
+    path('get-blocked-list/', user_controller.get_blocked_list, name='get_blocked_list'),
+    path('add-to-blocked-list/', user_controller.add_to_blocked_list, name='add_to_blocked_list'),
+    path('remove-from-blocked-list/', user_controller.remove_from_blocked_list, name='remove_from_blocked_list'),
+
+    path('get-user-by-id/', user_controller.get_user_by_id, name='get_user_by_id'),
+    path('get-user-match-history/', user_controller.get_user_match_history, name='get_user_match_history'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -48,7 +48,7 @@ SQUARE2_Y = SCREEN_HEIGHT / 2 - 25
 connected_players = {}
 rooms = {}
 
-class PongConsumer(AsyncWebsocketConsumer):
+class UservsConsumer(AsyncWebsocketConsumer):
 
     def ball_square_collision(self, ball, square):
         closest_x = max(square['x'], min(ball['x'], square['x'] + square['width']))
@@ -102,6 +102,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         map_type_str = self.scope['url_route']['kwargs']['map_type']
         self.map_type = map_type_str.lower() == 'true'
 
+        self.target_user_id = self.scope['url_route']['kwargs'].get('user_id')
+
         if self.player_id in connected_players:
             await self.close()
             return
@@ -111,10 +113,13 @@ class PongConsumer(AsyncWebsocketConsumer):
         room_found = False
         for room_name, room_data in rooms.items():
             if len(room_data['players']) < MAX_PLAYERS_PER_ROOM and room_data['map_type'] == self.map_type:
-                self.room_group_name = room_name
-                room_data['players'].append({'player_id': self.player_id, 'channel_name': self.channel_name})
-                room_found = True
-                break
+                target_in_room = any(player['player_id'] == int(self.target_user_id) for player in room_data['players'])
+                if target_in_room:
+                    self.room_group_name = room_name
+                    room_data['players'].append({'player_id': self.player_id, 'channel_name': self.channel_name})
+                    room_found = True
+                    break
+
 
         if not room_found:
             self.room_group_name = f"room_{uuid.uuid4().hex}"
@@ -139,10 +144,9 @@ class PongConsumer(AsyncWebsocketConsumer):
                         'right': 0
                     },
                     'point_scored': False
-                }
+                },
             }
 
-            # Create a new Game instance asynchronously
             game = await database_sync_to_async(Game.objects.create)(map_type=self.map_type)
             rooms[self.room_group_name]['game'] = game
 
@@ -151,7 +155,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         # Après avoir récupéré ou créé le jeu
         if len(rooms[self.room_group_name]['players']) == MAX_PLAYERS_PER_ROOM:
-          game = rooms[self.room_group_name]['game']  # Récupère le jeu à partir du dictionnaire
+          game = rooms[self.room_group_name]['game']
           players = rooms[self.room_group_name]['players']
 
           # Assigner les équipes et créer les liens joueurs-jeu

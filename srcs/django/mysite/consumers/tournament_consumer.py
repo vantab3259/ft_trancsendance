@@ -4,9 +4,14 @@ import uuid
 import asyncio
 import math
 from mysite.models.game import Game, PlayerGameLink
+from mysite.models.tournament import TournamentMatch, TournamentRound
 from django.contrib.auth import get_user_model
 from channels.db import database_sync_to_async
 import random
+import logging
+from django.db import transaction
+from django.utils import timezone
+
 
 User = get_user_model()
 
@@ -48,7 +53,43 @@ SQUARE2_Y = SCREEN_HEIGHT / 2 - 25
 connected_players = {}
 rooms = {}
 
-class PongConsumer(AsyncWebsocketConsumer):
+
+
+def advance_tournament_round(tournament):
+    """Advances the tournament to the next round or ends it."""
+    current_round = tournament.rounds.last()
+
+    if current_round.matches.filter(is_complete=False).exists():
+        logging.info(f"Round {current_round.round_number} is not yet complete.")
+        return
+
+    winners = [match.winner for match in current_round.matches.all() if match.winner]
+    logging.info(f"Winners from Round {current_round.round_number}: {[w.id for w in winners]}")
+
+    if len(winners) == 1:
+        tournament.is_active = False
+        tournament.date_finished = timezone.now()
+        tournament.save()
+        logging.info(f"Tournament {tournament.name} completed. Winner: {winners[0].id}")
+        return
+
+    if len(winners) == 2:
+        next_round = TournamentRound.objects.create(
+            tournament=tournament,
+            round_number=current_round.round_number + 1
+        )
+        game = Game.objects.create()
+        TournamentMatch.objects.create(
+            tournament_round=next_round,
+            player1=winners[0],
+            player2=winners[1],
+            game=game
+        )
+        logging.info(f"Next round {next_round.round_number} initialized for Tournament {tournament.name}.")
+    else:
+        raise ValueError(f"Unexpected number of winners: {len(winners)}")
+
+class TournamentConsumer(AsyncWebsocketConsumer):
 
     def ball_square_collision(self, ball, square):
         closest_x = max(square['x'], min(ball['x'], square['x'] + square['width']))
@@ -99,10 +140,33 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.player_id = self.scope['user'].id
         self.user = self.scope['user']
-        map_type_str = self.scope['url_route']['kwargs']['map_type']
-        self.map_type = map_type_str.lower() == 'true'
+        self.map_type = False
+
+        self.match_id = self.scope['url_route']['kwargs'].get('match_id')
+
+        self.match = await database_sync_to_async(TournamentMatch.objects.filter(id=self.match_id).first)()
+        if not self.match:
+            await self.close()
+            return
+
+
+        logging.info("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+        logging.info("Player ID: " + str(self.player_id))
+        logging.info("Player 1 ID: " + str(self.match.player1_id))
+        logging.info("Player 2 ID: " + str(self.match.player2_id))
+        logging.info("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
+        if self.player_id not in [self.match.player1_id, self.match.player2_id]:
+            await self.send(text_data=json.dumps({
+                'error': "You are not a participant in this match."
+            }))
+            await self.close()
+            return
 
         if self.player_id in connected_players:
+            await self.send(text_data=json.dumps({
+                'error': "You are already connected to a game."
+            }))
             await self.close()
             return
 
@@ -111,16 +175,18 @@ class PongConsumer(AsyncWebsocketConsumer):
         room_found = False
         for room_name, room_data in rooms.items():
             if len(room_data['players']) < MAX_PLAYERS_PER_ROOM and room_data['map_type'] == self.map_type:
-                self.room_group_name = room_name
-                room_data['players'].append({'player_id': self.player_id, 'channel_name': self.channel_name})
-                room_found = True
-                break
+                if 'match_id' in room_data and room_data['match_id'] == self.match_id:
+                    self.room_group_name = room_name
+                    room_data['players'].append({'player_id': self.player_id, 'channel_name': self.channel_name})
+                    room_found = True
+                    break
 
         if not room_found:
             self.room_group_name = f"room_{uuid.uuid4().hex}"
             rooms[self.room_group_name] = {
                 'players': [{'player_id': self.player_id, 'channel_name': self.channel_name}],
                 'map_type': self.map_type,
+                'match_id': self.match_id,
                 'game_state': {
                     'ball': {
                         'x': BALL_INITIAL_X,
@@ -142,19 +208,19 @@ class PongConsumer(AsyncWebsocketConsumer):
                 }
             }
 
-            # Create a new Game instance asynchronously
             game = await database_sync_to_async(Game.objects.create)(map_type=self.map_type)
             rooms[self.room_group_name]['game'] = game
+            match = await database_sync_to_async(TournamentMatch.objects.get)(id=self.match_id)
+            match.game = game
+            await database_sync_to_async(match.save)()
 
         await self.accept()
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
-        # Après avoir récupéré ou créé le jeu
         if len(rooms[self.room_group_name]['players']) == MAX_PLAYERS_PER_ROOM:
-          game = rooms[self.room_group_name]['game']  # Récupère le jeu à partir du dictionnaire
+          game = rooms[self.room_group_name]['game']
           players = rooms[self.room_group_name]['players']
 
-          # Assigner les équipes et créer les liens joueurs-jeu
           for i, player_info in enumerate(players):
               team = 1 if i == 0 else 2
               user = await database_sync_to_async(User.objects.get)(id=player_info['player_id'])
@@ -166,11 +232,10 @@ class PongConsumer(AsyncWebsocketConsumer):
               )
 
               if created:
-                  print(f"Le joueur {user} a été associé à la partie {game} avec l'équipe {team}.")
+                  logging.info(f"Le joueur {user} a été associé à la partie {game} avec l'équipe {team}.")
               else:
-                  print(f"Le joueur {user} est déjà associé à la partie {game}.")
+                  logging.info(f"Le joueur {user} est déjà associé à la partie {game}.")
 
-          # Démarrer la partie
           await self.channel_layer.group_send(
               self.room_group_name,
               {
@@ -195,7 +260,6 @@ class PongConsumer(AsyncWebsocketConsumer):
               game = rooms[self.room_group_name]['game']
               user = await database_sync_to_async(User.objects.get)(id=remaining_player['player_id'])
 
-              # Vérifier si le PlayerGameLink existe
               try:
                   winner_link = await database_sync_to_async(PlayerGameLink.objects.get)(player=user, game=game)
               except PlayerGameLink.DoesNotExist:
@@ -215,7 +279,6 @@ class PongConsumer(AsyncWebsocketConsumer):
       if self.player_id in connected_players:
           del connected_players[self.player_id]
 
-      # Ne ferme pas explicitement le WebSocket ici
       await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
       if self.room_group_name in rooms and len(rooms[self.room_group_name]['players']) == 1:
@@ -246,7 +309,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'isPlayerLeft': False
             }))
 
-        # Start the game loop
         asyncio.create_task(self.game_loop())
 
     async def receive(self, text_data):
@@ -256,10 +318,8 @@ class PongConsumer(AsyncWebsocketConsumer):
             if self.room_group_name in rooms:
                 game_state = rooms[self.room_group_name]['game_state']
                 if self.channel_name == rooms[self.room_group_name]['players'][0]['channel_name']:
-                    # Left player
                     game_state['paddles']['left']['y'] = data['paddleY']
                 else:
-                    # Right player
                     game_state['paddles']['right']['y'] = data['paddleY']
 
     async def game_loop(self):
@@ -275,11 +335,9 @@ class PongConsumer(AsyncWebsocketConsumer):
                 scores = game_state['scores']
                 point_scored = game_state.get('point_scored', False)
 
-                # Update ball position
                 ball['x'] += ball['velocityX']
                 ball['y'] += ball['velocityY']
 
-                # Collisions with walls
                 if ball['y'] - ball['radius'] < 0:
                     ball['y'] = ball['radius']
                     ball['velocityY'] = -ball['velocityY']
@@ -297,7 +355,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                             collision_point = self.get_collision_point(ball, square)
                             self.adjust_ball_position(ball, square, collision_point)
 
-                # Check if a point is scored only if no point has been scored yet
                 if not point_scored:
                     if ball['x'] - ball['radius'] < 0:
                         scores['right'] += 1
@@ -310,7 +367,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                         await self.update_score('left')
                         await self.reset_ball(ball)
 
-                # Collisions with paddles
                 paddle_left = {'x': 0, 'y': paddles['left']['y'], 'width': PADDLE_WIDTH, 'height': PADDLE_HEIGHT}
                 paddle_right = {'x': SCREEN_WIDTH - PADDLE_WIDTH, 'y': paddles['right']['y'], 'width': PADDLE_WIDTH, 'height': PADDLE_HEIGHT}
 
@@ -321,14 +377,13 @@ class PongConsumer(AsyncWebsocketConsumer):
                     ball['x'] = paddle_right['x'] - ball['radius']
                     self.reflect_ball(ball, paddle_right)
 
-                # Send updates every UPDATE_INTERVAL iterations
                 update_counter += 1
                 if update_counter % UPDATE_INTERVAL == 0:
                     await self.channel_layer.group_send(
                         self.room_group_name,
                         {
                             'type': 'game_update',
-                            'game_state': game_state  # Send the game state
+                            'game_state': game_state
                         }
                     )
             else:
@@ -336,14 +391,11 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def update_score(self, scoring_team):
-        """Update the score of the respective team and check if the game is won."""
         game = rooms[self.room_group_name]['game']
-        
-        # Récupérer les liens pour les deux joueurs
+
         left_player_link = await database_sync_to_async(PlayerGameLink.objects.get)(game=game, team=1)
         right_player_link = await database_sync_to_async(PlayerGameLink.objects.get)(game=game, team=2)
 
-        # Mettre à jour le score de l'équipe qui a marqué en ajoutant 1 point
         if scoring_team == 'left':
             left_player_link.score += 1
             await database_sync_to_async(left_player_link.save)()
@@ -351,16 +403,16 @@ class PongConsumer(AsyncWebsocketConsumer):
             right_player_link.score += 1
             await database_sync_to_async(right_player_link.save)()
 
-        # Vérifier si l'équipe qui a marqué a atteint le score vainqueur
         if scoring_team == 'left' and left_player_link.score >= SCORE_TO_WIN:
-            # Ajouter un point supplémentaire avant de terminer le jeu
             left_player_link.score += 1
             await database_sync_to_async(left_player_link.save)()
+
             await self.end_game(left_player_link)
+
         elif scoring_team == 'right' and right_player_link.score >= SCORE_TO_WIN:
-            # Ajouter un point supplémentaire avant de terminer le jeu
             right_player_link.score += 1
             await database_sync_to_async(right_player_link.save)()
+
             await self.end_game(right_player_link)
 
 
@@ -368,12 +420,12 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def end_game(self, winner_link):
-        """End the game, mark the winner, and notify players without closing the WebSocket."""
+        """End the game, mark the winner, update tournament progress, and notify players."""
+        logging.info("\n\n\n\nEND GAME CALLED\n\n\n\n\n\n\n")
 
-        # Utilisation de sync_to_async pour accéder aux attributs ORM
         game = await database_sync_to_async(lambda: winner_link.game)()
         winner_link.is_winner = True
-        winner_link.reason = "A atteint le score maximum."
+        winner_link.reason = "Reached the maximum score."
         await database_sync_to_async(winner_link.save)()
 
         game.is_active = False
@@ -381,32 +433,40 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         await database_sync_to_async(game.finish_game)()
 
-        # Récupérer le nom et l'ID du joueur gagnant en mode async
         winner_name = await database_sync_to_async(lambda: winner_link.player.get_short_name())()
         winner_id = await database_sync_to_async(lambda: winner_link.player.id)()
 
-        # Envoyer un message à tous les joueurs pour indiquer que le jeu est terminé avec l'ID et le nom du gagnant
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'game_finished',
-                'message': f"Le jeu est terminé ! Le joueur {winner_name} a gagné.",
-                'winner_name': winner_name,  # Inclure 'winner_name'
-                'winner_id': winner_id       # Inclure 'winner_id'
+                'message': f"The game is over! Player {winner_name} has won.",
+                'winner_name': winner_name,
+                'winner_id': winner_id
             }
         )
 
-        # Retirer les joueurs de la room mais ne pas fermer le WebSocket
-        players = rooms[self.room_group_name]['players']
-        for player in players:
-            # Retirer chaque joueur du groupe, sans fermer la connexion WebSocket
-            await self.channel_layer.group_discard(self.room_group_name, player['channel_name'])
+        match = await database_sync_to_async(TournamentMatch.objects.filter(game=game).first)()
+        if match:
+            logging.info("\n\n\n\nIF MATCH CALLED\n\n\n\n\n\n\n")
+            match.winner = await database_sync_to_async(lambda: winner_link.player)()
+            match.is_complete = True
+            await database_sync_to_async(match.save)()
 
-        # Optionnel : supprimer la room une fois la partie terminée
+            tournament = await database_sync_to_async(lambda: match.tournament_round.tournament)()
+            logging.info(f"Advancing tournament: {tournament.name}")
+            await database_sync_to_async(advance_tournament_round)(tournament)
+
         if self.room_group_name in rooms:
+            players = rooms[self.room_group_name].get('players', [])
+            for player in players:
+                await self.channel_layer.group_discard(self.room_group_name, player['channel_name'])
+
             del rooms[self.room_group_name]
 
-    # Ajouter un nouveau gestionnaire d'événements pour gérer l'affichage de la fin du jeu côté client
+
+
+
     async def game_finished(self, event):
         await self.send(text_data=json.dumps({
             'type': 'game_finished',
@@ -443,7 +503,6 @@ class PongConsumer(AsyncWebsocketConsumer):
       ball['velocityX'] = ball['speed'] * (-1 if ball['velocityX'] > 0 else 1)
       ball['velocityY'] = 0
 
-      # Réinitialiser le flag point_scored
       if self.room_group_name in rooms:
           rooms[self.room_group_name]['game_state']['point_scored'] = False
 

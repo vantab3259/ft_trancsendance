@@ -1,10 +1,11 @@
 let socketChat = null;
 let selectedFriendId = null;
 let searchTimeoutChat;
-
+let blockList = [];
 
 function initPageChat() {
     setupEventListeners();
+    fetchBlockList();
     friendsChats();
 }
 
@@ -14,6 +15,9 @@ function setupEventListeners() {
     document.querySelector('.actualize-friends-chat').addEventListener('click', handleActualizeClick);
     document.querySelector(".icon-send i").addEventListener("click", sendMessage);
     document.getElementById("input-message").addEventListener("keypress", handleKeyPress);
+
+    document.querySelector(".ban-user").addEventListener("click", handleBlockUser);
+    document.querySelector("#unblock-user-button").addEventListener("click", handleUnblockUser);
 }
 
 // Gestionnaire pour la recherche d'amis
@@ -128,8 +132,41 @@ function updateActiveFriendConversationItem(id) {
     selectedFriendId = id;
     deactivateAllConversationItems();
     activateConversationItem(id);
-    fetchMessages(id);
+
+    const userBlockedElement = document.querySelector("#userblocked");
+
+    if (blockList.includes(id)) {
+        showBlockedMessage();
+    } else {
+        hideBlockedMessage();
+        fetchMessages(id);
+    }
+
+    refreshUI();
 }
+
+function refreshUI() {
+    const messagingOpenElement = document.querySelector(".messaging.open");
+    const mesgsElement = document.querySelector(".mesgs");
+    const inputMessageContainer = document.querySelector(".input-message-container");
+    const userBlockedElement = document.querySelector("#userblocked");
+    const unblockButton = document.querySelector("#unblock-user-button");
+
+    if (blockList.includes(selectedFriendId)) {
+        messagingOpenElement.classList.remove("v-hidden");
+        mesgsElement.classList.add("hidden");
+        inputMessageContainer.classList.add("hidden");
+        userBlockedElement.classList.remove("hidden");
+        unblockButton.classList.remove("hidden");
+    } else {
+        messagingOpenElement.classList.remove("v-hidden");
+        mesgsElement.classList.remove("hidden");
+        inputMessageContainer.classList.remove("hidden");
+        userBlockedElement.classList.add("hidden");
+        unblockButton.classList.add("hidden");
+    }
+}
+
 
 // Désactiver tous les éléments de conversation
 function deactivateAllConversationItems() {
@@ -211,6 +248,7 @@ function openSocket() {
 // Gestionnaire pour les messages WebSocket
 function handleSocketMessage(event) {
     const data = JSON.parse(event.data);
+    
     if (data.code === 4001) {
         displayReceivedMessage(data);
     }
@@ -273,3 +311,209 @@ function scrollToBottom(element) {
     element.scrollTop = element.scrollHeight;
 }
 
+
+
+function handleBlockUser() {
+    if (!selectedFriendId) {
+        alert("No user selected to block.");
+        return;
+    }
+
+    fetch('/add-to-blocked-list/', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ id: selectedFriendId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert("User has been blocked successfully.");
+            blockList.push(selectedFriendId);
+            deactivateAllConversationItems();
+            document.querySelector(".messaging.open").classList.add("v-hidden");
+        } else {
+            console.error('Error blocking user:', data.message || data.error);
+            alert("An error occurred while blocking the user.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while blocking the user.");
+    });
+}
+
+
+function fetchBlockList() {
+    fetch('/get-blocked-list/', {
+        method: 'GET',
+        headers: getAuthHeaders()
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                blockList = data.blocked_users.map(user => user.id);
+
+                if (selectedFriendId) {
+                    if (blockList.includes(selectedFriendId)) {
+                        showBlockedMessage();
+                    } else {
+                        hideBlockedMessage();
+                    }
+                }
+            } else {
+                console.error('Error fetching block list:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+function showBlockedMessage() {
+    const userBlockedElement = document.querySelector("#userblocked");
+    const mesgsElement = document.querySelector(".mesgs");
+    const inputMessageContainer = document.querySelector(".input-message-container");
+
+    userBlockedElement.classList.remove("hidden");
+    mesgsElement.classList.add("hidden");
+    inputMessageContainer.classList.add("hidden");
+}
+
+function hideBlockedMessage() {
+    const userBlockedElement = document.querySelector("#userblocked");
+    const mesgsElement = document.querySelector(".mesgs");
+    const inputMessageContainer = document.querySelector(".input-message-container");
+
+    userBlockedElement.classList.add("hidden");
+    mesgsElement.classList.remove("hidden");
+    inputMessageContainer.classList.remove("hidden");
+}
+
+
+function handleUnblockUser() {
+    if (!selectedFriendId) {
+        alert("No user selected to unblock.");
+        return;
+    }
+
+    fetch('/remove-from-blocked-list/', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ id: selectedFriendId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert("User has been unblocked successfully.");
+            blockList = blockList.filter(id => id !== selectedFriendId);
+            hideBlockedMessage();
+            refreshUI();
+        } else {
+            console.error('Error unblocking user:', data.message || data.error);
+            alert("An error occurred while unblocking the user.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while unblocking the user.");
+    });
+}
+
+
+document.querySelector("#uservs-button").addEventListener("click", function () {
+    if (!selectedFriendId) {
+        alert("Please select a friend to challenge.");
+        return;
+    }
+
+    modePlay = 'online';
+    const mapType = window.otherMap;
+    const mapTypeStr = mapType ? 'true' : 'false';
+    socketPong = new WebSocket(`wss://localhost:4443/ws/uservs/${mapTypeStr}/${selectedFriendId}/`);
+    openMatchmakingModal();
+
+
+    if (socketChat && socketChat.readyState === WebSocket.OPEN) {
+        const challengeMessage = {
+            message: "I challenge you!",
+            recipient_id: selectedFriendId,
+        };
+        socketChat.send(JSON.stringify(challengeMessage));
+
+        displaySentMessage({
+            message: challengeMessage.message,
+            date: new Date().toLocaleString(),
+        });
+
+    } else {
+        console.error("WebSocket for chat is not open. Challenge message could not be sent.");
+    }
+
+    socketPong.onopen = function () {
+        console.log("Connecté au WebSocket Pong Server");
+        socketPong.send(JSON.stringify({
+            'type': 'start_game'
+        }));
+    };
+
+
+
+    socketPong.onmessage = function (event) {
+        let data = JSON.parse(event.data);
+
+        // Réception des informations de démarrage pour savoir si le joueur est à gauche ou à droite
+        if (data.type === 'player_position') {
+            isPlayerLeft = data.isPlayerLeft; // Si true, le joueur est à gauche
+            console.log("Votre position :", isPlayerLeft ? "Gauche" : "Droite");
+        }
+
+        if (data.message === "La partie commence!") {
+            document.getElementById("goofysettings").style.display = "none";
+            closeMatchmakingModal();
+            showGamePage();
+            lastServerUpdateTime = Date.now();
+            startGame();
+        }
+
+        if (data.type === 'game_finished') {
+            if (modePlay != 'tournament') {
+            // document.getElementById("goofysettings").style.display = "block";
+            document.getElementById("settingslobby").style.display = "block";
+            document.getElementById("settingsTOUR").style.display = "block";
+            }
+
+            let winnerName = data.winner_name; // Utilise 'winner_name'
+            let winnerId = data.winner_id;     // Utilise 'winner_id'
+
+            // Vérifie si le joueur est le gagnant
+            // let currentUserId = document.querySelector(".user-pseudo-header").getAttribute('data-user-id');
+            // let resultModal = document.querySelector("#resultModal");
+            // let resultText = document.querySelector("#resultText");
+            closeWebSocket();
+            // if (winnerId.toString() === currentUserId) {
+            //     resultText.innerHTML = "You win 😻 !";
+            //     resultModal.style.display = "contents";
+            // } else {
+            //     resultText.innerHTML = "You lose 😿 !";
+            //     resultModal.style.display = "contents";
+            // }
+
+            // Arrête le jeu
+            if (window.gameInterval) {
+                clearInterval(window.gameInterval);
+            }
+        }
+
+        // Réception des mises à jour de position des paddles/balles du joueur opposé
+        if (data.type === 'game_update') {
+            updateGameState(data);
+        }
+    };
+
+
+
+    socketPong.onclose = function () {
+        closeWebSocket()
+        console.log("Déconnecté du WebSocket Pong Server");
+    };
+});

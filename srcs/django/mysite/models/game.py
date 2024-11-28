@@ -8,6 +8,12 @@ class Game(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Is Active?")
     date_created = models.DateTimeField(default=timezone.now)
     date_finish = models.DateTimeField(null=True, blank=True, verbose_name="Date Finished")
+    map_type = models.BooleanField(default=False, verbose_name="Use Map 1")
+
+    def set_map_type(self, map_type):
+        self.map_type = map_type
+        self.save()
+
 
     def add_player(self, user):
         """Add a player to the game."""

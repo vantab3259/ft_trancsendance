@@ -1,0 +1,21 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Tournament Game{% endblock %}
+
+{% block content %}
+<div class="tournament-game-container">
+    <canvas id="tournamentPongCanvas" width="600" height="400"></canvas>
+</div>
+
+<script src="{% static 'js/pong_tournament_game.js' %}"></script>
+
+<script>
+    const matchId = '{{ match_id }}';
+    const userId = '{{ request.user.id }}';
+
+    localStorage.setItem('user_id', userId);
+
+    initializeTournamentGame(matchId, userId);
+</script>
+{% endblock %}

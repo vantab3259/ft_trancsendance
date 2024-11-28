@@ -33,6 +33,7 @@ document.getElementById('confirmQuit').addEventListener('click', function() {
 
 function closeModal() {
     document.getElementById('quitModal').classList.remove('show');
+
     setTimeout(function() {
 
         if (document.getElementById('quitModal')) {
