@@ -113,14 +113,13 @@ class UservsConsumer(AsyncWebsocketConsumer):
         room_found = False
         for room_name, room_data in rooms.items():
             if len(room_data['players']) < MAX_PLAYERS_PER_ROOM and room_data['map_type'] == self.map_type:
-                for player in room_data['players']:
-                    if player['player_id'] == int(self.target_user_id):
-                        self.room_group_name = room_name
-                        room_data['players'].append({'player_id': self.player_id, 'channel_name': self.channel_name})
-                        room_found = True
-                        break
-            if room_found:
-                break
+                target_in_room = any(player['player_id'] == int(self.target_user_id) for player in room_data['players'])
+                if target_in_room:
+                    self.room_group_name = room_name
+                    room_data['players'].append({'player_id': self.player_id, 'channel_name': self.channel_name})
+                    room_found = True
+                    break
+
 
         if not room_found:
             self.room_group_name = f"room_{uuid.uuid4().hex}"

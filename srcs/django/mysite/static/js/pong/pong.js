@@ -701,7 +701,7 @@ document.querySelector(".launch-button-game-content").addEventListener("click", 
 
         if (data.type === 'game_finished') {
             if (modePlay != 'tournament') {
-            document.getElementById("goofysettings").style.display = "block";
+            // document.getElementById("goofysettings").style.display = "block";
             document.getElementById("settingslobby").style.display = "block";
             document.getElementById("settingsTOUR").style.display = "block";
             }

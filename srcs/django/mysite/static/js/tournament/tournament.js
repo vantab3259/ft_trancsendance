@@ -381,7 +381,7 @@ async function pollTournamentUpdates(tournamentId) {
 
                 if (tournament.is_completed) {
                     console.log('Tournament completed. Stopping updates.');
-                    document.getElementById("goofysettings").style.display = "block";
+                    // document.getElementById("goofysettings").style.display = "block";
                     document.getElementById("settingslobby").style.display = "block";
                     document.getElementById("settingsTOUR").style.display = "block";
                     clearInterval(interval);

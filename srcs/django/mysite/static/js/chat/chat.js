@@ -418,3 +418,102 @@ function handleUnblockUser() {
         alert("An error occurred while unblocking the user.");
     });
 }
+
+
+document.querySelector("#uservs-button").addEventListener("click", function () {
+    if (!selectedFriendId) {
+        alert("Please select a friend to challenge.");
+        return;
+    }
+
+    modePlay = 'online';
+    const mapType = window.otherMap;
+    const mapTypeStr = mapType ? 'true' : 'false';
+    socketPong = new WebSocket(`wss://localhost:4443/ws/uservs/${mapTypeStr}/${selectedFriendId}/`);
+    openMatchmakingModal();
+
+
+    if (socketChat && socketChat.readyState === WebSocket.OPEN) {
+        const challengeMessage = {
+            message: "I challenge you!",
+            recipient_id: selectedFriendId,
+        };
+        socketChat.send(JSON.stringify(challengeMessage));
+
+        displaySentMessage({
+            message: challengeMessage.message,
+            date: new Date().toLocaleString(),
+        });
+
+    } else {
+        console.error("WebSocket for chat is not open. Challenge message could not be sent.");
+    }
+
+    socketPong.onopen = function () {
+        console.log("Connecté au WebSocket Pong Server");
+        socketPong.send(JSON.stringify({
+            'type': 'start_game'
+        }));
+    };
+
+
+
+    socketPong.onmessage = function (event) {
+        let data = JSON.parse(event.data);
+
+        // Réception des informations de démarrage pour savoir si le joueur est à gauche ou à droite
+        if (data.type === 'player_position') {
+            isPlayerLeft = data.isPlayerLeft; // Si true, le joueur est à gauche
+            console.log("Votre position :", isPlayerLeft ? "Gauche" : "Droite");
+        }
+
+        if (data.message === "La partie commence!") {
+            document.getElementById("goofysettings").style.display = "none";
+            closeMatchmakingModal();
+            showGamePage();
+            lastServerUpdateTime = Date.now();
+            startGame();
+        }
+
+        if (data.type === 'game_finished') {
+            if (modePlay != 'tournament') {
+            // document.getElementById("goofysettings").style.display = "block";
+            document.getElementById("settingslobby").style.display = "block";
+            document.getElementById("settingsTOUR").style.display = "block";
+            }
+
+            let winnerName = data.winner_name; // Utilise 'winner_name'
+            let winnerId = data.winner_id;     // Utilise 'winner_id'
+
+            // Vérifie si le joueur est le gagnant
+            // let currentUserId = document.querySelector(".user-pseudo-header").getAttribute('data-user-id');
+            // let resultModal = document.querySelector("#resultModal");
+            // let resultText = document.querySelector("#resultText");
+            closeWebSocket();
+            // if (winnerId.toString() === currentUserId) {
+            //     resultText.innerHTML = "You win 😻 !";
+            //     resultModal.style.display = "contents";
+            // } else {
+            //     resultText.innerHTML = "You lose 😿 !";
+            //     resultModal.style.display = "contents";
+            // }
+
+            // Arrête le jeu
+            if (window.gameInterval) {
+                clearInterval(window.gameInterval);
+            }
+        }
+
+        // Réception des mises à jour de position des paddles/balles du joueur opposé
+        if (data.type === 'game_update') {
+            updateGameState(data);
+        }
+    };
+
+
+
+    socketPong.onclose = function () {
+        closeWebSocket()
+        console.log("Déconnecté du WebSocket Pong Server");
+    };
+});
