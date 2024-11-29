@@ -444,3 +444,32 @@ function fetchAndRenderRankingChart() {
 
 fetchAndRenderRankingChart();
 
+
+document.getElementById('my-profile-btn').addEventListener('click', function () {
+    const loggedInUserId = document.querySelector('.user-pseudo-header').getAttribute('data-user-id');
+
+    if (!loggedInUserId) {
+        alert('Unable to retrieve your profile.');
+        return;
+    }
+
+    fetch(`/get-user-by-id/?user_id=${loggedInUserId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                populateUserData(data.user);
+                fetchMatchHistory(loggedInUserId);
+            } else {
+                console.error(data.error);
+                alert('Unable to retrieve your profile.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+});
+

@@ -517,3 +517,33 @@ document.querySelector("#uservs-button").addEventListener("click", function () {
         console.log("Déconnecté du WebSocket Pong Server");
     };
 });
+
+document.querySelector('.view-profile').addEventListener('click', function () {
+    if (!selectedFriendId) {
+        alert("Please select a friend to view their profile.");
+        return;
+    }
+
+    currentPageClick = "dashboard";
+    loadContent('/dashboard', 'Dashboard', "dashboard", ['/static/js/dashboard/dashboard.js']);
+
+    fetch(`/get-user-by-id/?user_id=${selectedFriendId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            populateUserData(data.user);
+            fetchMatchHistory(selectedFriendId);
+        } else {
+            console.error(data.error);
+            alert('User not found.');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+
