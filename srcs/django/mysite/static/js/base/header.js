@@ -1,3 +1,5 @@
+
+let socketPong = null;
 var pathUrl = window.location.pathname;
 var pathUrlArgument = pathUrl.slice(1).replace(/\/$/, '');
 
@@ -14,12 +16,23 @@ var currentPageClick = pathUrl.slice(1).replace(/\/$/, '');
 
 function displayPage() {
 
+    if (socketPong && socketPong.readyState === WebSocket.OPEN) {
+        console.log("Disconnecting socketPong...");
+        socketPong.close();
+        socketPong = null;
+    }
+
     if (currentPageClick !== "login" && currentPageClick !== "login/") {
             document.querySelector(".navbar" ).style.display = "flex";
             // document.querySelector(".side-bar" ).style.display = "block";
     } else {
             document.querySelector(".navbar" ).style.display = "none";
             document.querySelector(".side-bar" ).style.display = "none";
+    }
+
+    if (currentPageClick === "profile/edit") {
+        currentPageClick = "dashboard";
+        history.replaceState(null, '', '/dashboard');
     }
 
     let mapPage = {
@@ -77,6 +90,7 @@ function displayPage() {
     if (currentPageClick in mapPage) {
         currentPageClick = mapPage[currentPageClick];
     }
+
 
     document.querySelectorAll("div[class$='-include']").forEach(function(element) {
         element.style.display = 'none';

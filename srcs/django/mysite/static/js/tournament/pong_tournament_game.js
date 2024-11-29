@@ -53,7 +53,6 @@ function initializeTournamentGame(matchId, userId) {
     };
 
     let isPlayerLeft = false; 
-    let socketPong = null;
     let gameInterval = null;
     let serverState = null;
 

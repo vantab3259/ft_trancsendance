@@ -655,7 +655,6 @@ document.querySelector("#pong").addEventListener("click", function () {
 
 /****** ONLINE PLAY ******/
 
-let socketPong = null;
 let isPlayerLeft = false; // Définit si le joueur est à gauche (true) ou à droite (false)
 
 function closeWebSocket() {

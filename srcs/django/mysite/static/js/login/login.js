@@ -64,8 +64,32 @@ signInForm.addEventListener("submit", function (event) {
                 document.getElementById("signin-form").reset();
                 document.getElementById("invalid-signin").innerHTML = '';
                 localStorage.setItem('token', data.token);
+
+
+
+
+
+
+
+
+                
+
                 history.pushState(null, '', '/dashboard');
+                currentPageClick = "dashboard";
+
+                document.querySelector(".navbar").style.display = "flex";
                 document.querySelector(".side-bar").classList.add("d-block");
+
+                displayPage();
+
+
+
+
+
+
+
+
+
                 return data;
             } else {
                 document.getElementById("invalid-signin").innerHTML = data['errors'];
