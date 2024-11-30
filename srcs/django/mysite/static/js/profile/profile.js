@@ -58,7 +58,8 @@ document.querySelector("input#checkbox-2fa-log").addEventListener("change", (e) 
 
     fetch('/set-two-fa-code/', {
         method: "POST", mode: "cors", headers: {
-            "Content-Type": "application/json", "Accept": "application/json"
+            "Content-Type": "application/json", "Accept": "application/json",
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }, body: JSON.stringify({
             checked: e.target.checked
         }),
