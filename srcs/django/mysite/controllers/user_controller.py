@@ -145,6 +145,7 @@ def profile_edit_form(request):
             user.profile_picture.save(unique_filename, request.FILES['profile-picture'], save=False)
 
         user.save()
+        login(request, user)
 
         return JsonResponse({'message': 'Profil mis à jour avec succès !'})
 
@@ -259,6 +260,7 @@ def get_oth_autorization(request):
 
         user.is_online = True
         user.save()
+        login(request, user)
 
         message = "Utilisateur créé et connecté"
         return JsonResponse({
@@ -352,6 +354,8 @@ def check_two_fa_code(request):
                 user.two_fa_code = ""
                 user.two_fa_code_is_checked = True
                 user.save()
+                login(request, user)
+
 
                 return JsonResponse(
                     {'message': 'Code validé et profil mis à jour !', 'check': True, 'user': user.getJson()},

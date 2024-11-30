@@ -447,7 +447,7 @@ fetchAndRenderRankingChart();
 
 
 document.getElementById('my-profile-btn').addEventListener('click', function () {
-    const loggedInUserId = document.querySelector('.user-pseudo-header').getAttribute('data-user-id');
+    let loggedInUserId = document.querySelector('.user-pseudo-header').getAttribute('data-user-id');
 
     if (!loggedInUserId) {
         alert('Unable to retrieve your profile.');

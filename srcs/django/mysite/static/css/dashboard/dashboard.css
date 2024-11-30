@@ -364,6 +364,7 @@ polygon {
         border-radius: 50%;
         margin: 0;
         margin-left: 10px;
+        max-width: 100px;
     }
 
     .center-dashboard-header {

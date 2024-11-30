@@ -210,6 +210,7 @@
 				history.pushState(null, '', "/dashboard");
 				initDashboard(data['user'][0]['fields']);
 				goToNextPage();
+				document.querySelector(".side-bar" ).style.display = "block";
 			}
 
 			if (data['check'] === false) {
