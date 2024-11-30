@@ -201,6 +201,8 @@ def get_oth_autorization(request):
         coalition_slug = coalitions[1]['slug']
         coalition_id = coalitions[1]['id']
 
+        
+
         if CustomUser.objects.filter(email=email).exists():
             user = CustomUser.objects.get(email=email)
 
@@ -244,13 +246,16 @@ def get_oth_autorization(request):
             user.active_tokens = []
         user.active_tokens.append(token)
         user.save()
-        login(request, user)
+
         if user.two_fa_code_is_active:
             user.two_fa_code_is_checked = False
             user.save()
             code = two_fa_code_gen(user)
             send_code_mail(code, user.email)
-            return JsonResponse({'wait-two-fa': True}, status=200)
+            return JsonResponse({
+                'wait-two-fa': True,
+                'token' : token,
+            }, status=200)
 
         user.is_online = True
         user.save()

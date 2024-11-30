@@ -147,6 +147,7 @@
                     document.querySelector(".container-flex-login").style.display = "none";
                     document.querySelector(".twoFa-container.parrent").style.display = "flex";
                     document.getElementById('loader').style.display = 'none';
+                    localStorage.setItem('token', data.token);
                 } else if (data['login']) {
                     history.pushState(null, '', "/dashboard");
                     initDashboard(data['user'][0]['fields']);
