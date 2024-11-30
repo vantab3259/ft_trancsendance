@@ -334,7 +334,6 @@ polygon {
     }
 }
 
-@media screen and (max-width: 1200px) {
     .sub-first-container-dashboard {
         display: block;
     }
@@ -377,6 +376,8 @@ polygon {
         column-gap: unset;
         justify-content: space-between;
     }
+
+@media screen and (max-width: 1200px) {
 
     .polygon-container {
         width: 100px;

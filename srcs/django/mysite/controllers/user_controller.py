@@ -632,29 +632,35 @@ def remove_from_blocked_list(request):
 @csrf_exempt
 def get_user_by_id(request):
     """
-    Retrieve user information by user ID.
+    Retrieve user information by user ID or pseudo.
     """
     if request.method == 'GET':
-        user_id = request.GET.get('user_id')
-        if not user_id:
-            return JsonResponse({'error': 'User ID not provided'}, status=400)
+        identifier = request.GET.get('user_id')
+
+        if not identifier:
+            return JsonResponse({'error': 'User ID or pseudo must be provided'}, status=400)
 
         try:
-            user = CustomUser.objects.get(id=user_id)
-            user_data = {
-                'id': user.id,
-                'pseudo': user.pseudo,
-                'email': user.email,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'profile_picture': user.get_profile_picture_url(),
-                'is_online': user.is_online,
-            }
-            return JsonResponse({'status': 'success', 'user': user_data}, status=200)
+            if identifier.isdigit():
+                user = CustomUser.objects.get(id=identifier)
+            else:  # Sinon pseudo
+                user = CustomUser.objects.get(pseudo=identifier)
         except CustomUser.DoesNotExist:
             return JsonResponse({'error': 'User not found'}, status=404)
 
+        user_data = {
+            'id': user.id,
+            'pseudo': user.pseudo,
+            'email': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'profile_picture': user.get_profile_picture_url(),
+            'is_online': user.is_online,
+        }
+        return JsonResponse({'status': 'success', 'user': user_data}, status=200)
+
     return JsonResponse({'error': 'Invalid request method. Use GET.'}, status=400)
+
 
 
 

@@ -285,7 +285,7 @@ document.getElementById('search-user-btn').addEventListener('click', function ()
     const userId = document.getElementById('user-id-search').value;
 
     if (!userId) {
-        alert('Please enter a User ID.');
+        showFlashMessage('error', '❌ Please enter a valid User ID or username.');
         return;
     }
 
@@ -300,10 +300,11 @@ document.getElementById('search-user-btn').addEventListener('click', function ()
         .then(data => {
             if (data.status === 'success') {
                 populateUserData(data.user);
-                fetchMatchHistory(userId);
+                fetchMatchHistory(data.user.id);
             } else {
                 console.error(data.error);
-                alert('User not found.');
+                showFlashMessage('error', '❌ User not found.');
+
             }
         })
         .catch(error => console.error('Error:', error));
