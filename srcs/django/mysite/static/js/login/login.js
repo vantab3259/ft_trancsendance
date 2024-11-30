@@ -167,6 +167,11 @@ function goToNextPage(page = "dashboard", scripts = ["/static/js/base/header.js"
 
     // Construire l'URL complète en fonction de la page
 
+    if (page === "dashboard") {
+        document.querySelector('.user-search-bar').setAttribute("style", "display: flex !important;");
+    } else {
+        document.querySelector('.user-search-bar').setAttribute("style", "display: none !important;");
+    }
     currentPageClick = "dashboard"
     displayPage();
 }

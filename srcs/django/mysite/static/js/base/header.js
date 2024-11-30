@@ -30,6 +30,14 @@ function displayPage() {
             document.querySelector(".side-bar" ).style.display = "none";
     }
 
+    console.log("currentPageClick => ", currentPageClick);
+
+    if (currentPageClick === "dashboard") {
+        document.querySelector('.user-search-bar').setAttribute("style", "display: flex !important;");
+    } else {
+        document.querySelector('.user-search-bar').setAttribute("style", "display: none !important;");
+    }
+
     if (currentPageClick === "profile/edit") {
         currentPageClick = "dashboard";
         history.replaceState(null, '', '/dashboard');
