@@ -45,6 +45,12 @@ document.querySelector("#form-edit-profile").addEventListener("submit", function
 document.getElementById('file-input').addEventListener('change', function (event) {
     const file = event.target.files[0];
     if (file) {
+        if (file.type !== 'image/png') {
+            showFlashMessage('error', '❌ Please select a PNG file only.');
+            event.target.value = '';
+            return;
+        }
+
         const reader = new FileReader();
         reader.onload = function (e) {
             document.getElementById('profile-pic-preview').src = e.target.result;
@@ -52,6 +58,7 @@ document.getElementById('file-input').addEventListener('change', function (event
         reader.readAsDataURL(file);
     }
 });
+
 
 document.querySelector("input#checkbox-2fa-log").addEventListener("change", (e) => {
     document.getElementById('loader').style.display = 'unset';
