@@ -273,6 +273,7 @@ def get_oth_autorization(request):
                 'email': email
             },
             'user': user.getJson(),
+            'id_loggin': request.user.id,
             'pure': user_info,
             'coalitions': coalitions,
             'token': token,

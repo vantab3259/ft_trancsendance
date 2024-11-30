@@ -150,10 +150,12 @@
                     localStorage.setItem('token', data.token);
                 } else if (data['login']) {
                     history.pushState(null, '', "/dashboard");
+                    document.querySelector(".user-pseudo-header").setAttribute("data-user-id", data['id_loggin']);
                     initDashboard(data['user'][0]['fields']);
                     localStorage.setItem('token', data.token);
                     goToNextPage();
                     document.querySelector(".side-bar").classList.add("d-block");
+                    document.querySelector(".side-bar" ).style.display = "block";
                 }
 
             })
