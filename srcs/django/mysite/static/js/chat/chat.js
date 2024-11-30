@@ -421,6 +421,11 @@ function handleUnblockUser() {
 
 
 document.querySelector("#uservs-button").addEventListener("click", function () {
+    if (socketPong && socketPong.readyState === WebSocket.OPEN) {
+        console.log("Disconnecting socketPong...");
+        socketPong.close();
+        socketPong = null;
+    }
     if (!selectedFriendId) {
         alert("Please select a friend to challenge.");
         return;
@@ -434,6 +439,8 @@ document.querySelector("#uservs-button").addEventListener("click", function () {
 
 
     if (socketChat && socketChat.readyState === WebSocket.OPEN) {
+        isGameInProgress = true;
+        handleChallengeButtonVisibility();
         const challengeMessage = {
             message: "I challenge you!",
             recipient_id: selectedFriendId,
@@ -447,6 +454,8 @@ document.querySelector("#uservs-button").addEventListener("click", function () {
 
     } else {
         console.error("WebSocket for chat is not open. Challenge message could not be sent.");
+        isGameInProgress = false;
+        handleChallengeButtonVisibility();
     }
 
     socketPong.onopen = function () {
@@ -454,6 +463,8 @@ document.querySelector("#uservs-button").addEventListener("click", function () {
         socketPong.send(JSON.stringify({
             'type': 'start_game'
         }));
+        isGameInProgress = true;
+        handleChallengeButtonVisibility();
     };
 
 
@@ -476,6 +487,8 @@ document.querySelector("#uservs-button").addEventListener("click", function () {
         }
 
         if (data.type === 'game_finished') {
+            isGameInProgress = false;
+            handleChallengeButtonVisibility();
             if (modePlay != 'tournament') {
             // document.getElementById("goofysettings").style.display = "block";
             document.getElementById("settingslobby").style.display = "block";
@@ -517,6 +530,17 @@ document.querySelector("#uservs-button").addEventListener("click", function () {
         console.log("Déconnecté du WebSocket Pong Server");
     };
 });
+
+function handleChallengeButtonVisibility() {
+    const challengeButton = document.querySelector("#uservs-button");
+    if (isGameInProgress) {
+        challengeButton.style.display = "none";
+    } else {
+        challengeButton.style.display = "block";
+    }
+}
+
+
 
 document.querySelector('.view-profile').addEventListener('click', function () {
     if (!selectedFriendId) {

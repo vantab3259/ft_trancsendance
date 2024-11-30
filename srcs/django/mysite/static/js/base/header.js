@@ -1,5 +1,6 @@
 
 let socketPong = null;
+let isGameInProgress = false;
 var pathUrl = window.location.pathname;
 var pathUrlArgument = pathUrl.slice(1).replace(/\/$/, '');
 
@@ -15,12 +16,15 @@ if (nameCurrentPageIcon !== undefined && nameCurrentPageIcon) {
 var currentPageClick = pathUrl.slice(1).replace(/\/$/, '');
 
 function displayPage() {
+    
 
     if (socketPong && socketPong.readyState === WebSocket.OPEN) {
         console.log("Disconnecting socketPong...");
         socketPong.close();
         socketPong = null;
     }
+    isGameInProgress = false;
+    handleChallengeButtonVisibility();
 
     if (currentPageClick !== "login" && currentPageClick !== "login/") {
             document.querySelector(".navbar" ).style.display = "flex";
@@ -203,6 +207,7 @@ if (profileDropdownList) {
         document.getElementById("goofysettings").style.display = "block";
         document.getElementById("settingslobby").style.display = "block";
         document.getElementById("settingsTOUR").style.display = "block";
+        resetTournamentPage()
     });
 
     lobbyLink.addEventListener("click", function (e) {
@@ -249,6 +254,7 @@ if (profileDropdownList) {
                 currentPageClick = "login";
                 document.querySelector(".side-bar").classList.remove("d-block");
                 document.querySelector(".side-bar").style.display = "none";
+                localStorage.clear();
                 displayPage();
 
             })
@@ -262,6 +268,7 @@ if (profileDropdownList) {
 
 
 }
+
 
 function getCookie(name) {
     let cookieValue = null;

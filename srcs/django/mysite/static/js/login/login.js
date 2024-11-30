@@ -34,8 +34,12 @@ signUpForm.addEventListener("submit", function (event) {
                 document.getElementById("invalid-signup").innerHTML = '';
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user_id', data.user.id); // idk
+
+                
+                
                 history.pushState(null, '', '/dashboard');
                 document.querySelector(".side-bar").classList.add("d-block");
+                // showmypage();
                 return data;
             } else {
                 document.getElementById("invalid-signup").innerHTML = data['errors'];

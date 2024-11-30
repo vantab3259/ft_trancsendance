@@ -655,6 +655,7 @@ def get_user_by_id(request):
             'first_name': user.first_name,
             'last_name': user.last_name,
             'profile_picture': user.get_profile_picture_url(),
+            'phone_number': user.phone_number, 
             'is_online': user.is_online,
         }
         return JsonResponse({'status': 'success', 'user': user_data}, status=200)
