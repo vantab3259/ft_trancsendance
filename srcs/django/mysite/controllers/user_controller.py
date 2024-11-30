@@ -652,22 +652,29 @@ def get_user_by_id(request):
 
         try:
             if identifier.isdigit():
-                user = CustomUser.objects.get(id=identifier)
+                users = CustomUser.objects.filter(id=identifier)
             else:  # Sinon pseudo
-                user = CustomUser.objects.get(pseudo=identifier)
-        except CustomUser.DoesNotExist:
-            return JsonResponse({'error': 'User not found'}, status=404)
+                users = CustomUser.objects.filter(pseudo=identifier)
 
-        user_data = {
-            'id': user.id,
-            'pseudo': user.pseudo,
-            'email': user.email,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'profile_picture': user.get_profile_picture_url(),
-            'is_online': user.is_online,
-        }
-        return JsonResponse({'status': 'success', 'user': user_data}, status=200)
+            if not users.exists():
+                return JsonResponse({'error': 'User not found'}, status=404)
+
+            # Récupérer le premier utilisateur
+            user = users.first()
+
+            user_data = {
+                'id': user.id,
+                'pseudo': user.pseudo,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'profile_picture': user.get_profile_picture_url(),
+                'is_online': user.is_online,
+            }
+            return JsonResponse({'status': 'success', 'user': user_data}, status=200)
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': 'Invalid request method. Use GET.'}, status=400)
 

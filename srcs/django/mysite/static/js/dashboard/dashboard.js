@@ -282,7 +282,7 @@ function injectGamesIntoHistory(games) {
 
 
 document.getElementById('search-user-btn').addEventListener('click', function () {
-    const userId = document.getElementById('user-id-search').value;
+    let userId = document.getElementById('user-id-search').value;
 
     if (!userId) {
         showFlashMessage('error', '❌ Please enter a valid User ID or username.');
