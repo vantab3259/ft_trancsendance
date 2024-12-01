@@ -291,3 +291,20 @@
 .play-button:hover {
   scale: 1.2;
 }
+
+.player-information-tournament-container {
+    font-family: 'FuturaPT', sans-serif !important;
+  font-style: normal !important;
+  font-weight: 600 !important;
+}
+
+.tournament-container {
+    width: auto !important;
+    margin-top: 170px;
+}
+
+@media screen and (max-width: 1200px) {
+    .tournament-container {
+        margin-top: 40px !important;
+    }
+}

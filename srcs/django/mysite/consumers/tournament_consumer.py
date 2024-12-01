@@ -33,7 +33,7 @@ PADDLE_WIDTH = 20
 PADDLE_HEIGHT = 100
 PADDLE_INITIAL_Y = 250
 
-SCORE_TO_WIN = 2
+SCORE_TO_WIN = 3
 
 UPDATE_INTERVAL = 1
 
@@ -148,13 +148,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if not self.match:
             await self.close()
             return
-
-
-        logging.info("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
-        logging.info("Player ID: " + str(self.player_id))
-        logging.info("Player 1 ID: " + str(self.match.player1_id))
-        logging.info("Player 2 ID: " + str(self.match.player2_id))
-        logging.info("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
 
         if self.player_id not in [self.match.player1_id, self.match.player2_id]:
             await self.send(text_data=json.dumps({
@@ -404,13 +397,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await database_sync_to_async(right_player_link.save)()
 
         if scoring_team == 'left' and left_player_link.score >= SCORE_TO_WIN:
-            left_player_link.score += 1
             await database_sync_to_async(left_player_link.save)()
 
             await self.end_game(left_player_link)
 
         elif scoring_team == 'right' and right_player_link.score >= SCORE_TO_WIN:
-            right_player_link.score += 1
             await database_sync_to_async(right_player_link.save)()
 
             await self.end_game(right_player_link)

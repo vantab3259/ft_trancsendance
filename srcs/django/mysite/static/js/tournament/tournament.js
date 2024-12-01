@@ -3,7 +3,9 @@ async function onCreateTournament() {
     const nickname = document.getElementById('tournament-player-nickname').value;
     
     if (!tournamentName) {
-        alert("Please enter a tournament name.");
+
+        showFlashMessage('error', '❌ Please enter a tournament name.');
+
         return;
     }
 
@@ -38,7 +40,7 @@ async function onJoinTournament() {
     const nickname = document.getElementById('tournament-player-nickname').value;
     
     if (!tournamentId) {
-        alert("Please enter a tournament code.");
+        showFlashMessage('error', '❌ Please enter a tournament code.');
         return;
     }
 
@@ -68,6 +70,7 @@ async function onJoinTournament() {
 }
 
 function showWaitingRoom(tournamentName = '', tournamentId = '') {
+    clickOnReadyButton = 0
     console.log('Switching to the waiting room.');
     document.getElementById('create-or-join-section').style.display = 'none';
     document.getElementById('waiting-room').style.display = 'block';
@@ -107,7 +110,8 @@ async function pollForPlayers(tournamentId) {
             if (!response.ok) {
                 console.error('Error response from server:', response.status);
                 clearInterval(interval);
-                alert('Failed to fetch tournament details.');
+                showFlashMessage('error', '❌ Failed to fetch tournament details.');
+
                 return;
             }
 
@@ -123,13 +127,14 @@ async function pollForPlayers(tournamentId) {
 
                 playerListElement.innerHTML = players.map(player => {
                     const playerName = player.pseudo || player.email || 'Unknown Player';
-                    return `<li>${playerName}</li>`;
+                    return `<li class="player-information-tournament-container">${playerName}</li>`;
                 }).join('');
 
                 if (players.length === 4) {
                     console.log('4 players joined. Launching tournament.');
                     clearInterval(interval);
-                    alert("The tournament is starting!");
+                    showFlashMessage('success', '✅ The tournament is starting!');
+
                     showTournamentBracket();
                     loadTournamentDetails(tournamentId);
                 }
@@ -184,6 +189,7 @@ async function loadTournamentDetails(tournamentId) {
 
 
 
+
 function displayTournamentDetails(tournament) {
     const bracketContainer = document.getElementById('tournament-bracket');
     bracketContainer.innerHTML = '';
@@ -203,7 +209,7 @@ function displayTournamentDetails(tournament) {
 
             let playButtonHtml = '';
 
-            if (!match.is_complete && match.is_current_user_in_match) {
+            if (!match.is_complete && match.is_current_user_in_match && clickOnReadyButton !== 2) {
                 playButtonHtml = `<button id="play-button-${match.match_id}" onclick="startTournamentGame(${match.match_id}, ${tournament.id})">Ready</button>`;
             }
 
@@ -233,11 +239,13 @@ function displayTournamentDetails(tournament) {
 function startTournamentGame(matchId, tournamentId) {
     if (!matchId) {
         console.error("No match ID provided for matchmaking.");
-        alert("Unable to start the game. Please try again.");
+
+        showFlashMessage('error', '❌ Unable to start the game. Please try again.');
         return;
     }
 
     console.log("Starting matchmaking for tournament match:", matchId);
+
 
 
     modePlay = 'tournament';
@@ -253,11 +261,12 @@ function startTournamentGame(matchId, tournamentId) {
         }));
     };
 
-    const playButton = document.getElementById(`play-button-${matchId}`);
+    let playButton = document.getElementById(`play-button-${matchId}`);
     if (playButton) {
         playButton.disabled = true;
         playButton.textContent = "Waiting for other player..."; 
         playButton.style.cursor = "not-allowed";
+        clickOnReadyButton++;
     }
 
 
@@ -359,7 +368,9 @@ async function pollTournamentUpdates(tournamentId) {
             if (!response.ok) {
                 console.error('Error fetching tournament details:', response.status);
                 clearInterval(interval);
-                alert('Failed to fetch tournament updates.');
+
+                showFlashMessage('error', '❌ Failed to fetch tournament updates.');
+
                 return;
             }
 
@@ -373,7 +384,8 @@ async function pollTournamentUpdates(tournamentId) {
                 tournament.rounds.forEach(round => {
                     round.matches.forEach(match => {
                         if (!match.is_complete && match.is_current_user_in_match && !hasBeenNotified) {
-                            alert("Tournament system: You are expected for the game!")
+ 
+                            showFlashMessage('success', '✅ Tournament system: You are expected for the game!');
                             hasBeenNotified = true;
                         }
                     });
@@ -386,7 +398,8 @@ async function pollTournamentUpdates(tournamentId) {
                     document.getElementById("settingsTOUR").style.display = "block";
                     clearInterval(interval);
                     // document.getElementById('reset-tournament-section').style.display = 'block';
-                    alert('The tournament is over!');
+
+                    showFlashMessage('success', '✅ The tournament is over!');
                 }
             } else {
                 console.error('Error in tournament updates:', data.error);

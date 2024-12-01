@@ -4,6 +4,8 @@ let socketChat = null;
 let isGameInProgress = false;
 var pathUrl = window.location.pathname;
 var pathUrlArgument = pathUrl.slice(1).replace(/\/$/, '');
+let clickOnReadyButton = 0;
+
 
 if (pathUrlArgument === "home" || pathUrlArgument === "profile/edit" || pathUrlArgument === "" || pathUrlArgument === "/") {
     pathUrlArgument = "dashboard";
@@ -18,6 +20,7 @@ var currentPageClick = pathUrl.slice(1).replace(/\/$/, '');
 
 function displayPage() {
     
+    clickOnReadyButton = 0;
 
     if (socketPong && socketPong.readyState === WebSocket.OPEN) {
         console.log("Disconnecting socketPong...");
