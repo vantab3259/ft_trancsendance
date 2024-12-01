@@ -410,6 +410,18 @@ function update() {
         resetPadCenter();
         ball.speed = INITIAL_BALL_SPEED;
 
+        if (modePlay === 'local' && com.score === 3) {
+            // Arrête le jeu
+            if (window.gameInterval) {
+                clearInterval(window.gameInterval);
+            }
+            showFlashMessage('success', '✅ Right Player Win! ');
+            com.score = 0;
+            user.score = 0;
+
+        }
+            
+
     } else if (ball.x + ball.radius > canvas.width) {
         // Si la balle dépasse à droite, le joueur marque
         user.score++;
@@ -419,6 +431,17 @@ function update() {
         resetBall();
         resetPadCenter();
         ball.speed = INITIAL_BALL_SPEED;
+
+        if (modePlay === 'local' && user.score === 3) {
+            // Arrête le jeu
+            if (window.gameInterval) {
+                clearInterval(window.gameInterval);
+            }
+            showFlashMessage('success', '✅ Left Player Win ! ');
+            com.score = 0;
+            user.score = 0;
+
+        }
     }
 
     // Mise à jour de la position de la balle

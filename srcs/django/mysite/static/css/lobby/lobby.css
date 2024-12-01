@@ -687,3 +687,15 @@
 
 
 }
+
+.top-options-lobby {
+    display: none;
+}
+
+.bottom-options-lobby {
+    height: auto;
+}
+
+.right-header-pong {
+    visibility: hidden;
+}
