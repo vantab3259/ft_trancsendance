@@ -36,7 +36,7 @@ function displayPage() {
 
     console.log("currentPageClick => ", currentPageClick);
 
-    if (currentPageClick === "dashboard") {
+    if (currentPageClick === "dashboard" || currentPageClick === "home") {
         document.querySelector('.user-search-bar').setAttribute("style", "display: flex !important;");
     } else {
         document.querySelector('.user-search-bar').setAttribute("style", "display: none !important;");
