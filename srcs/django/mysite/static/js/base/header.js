@@ -94,6 +94,7 @@ function displayPage() {
         if (oldActiveButton) {
             oldActiveButton.classList.add("active");
         }
+        document.getElementById("friends-container").style.display = "block";
         injectFriends();
         injectRanking();
         injectGameHistory();

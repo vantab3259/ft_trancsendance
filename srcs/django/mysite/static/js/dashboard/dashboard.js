@@ -290,6 +290,9 @@ document.getElementById('search-user-btn').addEventListener('click', function ()
         return;
     }
 
+
+    
+
     fetch(`/get-user-by-id/?user_id=${userId}`, {
         method: 'GET',
         headers: {
@@ -302,6 +305,12 @@ document.getElementById('search-user-btn').addEventListener('click', function ()
             if (data.status === 'success') {
                 populateUserData(data.user);
                 fetchMatchHistory(data.user.id);
+                const loggedInUserId = document.querySelector('.user-pseudo-header').getAttribute('data-user-id');
+                if (userId == loggedInUserId) {
+                    document.getElementById("friends-container").style.display = "block";
+                } else {
+                    document.getElementById("friends-container").style.display = "none";
+                }
             } else {
                 console.error(data.error);
                 showFlashMessage('error', '❌ User not found.');
@@ -339,8 +348,16 @@ function populateUserData(user) {
     isOnlineIndicator.innerText = user.is_online ? 'Online' : 'Offline';
 
     const editLink = document.querySelector('.link-edit-profile-dashboard');
-    if (editLink) {
+
+    const loggedInUserId = document.querySelector('.user-pseudo-header').getAttribute('data-user-id');
+
+    if (editLink && loggedInUserId != user.id) {
+        
         editLink.style.display = 'none';
+    } else {
+        editLink.style.display = 'block';
+        document.getElementById("friends-container").style.display = "block";
+
     }
 }
 
@@ -449,6 +466,9 @@ document.getElementById('my-profile-btn').addEventListener('click', function () 
             }
         })
         .catch(error => console.error('Error:', error));
+
+        // document.getElementById("friends-container").style.display = "block";
+
 });
 
 function showmypage() {
@@ -458,6 +478,9 @@ function showmypage() {
         alert('Unable to retrieve your profile.');
         return;
     }
+
+    document.getElementById("friends-container").style.display = "block";
+
 
     fetch(`/get-user-by-id/?user_id=${loggedInUserId}`, {
         method: 'GET',
