@@ -778,7 +778,7 @@ document.querySelector(".launch-button-game-content").addEventListener("click", 
     modePlay = 'online';
     const mapType = window.otherMap;
     const mapTypeStr = mapType ? 'true' : 'false';
-    socketPong = new WebSocket(`wss://localhost:4443/ws/pong/${mapTypeStr}/`);
+    socketPong = new WebSocket(`wss://${window.location.host}/ws/pong/${mapTypeStr}/`);
     openMatchmakingModal();
 
     socketPong.onopen = function () {

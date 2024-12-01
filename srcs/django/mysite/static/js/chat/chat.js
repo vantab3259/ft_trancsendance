@@ -230,7 +230,7 @@ function openSocket() {
         return;
     }
 
-    socketChat = new WebSocket(`wss://localhost:4443/ws/chat/`);
+    socketChat = new WebSocket(`wss://${window.location.host}/ws/chat/`);
 
     socketChat.onopen = () => {
         console.log("Connexion WebSocket établie");
@@ -434,7 +434,7 @@ document.querySelector("#uservs-button").addEventListener("click", function () {
     modePlay = 'online';
     const mapType = window.otherMap;
     const mapTypeStr = mapType ? 'true' : 'false';
-    socketPong = new WebSocket(`wss://localhost:4443/ws/uservs/${mapTypeStr}/${selectedFriendId}/`);
+    socketPong = new WebSocket(`wss://${window.location.host}/ws/uservs/${mapTypeStr}/${selectedFriendId}/`);
     openMatchmakingModal();
 
 

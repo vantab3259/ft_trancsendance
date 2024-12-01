@@ -243,7 +243,7 @@ function startTournamentGame(matchId, tournamentId) {
     modePlay = 'tournament';
     const mapType = window.otherMap;
     const mapTypeStr = mapType ? 'true' : 'false';
-    socketPong = new WebSocket(`wss://localhost:4443/ws/tournament/match/${matchId}/`);
+    socketPong = new WebSocket(`wss://${window.location.host}/ws/tournament/match/${matchId}/`);
     openMatchmakingModal();
 
     socketPong.onopen = function () {
