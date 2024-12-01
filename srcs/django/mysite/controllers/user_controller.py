@@ -79,6 +79,15 @@ def signin(request):
             user.active_tokens.append(token)
             user.is_online = True
             user.save()
+            if user.two_fa_code_is_active:
+                user.two_fa_code_is_checked = False
+                user.save()
+                code = two_fa_code_gen(user)
+                send_code_mail(code, user.email)
+                return JsonResponse({
+                    'wait-two-fa': True,
+                    'token' : token,
+                }, status=200)
             return JsonResponse({
                 'status': 'success',
                 'message': 'Utilisateur connecté avec succès !',

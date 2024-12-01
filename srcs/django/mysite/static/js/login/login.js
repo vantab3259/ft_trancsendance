@@ -33,11 +33,12 @@ signUpForm.addEventListener("submit", function (event) {
             document.getElementById('loader').style.display = 'none';
 
             if (data['status'] === "success") {
+                localStorage.setItem('token', data.token);
+
                 initDashboard(data['data']['user'][0]['fields']);
                 goToNextPage();
                 document.getElementById("signup-form").reset();
                 document.getElementById("invalid-signup").innerHTML = '';
-                localStorage.setItem('token', data.token);
 
                 
                 
@@ -58,6 +59,7 @@ signUpForm.addEventListener("submit", function (event) {
 signInForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
+    document.getElementById('loader').style.display = 'unset';
     let formDataSignIn = new FormData(signInForm);
 
     fetch("/signin/", {
@@ -68,11 +70,12 @@ signInForm.addEventListener("submit", function (event) {
         .then(response => response.json())
         .then(data => {
             if (data['status'] === "success") {
+                localStorage.setItem('token', data.token);
+
                 initDashboard(data['data']['user'][0]['fields']);
                 goToNextPage();
                 document.getElementById("signin-form").reset();
                 document.getElementById("invalid-signin").innerHTML = '';
-                localStorage.setItem('token', data.token);
 
                 history.pushState(null, '', '/dashboard');
                 currentPageClick = "dashboard";
@@ -84,11 +87,20 @@ signInForm.addEventListener("submit", function (event) {
                 document.querySelector(".side-bar" ).style.display = "block";
 
                 return data;
+            }  else if (data['wait-two-fa']) {
+                history.pushState(null, '', "/login");
+                document.querySelector(".container-flex-login").style.display = "none";
+                document.querySelector(".twoFa-container.parrent").style.display = "flex";
+                document.getElementById('loader').style.display = 'none';
+                localStorage.setItem('token', data.token);
             } else {
                 document.getElementById("invalid-signin").innerHTML = data['errors'];
             }
+            document.getElementById('loader').style.display = 'none';
+
         })
         .catch(error => {
+            document.getElementById('loader').style.display = 'none';
             console.error("Erreur lors de l'envoi du formulaire :", error);
         });
 
