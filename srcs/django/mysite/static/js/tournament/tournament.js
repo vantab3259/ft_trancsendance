@@ -417,7 +417,7 @@ async function pollTournamentUpdates(tournamentId) {
             console.error('Error during tournament update polling:', error);
             clearInterval(interval);
         }
-    }, 500);
+    }, 2000);
 }
 
 
