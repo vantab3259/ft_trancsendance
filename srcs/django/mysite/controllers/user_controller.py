@@ -705,12 +705,15 @@ def get_user_match_history(request):
         try:
             user = CustomUser.objects.get(id=user_id)
 
-            games = PlayerGameLink.objects.filter(player=user).select_related('game')
+            # Récupérer tous les liens de jeux pour cet utilisateur, triés par date de création (du plus récent au plus ancien)
+            games = PlayerGameLink.objects.filter(player=user).select_related('game').order_by('-game__date_created')
 
+            # Transformer ces objets en une structure de données utile
             game_history = []
             for game_link in games:
                 opponent = PlayerGameLink.objects.filter(game=game_link.game).exclude(player=user).first()
 
+                # Calculer la durée du jeu si cette info est disponible
                 if game_link.game.date_created and game_link.game.date_finish:
                     duration = game_link.game.date_finish - game_link.game.date_created
                     duration_in_seconds = duration.total_seconds()
@@ -719,12 +722,13 @@ def get_user_match_history(request):
                 else:
                     duration_str = "N/A"
 
+                # Déterminer si c'est une victoire ou une défaite
                 result = "match-victory" if game_link.is_winner else "match-defeat"
 
                 game_history.append({
                     'opponent_name': opponent.player.pseudo if opponent else "Unknown",
                     'opponent_image': opponent.player.get_profile_picture_url() if opponent else "",
-                    'date': game_link.game.date_created.strftime("%Y-%m-%d") if game_link.game.date_created else "Unknown",
+                    'date': game_link.game.date_created.strftime("%Y-%m-%d %H:%M") if game_link.game.date_created else "Unknown",
                     'score': f"{game_link.score}-{opponent.score if opponent else 0}",
                     'duration': duration_str,
                     'result': result
@@ -736,6 +740,7 @@ def get_user_match_history(request):
             return JsonResponse({'error': 'User not found'}, status=404)
 
     return JsonResponse({'error': 'Invalid request method. Use GET.'}, status=400)
+
 
 @require_jwt
 @csrf_exempt

@@ -311,6 +311,8 @@ document.getElementById('search-user-btn').addEventListener('click', function ()
                 } else {
                     document.getElementById("friends-container").style.display = "none";
                 }
+
+                showFlashMessage('success', '✅ User found ! ');
             } else {
                 console.error(data.error);
                 showFlashMessage('error', '❌ User not found.');
@@ -460,9 +462,10 @@ document.getElementById('my-profile-btn').addEventListener('click', function () 
             if (data.status === 'success') {
                 populateUserData(data.user);
                 fetchMatchHistory(loggedInUserId);
+                showFlashMessage('success', '✅ Your profile is load ! ');
             } else {
                 console.error(data.error);
-                alert('Unable to retrieve your profile.');
+                showFlashMessage('error', '✅ We can\'t load your profile ! ');
             }
         })
         .catch(error => console.error('Error:', error));
