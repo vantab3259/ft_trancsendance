@@ -327,7 +327,7 @@ function handleBlockUser() {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            alert("User has been blocked successfully.");
+            showFlashMessage('error', '❌ User has been blocked successfully.');
             blockList.push(selectedFriendId);
             deactivateAllConversationItems();
             document.querySelector(".messaging.open").classList.add("v-hidden");
@@ -404,7 +404,7 @@ function handleUnblockUser() {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            alert("User has been unblocked successfully.");
+            showFlashMessage('success', '✅ User has been unblocked successfully.');
             blockList = blockList.filter(id => id !== selectedFriendId);
             hideBlockedMessage();
             refreshUI();

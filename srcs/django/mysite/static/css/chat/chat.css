@@ -188,3 +188,9 @@
 .actualize-friends-chat {
 	transition: scale 0.3s ease-in-out;
 }
+
+.options-user-button-container {
+	display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}

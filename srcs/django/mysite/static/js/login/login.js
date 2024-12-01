@@ -226,4 +226,5 @@ function setUserIdOnWebsite()
         .catch(error => {
             console.error("Any id found :", error);
         });
+        initPageChat();
 }
