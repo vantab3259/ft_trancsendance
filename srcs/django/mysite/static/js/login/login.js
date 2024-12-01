@@ -45,6 +45,10 @@ signUpForm.addEventListener("submit", function (event) {
                 history.pushState(null, '', '/dashboard');
                 document.querySelector(".side-bar").classList.add("d-block");
                 document.querySelector(".side-bar" ).style.display = "block";
+
+                updateOnlineStatus();
+                setInterval(updateOnlineStatus, 300000); // 300000 ms = 5 minutes
+
                 return data;
             } else {
                 document.getElementById("invalid-signup").innerHTML = data['errors'];
@@ -85,6 +89,9 @@ signInForm.addEventListener("submit", function (event) {
 
                 displayPage();
                 document.querySelector(".side-bar" ).style.display = "block";
+
+                updateOnlineStatus();
+                setInterval(updateOnlineStatus, 300000); // 300000 ms = 5 minutes
 
                 return data;
             }  else if (data['wait-two-fa']) {
