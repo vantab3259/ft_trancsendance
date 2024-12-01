@@ -28,7 +28,7 @@ PADDLE_WIDTH = 20
 PADDLE_HEIGHT = 100
 PADDLE_INITIAL_Y = 250
 
-SCORE_TO_WIN = 2
+SCORE_TO_WIN = 3
 
 UPDATE_INTERVAL = 1
 
@@ -353,13 +353,9 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         # Vérifier si l'équipe qui a marqué a atteint le score vainqueur
         if scoring_team == 'left' and left_player_link.score >= SCORE_TO_WIN:
-            # Ajouter un point supplémentaire avant de terminer le jeu
-            left_player_link.score += 1
             await database_sync_to_async(left_player_link.save)()
             await self.end_game(left_player_link)
         elif scoring_team == 'right' and right_player_link.score >= SCORE_TO_WIN:
-            # Ajouter un point supplémentaire avant de terminer le jeu
-            right_player_link.score += 1
             await database_sync_to_async(right_player_link.save)()
             await self.end_game(right_player_link)
 

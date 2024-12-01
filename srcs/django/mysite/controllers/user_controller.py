@@ -525,8 +525,8 @@ def get_history_game(request):
         # Récupérer l'utilisateur connecté
         user = request.user
 
-        # Récupérer tous les liens de jeux pour cet utilisateur
-        games = PlayerGameLink.objects.filter(player=user).select_related('game')
+        # Récupérer tous les liens de jeux pour cet utilisateur, triés par date de création (du plus récent au plus ancien)
+        games = PlayerGameLink.objects.filter(player=user).select_related('game').order_by('-game__date_created')
 
         # Transformer ces objets en une structure de données utile
         game_history = []
@@ -547,8 +547,8 @@ def get_history_game(request):
 
             game_history.append({
                 'opponent_name': opponent.player.pseudo if opponent else "Unknown",
-                'opponent_image': opponent.player.get_profile_picture_url(),
-                'date': game_link.game.date_created.strftime("%Y-%m-%d") if game_link.game.date_created else "Unknown",
+                'opponent_image': opponent.player.get_profile_picture_url() if opponent else "",
+                'date': game_link.game.date_created.strftime("%Y-%m-%d %H:%M") if game_link.game.date_created else "Unknown",
                 'score': f"{game_link.score}-{opponent.score if opponent else 0}",
                 'duration': duration_str,
                 'result': result
@@ -558,7 +558,6 @@ def get_history_game(request):
 
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-
 
 
 @require_jwt
