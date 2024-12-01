@@ -206,6 +206,7 @@
 		})
 		.then(data => {
 			if (data['check']) {
+				setUserIdOnWebsite();
 				showFlashMessage('success', '✅ Your are connected.');
 				history.pushState(null, '', "/dashboard");
 				initDashboard(data['user'][0]['fields']);

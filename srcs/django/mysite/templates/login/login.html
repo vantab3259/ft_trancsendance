@@ -152,6 +152,7 @@
                     localStorage.setItem('token', data.token);
                     history.pushState(null, '', "/dashboard");
                     document.querySelector(".user-pseudo-header").setAttribute("data-user-id", data['id_loggin']);
+                    setUserIdOnWebsite();
                     initDashboard(data['user'][0]['fields']);
                     goToNextPage();
                     document.querySelector(".side-bar").classList.add("d-block");

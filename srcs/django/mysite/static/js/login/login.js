@@ -76,6 +76,7 @@ signInForm.addEventListener("submit", function (event) {
             if (data['status'] === "success") {
                 localStorage.setItem('token', data.token);
 
+                setUserIdOnWebsite();
                 initDashboard(data['data']['user'][0]['fields']);
                 goToNextPage();
                 document.getElementById("signin-form").reset();
@@ -92,7 +93,7 @@ signInForm.addEventListener("submit", function (event) {
 
                 updateOnlineStatus();
                 setInterval(updateOnlineStatus, 300000); // 300000 ms = 5 minutes
-
+            
                 return data;
             }  else if (data['wait-two-fa']) {
                 history.pushState(null, '', "/login");
@@ -201,4 +202,28 @@ function goToNextPage(page = "dashboard", scripts = ["/static/js/base/header.js"
     }
     currentPageClick = "dashboard"
     displayPage();
+}
+
+
+function setUserIdOnWebsite()
+{
+    fetch("/give-me-my-id/", {
+        method: "GET", headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+
+            if (data['status'] === "success") {
+                let idUser = data['id'];
+                document.querySelector('.user-pseudo-header').setAttribute('data-user-id', idUser);
+                console.log("set id")
+            }
+
+        })
+        .catch(error => {
+            console.error("Any id found :", error);
+        });
 }

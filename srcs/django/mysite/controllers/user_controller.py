@@ -736,3 +736,11 @@ def get_user_match_history(request):
             return JsonResponse({'error': 'User not found'}, status=404)
 
     return JsonResponse({'error': 'Invalid request method. Use GET.'}, status=400)
+
+@require_jwt
+@csrf_exempt
+def give_me_my_id(request):
+    if request.method == 'GET':
+
+        return JsonResponse({'status': 'success', 'id': request.user.id}, status=200)
+    return JsonResponse({'error': 'Invalid request method. Use GET.'}, status=400)

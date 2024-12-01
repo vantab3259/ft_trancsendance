@@ -59,6 +59,8 @@ urlpatterns = [
     path('tournament/<int:tournament_id>/details/', tournament_controller.tournament_details, name='tournament_details'),
     path('tournament/game/<int:match_id>/', tournament_controller.tournament_game_view, name='tournament_game'),
 
+    path('give-me-my-id/', user_controller.give_me_my_id, name='give_me_my_id'),
+
 
     path('get-blocked-list/', user_controller.get_blocked_list, name='get_blocked_list'),
     path('add-to-blocked-list/', user_controller.add_to_blocked_list, name='add_to_blocked_list'),
