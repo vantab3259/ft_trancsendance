@@ -242,46 +242,47 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
 
     async def disconnect(self, close_code):
-      if self.room_group_name in rooms:
-          players = rooms[self.room_group_name]['players']
-          rooms[self.room_group_name]['players'] = [p for p in players if p['channel_name'] != self.channel_name]
+        if self.room_group_name in rooms:
+            players = rooms[self.room_group_name]['players']
+            rooms[self.room_group_name]['players'] = [p for p in players if p['channel_name'] != self.channel_name]
 
-          if len(rooms[self.room_group_name]['players']) == 0:
-              del rooms[self.room_group_name]
-          else:
-              remaining_player = rooms[self.room_group_name]['players'][0]
-              game = rooms[self.room_group_name]['game']
-              user = await database_sync_to_async(User.objects.get)(id=remaining_player['player_id'])
+            if len(rooms[self.room_group_name]['players']) == 0:
+                del rooms[self.room_group_name]
+            else:
+                remaining_player = rooms[self.room_group_name]['players'][0]
+                game = rooms[self.room_group_name]['game']
+                user = await database_sync_to_async(User.objects.get)(id=remaining_player['player_id'])
 
-              try:
-                  winner_link = await database_sync_to_async(PlayerGameLink.objects.get)(player=user, game=game)
-              except PlayerGameLink.DoesNotExist:
-                  winner_link = await database_sync_to_async(PlayerGameLink.objects.create)(
-                      player=user,
-                      game=game,
-                      team=1
-                  )
+                try:
+                    winner_link = await database_sync_to_async(PlayerGameLink.objects.get)(player=user, game=game)
+                except PlayerGameLink.DoesNotExist:
+                    winner_link = await database_sync_to_async(PlayerGameLink.objects.create)(
+                        player=user,
+                        game=game,
+                        team=1
+                    )
 
-              winner_link.is_winner = True
-              winner_link.reason = "L'autre joueur a quitté la partie."
-              await database_sync_to_async(winner_link.save)()
+                winner_link.score = SCORE_TO_WIN
+                winner_link.is_winner = True
+                winner_link.reason = "The other player disconnected."
+                await database_sync_to_async(winner_link.save)()
 
-              game.is_active = False
-              await database_sync_to_async(game.save)()
+                await self.end_game(winner_link)
 
-      if self.player_id in connected_players:
-          del connected_players[self.player_id]
+        if self.player_id in connected_players:
+            del connected_players[self.player_id]
 
-      await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
-      if self.room_group_name in rooms and len(rooms[self.room_group_name]['players']) == 1:
-          await self.channel_layer.group_send(
-              self.room_group_name,
-              {
-                  'type': 'player_left',
-                  'message': "L'autre joueur a quitté la partie.",
-              }
-          )
+        if self.room_group_name in rooms and len(rooms[self.room_group_name]['players']) == 1:
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'player_left',
+                    'message': "The other player has disconnected and you are declared the winner.",
+                }
+            )
+
 
 
 
