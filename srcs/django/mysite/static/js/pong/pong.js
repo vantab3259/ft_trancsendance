@@ -341,6 +341,62 @@ function movePaddle(evt) {
     }
 }
 
+let userPaddleVelocity = 0; // Vitesse de déplacement du paddle utilisateur
+let comPaddleVelocity = 0; // Vitesse de déplacement du paddle com
+const PADDLE_SPEED = 8;   // Vitesse des paddles
+
+// Mise à jour de la position des paddles
+function movePaddlesLocal() {
+    if (modePlay === "local") {
+        // Déplacer le paddle de l'utilisateur
+        window.user.y += userPaddleVelocity;
+        window.user.y = Math.max(0, Math.min(canvas.height - window.user.height, window.user.y));
+
+        // Déplacer le paddle com
+        window.com.y += comPaddleVelocity;
+        window.com.y = Math.max(0, Math.min(canvas.height - window.com.height, window.com.y));
+    }
+}
+
+function listenKeyDownPlayLocal(event) {
+    if (modePlay === "local") {
+        // Contrôle du paddle utilisateur avec W et S
+        if (event.key === "w" || event.key === "W") {
+            userPaddleVelocity = -PADDLE_SPEED; // Monter
+        } else if (event.key === "s" || event.key === "S") {
+            userPaddleVelocity = PADDLE_SPEED; // Descendre
+        }
+
+        // Contrôle du paddle com avec Flèche Haut et Bas
+        if (event.key === "ArrowUp") {
+            comPaddleVelocity = -PADDLE_SPEED; // Monter
+            event.preventDefault();
+        } else if (event.key === "ArrowDown") {
+            comPaddleVelocity = PADDLE_SPEED; // Descendre
+            event.preventDefault();
+        }
+    }
+}
+
+function listenKeyUpPlayLocal(event) {
+    if (modePlay === "local") {
+        // Arrêter le mouvement du paddle utilisateur lorsque W ou S est relâché
+        if (event.key === "w" || event.key === "W" || event.key === "s" || event.key === "S") {
+            userPaddleVelocity = 0;
+            event.preventDefault();
+        }
+
+        // Arrêter le mouvement du paddle com lorsque Flèche Haut ou Bas est relâché
+        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+            comPaddleVelocity = 0;
+            event.preventDefault();
+        }
+    }
+}
+
+// Gestion des événements clavier
+
+
 function resetAllGame() {
     window.user.score = 0;
     window.com.score = 0;
@@ -350,6 +406,7 @@ function resetAllGame() {
 
     if (window.gameInterval) {
         clearInterval(window.gameInterval);
+        removeLocalControls();
     }
 }
 
@@ -397,6 +454,8 @@ function resetBall() {
 }
 
 
+
+
 function update() {
 
     // Change the score if the ball exceeds the canvas width and reset the ball
@@ -414,6 +473,7 @@ function update() {
             // Arrête le jeu
             if (window.gameInterval) {
                 clearInterval(window.gameInterval);
+                removeLocalControls()
             }
             showFlashMessage('success', '✅ Right Player Win! ');
             com.score = 0;
@@ -436,6 +496,7 @@ function update() {
             // Arrête le jeu
             if (window.gameInterval) {
                 clearInterval(window.gameInterval);
+                removeLocalControls();
             }
             showFlashMessage('success', '✅ Left Player Win ! ');
             com.score = 0;
@@ -447,11 +508,6 @@ function update() {
     // Mise à jour de la position de la balle
     ball.x += ball.velocityX;
     ball.y += ball.velocityY;
-
-    // Simples computer AI (uniquement pour le mode local)
-    if (modePlay === "local") {
-        com.y += ((ball.y - (com.y + com.height / 2))) * 0.1;
-    }
 
     // Gestion des collisions avec les bords supérieur et inférieur
     if (ball.y - ball.radius < 0) {
@@ -583,6 +639,7 @@ function render() {
 
 function game() {
     if (modePlay === 'local') {
+        
         update();
     } else {
         interpolateGameState();
@@ -605,10 +662,37 @@ if (playButton !== undefined) {
     const playButton = document.getElementById("playButton");
 }
 
+let paddleMovementInterval = null; // Stocke l'identifiant de l'intervalle
+
+function addLocalControls() {
+    // Ajoute les écouteurs pour les touches
+    document.addEventListener("keydown", listenKeyDownPlayLocal);
+    document.addEventListener("keyup", listenKeyUpPlayLocal);
+
+    // Démarre l'intervalle pour déplacer les paddles
+    paddleMovementInterval = setInterval(movePaddlesLocal, 1000 / FRAME_PER_SECOND);
+}
+
+function removeLocalControls() {
+    // Retire les écouteurs pour les touches
+    document.removeEventListener("keydown", listenKeyDownPlayLocal);
+    document.removeEventListener("keyup", listenKeyUpPlayLocal);
+
+    // Arrête l'intervalle pour déplacer les paddles
+    if (paddleMovementInterval) {
+        clearInterval(paddleMovementInterval);
+        paddleMovementInterval = null;
+    }
+}
+
+
 document.getElementById("pauseButton").addEventListener("click", function () {
     if (modePlay === "local") {
+
+        addLocalControls();
         if (window.gameInterval) {
             clearInterval(window.gameInterval); // Arrête le jeu
+            removeLocalControls()
         }
 
         this.style.display = "none"; // Cache le bouton Pause
@@ -624,12 +708,14 @@ playButton.addEventListener("click", function () {
     document.querySelector(".pong-container").style.display = "block";
     if (window.gameInterval) {
         clearInterval(window.gameInterval);
+        removeLocalControls()
     }
 
     this.style.display = "none";
     document.getElementById("pauseButton").style.display = "block";
 
     window.gameInterval = setInterval(game, 1000 / window.framePerSecond);
+    addLocalControls();
     if (window.launchFirstTimeGame) {
         window.launchFirstTimeGame = false;
     }
