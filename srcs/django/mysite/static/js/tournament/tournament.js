@@ -291,7 +291,14 @@ function startTournamentGame(matchId, tournamentId) {
 
 
             let winnerName = data.winner_name; 
-            let winnerId = data.winner_id;    
+            let winnerId = data.winner_id; 
+            let loggedInUserId = document.querySelector('.user-pseudo-header').getAttribute('data-user-id');
+
+            if (winnerId == loggedInUserId ) {
+                showFlashMessage('success', '✅ You Win !');
+            } else {
+                showFlashMessage('error', '❌ You Lose !');
+            }
 
             closeWebSocket();
 

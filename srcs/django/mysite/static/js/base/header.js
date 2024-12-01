@@ -39,6 +39,7 @@ function displayPage() {
 
     if (currentPageClick !== "login" && currentPageClick !== "login/") {
             document.querySelector(".navbar" ).style.display = "flex";
+            updateOnlineStatus();
             // document.querySelector(".side-bar" ).style.display = "block";
     } else {
             document.querySelector(".navbar" ).style.display = "none";

@@ -500,6 +500,14 @@ document.querySelector("#uservs-button").addEventListener("click", function () {
             let winnerName = data.winner_name; // Utilise 'winner_name'
             let winnerId = data.winner_id;     // Utilise 'winner_id'
 
+            let loggedInUserId = document.querySelector('.user-pseudo-header').getAttribute('data-user-id');
+
+            if (winnerId == loggedInUserId ) {
+                showFlashMessage('success', '✅ You Win !');
+            } else {
+                showFlashMessage('error', '❌ You Lose !');
+            }
+
             // Vérifie si le joueur est le gagnant
             // let currentUserId = document.querySelector(".user-pseudo-header").getAttribute('data-user-id');
             // let resultModal = document.querySelector("#resultModal");

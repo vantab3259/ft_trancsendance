@@ -60,6 +60,25 @@ signUpForm.addEventListener("submit", function (event) {
         });
 });
 
+function updateOnlineStatus() {
+    fetch('/update-online-status/', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erreur lors du chargement de ${page}`);
+            }
+            return response.text();
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            document.body.innerHTML = '<p>Une erreur est survenue lors du chargement de la page.</p>';
+        });
+}
+
 signInForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
