@@ -194,3 +194,7 @@
     justify-content: flex-end;
     margin-bottom: 20px;
 }
+
+.or-divider {
+	text-align: center;
+}
