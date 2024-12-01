@@ -49,6 +49,7 @@ def signup(request):
         user.active_tokens.append(token)
         user.is_online = True
         user.save()
+        login(request, user)
         return JsonResponse({
             'status': 'success',
             'message': 'User created !',

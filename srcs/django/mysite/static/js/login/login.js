@@ -15,6 +15,9 @@ var signInForm = document.querySelector("#signin-form");
 
 signUpForm.addEventListener("submit", function (event) {
     event.preventDefault();
+    document.getElementById('loader').style.display = 'unset';
+
+
 
     let formDataSignUp = new FormData(signUpForm);
 
@@ -27,13 +30,14 @@ signUpForm.addEventListener("submit", function (event) {
     })
         .then(response => response.json())
         .then(data => {
+            document.getElementById('loader').style.display = 'none';
+
             if (data['status'] === "success") {
                 initDashboard(data['data']['user'][0]['fields']);
                 goToNextPage();
                 document.getElementById("signup-form").reset();
                 document.getElementById("invalid-signup").innerHTML = '';
                 localStorage.setItem('token', data.token);
-                localStorage.setItem('user_id', data.user.id); // idk
 
                 
                 
@@ -46,6 +50,7 @@ signUpForm.addEventListener("submit", function (event) {
             }
         })
         .catch(error => {
+            document.getElementById('loader').style.display = 'none';
             console.error("Erreur lors de l'envoi du formulaire :", error);
         });
 });
