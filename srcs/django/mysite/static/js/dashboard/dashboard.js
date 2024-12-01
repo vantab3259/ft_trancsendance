@@ -325,6 +325,15 @@ function populateUserData(user) {
     emailElement.href = `mailto:${user.email}`;
     emailElement.innerText = user.email;
 
+    const phoneElement = document.querySelector('.row-info.phone .data');
+    phoneElement.innerHTML = '';
+
+    if (user.phone_number) {
+        phoneElement.innerHTML = `<a href="tel:${user.phone_number}">${user.phone_number}</a>`;
+    } else {
+        phoneElement.innerHTML = '<span class="label-phone-dashboard">Not Provided</span>';
+    }
+
     const isOnlineIndicator = document.querySelector('.row-info.city .data');
     isOnlineIndicator.innerText = user.is_online ? 'Online' : 'Offline';
 
@@ -333,6 +342,7 @@ function populateUserData(user) {
         editLink.style.display = 'none';
     }
 }
+
 
 function fetchMatchHistory(userId) {
     fetch(`/get-user-match-history/?user_id=${userId}`, {
@@ -474,3 +484,30 @@ document.getElementById('my-profile-btn').addEventListener('click', function () 
         .catch(error => console.error('Error:', error));
 });
 
+function showmypage() {
+    const loggedInUserId = document.querySelector('.user-pseudo-header').getAttribute('data-user-id');
+
+    if (!loggedInUserId) {
+        alert('Unable to retrieve your profile.');
+        return;
+    }
+
+    fetch(`/get-user-by-id/?user_id=${loggedInUserId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                populateUserData(data.user);
+                fetchMatchHistory(loggedInUserId);
+            } else {
+                console.error(data.error);
+                alert('Unable to retrieve your profile.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+};

@@ -668,6 +668,7 @@ def get_user_by_id(request):
                 'email': user.email,
                 'first_name': user.first_name,
                 'last_name': user.last_name,
+                'phone_number': user.phone_number, 
                 'profile_picture': user.get_profile_picture_url(),
                 'is_online': user.is_online,
             }

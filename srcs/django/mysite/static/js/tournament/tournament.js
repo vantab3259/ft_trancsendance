@@ -385,6 +385,7 @@ async function pollTournamentUpdates(tournamentId) {
                     document.getElementById("settingslobby").style.display = "block";
                     document.getElementById("settingsTOUR").style.display = "block";
                     clearInterval(interval);
+                    // document.getElementById('reset-tournament-section').style.display = 'block';
                     alert('The tournament is over!');
                 }
             } else {
@@ -396,7 +397,32 @@ async function pollTournamentUpdates(tournamentId) {
             console.error('Error during tournament update polling:', error);
             clearInterval(interval);
         }
-    }, 5000);
+    }, 500);
 }
 
 
+function resetTournamentPage() {
+    console.log('Resetting tournament page.');
+
+    // Hide all sections
+    document.getElementById('create-or-join-section').style.display = 'block';
+    document.getElementById('waiting-room').style.display = 'none';
+    document.getElementById('tournament-section').style.display = 'none';
+    // document.getElementById('reset-tournament-section').style.display = 'none';
+
+    // Reset input fields
+    document.getElementById('tournament-name').value = '';
+    document.getElementById('join-tournament-id').value = '';
+    document.getElementById('tournament-player-nickname').value = '';
+
+    // Clear local storage for the tournament
+    localStorage.removeItem('tournament_id');
+
+    // Clear player list
+    const playerListElement = document.getElementById('player-names');
+    if (playerListElement) {
+        playerListElement.innerHTML = '';
+    }
+
+    console.log('Tournament page reset successfully.');
+}

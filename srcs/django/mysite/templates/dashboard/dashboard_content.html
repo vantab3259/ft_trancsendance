@@ -39,7 +39,7 @@
             <div class="left-polygon">
                 <div class="information-group-dashboard not-s">
 
-                    <div class="rank-container">
+                    <div class="rank-container"  style="display:none;">
                         <div class="row-rank">
                             <span><i class="fa-solid fa-trophy"></i></span>
                             <span>1769</span>
@@ -74,7 +74,7 @@
         </div>
 
         <div class="second-right-header not-s">
-            <div class="progress-bar" value="70">
+            <div class="progress-bar" value="70"  style="display:none;">
                 <span class="label-experience">Level 7 - 70%</span>
                 <div class="progress" style="width: 70%"></div>
             </div>
@@ -85,16 +85,13 @@
     <div class="end-header-dashboard">
         
         <div class="information-dashboard-user-container">
-            <div class="row-info phone">
+            <div class="row-info phone"  style="display:none;">
                 <span><i class="icon fa-solid fa-phone"></i></span>
-                <span>
-                    {% if request.user.phone_number %}
-                        {% load custom_filters %}
-                        <a href="tel:{{ request.user.phone_number }}">{{ request.user.phone_number|format_phone  }}</a>
-                    {% else %}
-                        <span class="label-phone-dashboard">Not Provided</span>
-                    {% endif %}
-
+                <span class="data">
+                    <a href="tel:{{ request.user.phone_number|default:'' }}" 
+                       class="{% if request.user.phone_number %}phone-link{% else %}label-phone-dashboard{% endif %}">
+                        {{ request.user.phone_number|default:"Not Provided" }}
+                    </a>
                 </span>
             </div>
 
@@ -104,12 +101,12 @@
             </div>
 
 
-            <div class="row-info city">
+            <div class="row-info city"  style="display:none;">
                 <span><i class="icon fa-solid fa-city"></i></span>
                 <span class="data">Paris</span>
             </div>
 
-            <div class="row-info createdAt">
+            <div class="row-info createdAt"  style="display:none;">
                 <span><i class="icon fa-solid fa-calendar-days"></i></span>
                 <span class="data">2027-09-03</span>
             </div>
