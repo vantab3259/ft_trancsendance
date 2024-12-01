@@ -1,5 +1,6 @@
 
 let socketPong = null;
+let socketChat = null;
 let isGameInProgress = false;
 var pathUrl = window.location.pathname;
 var pathUrlArgument = pathUrl.slice(1).replace(/\/$/, '');
@@ -23,6 +24,13 @@ function displayPage() {
         socketPong.close();
         socketPong = null;
     }
+
+    if (socketChat && socketChat.readyState === WebSocket.OPEN) {
+        console.log("Disconnecting socketChat...");
+        socketChat.close();
+        socketChat = null;
+    }
+
     isGameInProgress = false;
     handleChallengeButtonVisibility();
 

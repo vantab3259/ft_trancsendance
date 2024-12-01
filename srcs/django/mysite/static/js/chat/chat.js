@@ -1,4 +1,4 @@
-let socketChat = null;
+
 let selectedFriendId = null;
 let searchTimeoutChat;
 let blockList = [];
@@ -7,6 +7,8 @@ function initPageChat() {
     setupEventListeners();
     fetchBlockList();
     friendsChats();
+
+    
 }
 
 // Initialiser les écouteurs d'événements
