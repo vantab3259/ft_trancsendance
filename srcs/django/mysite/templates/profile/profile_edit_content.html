@@ -21,17 +21,19 @@
                     <input type="text" id="pseudo" name="pseudo" value="{{ request.user.pseudo|lower }}" required>
 
                     <label for="first-name">First name</label>
-                    <input type="text" id="first-name" name="first-name" value="{{ request.user.first_name|lower|capfirst }}">
+                    <input type="text" id="first-name" name="first-name" value="{{ request.user.first_name|lower|capfirst }}" maxlength="20">
 
                     <label for="last-name">Last name</label>
-                    <input type="text" id="last-name" name="last-name" value="{{ request.user.last_name|lower|capfirst  }}">
+                    <input type="text" id="last-name" name="last-name" value="{{ request.user.last_name|lower|capfirst  }}" maxlength="20">
 
-                    <label for="birth-date">Birth date</label>
-                    <input type="text" id="birth-date" name="birth-date" value="{{ request.user.birth_date|date:'Y-m-d' }}" placeholder="Select your birth date">
-
+                    <div class="birth-day-container">
+                        <label for="birth-date">Birth date</label>
+                        <input type="text" id="birth-date" name="birth-date" value="{{ request.user.birth_date|date:'Y-m-d' }}" placeholder="Select your birth date">    
+                    </div>
+                    
 
                     <label for="birth-city">Birth city</label>
-                    <input type="text" id="birth-city" name="birth-city" value="{{ request.user.birth_city }}">
+                    <input type="text" id="birth-city" name="birth-city" value="{{ request.user.birth_city }}" maxlength="40">
 
                     <div class="container-2fa-log">
                         <span>Connexion 2FA</span>
@@ -45,10 +47,10 @@
                 <div class="form-section">
                     <h2>CONTACT</h2>
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="{{ request.user.email }}" required>
+                    <input type="email" id="email" name="email" value="{{ request.user.email }}" required maxlength="50">
 
                     <label for="phone">Phone</label>
-                    <input type="text" id="phone" name="phone" value="{{ request.user.phone_number }}">
+                    <input type="text" id="phone" name="phone" value="{{ request.user.phone_number }}" maxlength="10" max="10" min="10">
 
                     <label for="">Profile Picture</label>
 

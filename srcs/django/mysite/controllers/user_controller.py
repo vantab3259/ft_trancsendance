@@ -131,14 +131,21 @@ def profile_edit_form(request):
     if request.method == 'POST':
         user = request.user
 
+        email = escape(request.POST.get('email'))
+
+        if CustomUser.objects.filter(email=email).exclude(id=user.id).exists():
+            return JsonResponse({'error': 'invalid form.'}, status=400)
+
+
         user.first_name = escape(request.POST.get('first-name'))
         user.last_name = escape(request.POST.get('last-name'))
-        user.email = escape(request.POST.get('email'))
         user.phone_number = escape(request.POST.get('phone'))
         user.last_name = escape(request.POST.get('last-name'))
         user.pseudo = escape(request.POST.get('pseudo'))
         user.birth_city = escape(request.POST.get('birth-city'))
         birth_date = request.POST.get('birth-date')
+        user.email = email
+
 
         if birth_date:
             user.birth_date = datetime.strptime(birth_date, '%Y-%m-%d').date()

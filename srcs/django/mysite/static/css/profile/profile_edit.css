@@ -235,3 +235,8 @@
     align-items: center;
     gap: 20px;
   }
+
+  
+.birth-day-container{
+    display: none !important;
+}
