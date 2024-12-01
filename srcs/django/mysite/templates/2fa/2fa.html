@@ -210,10 +210,13 @@
 				history.pushState(null, '', "/dashboard");
 				initDashboard(data['user'][0]['fields']);
 				goToNextPage();
+				document.querySelector(".side-bar" ).style.display = "block";
+				document.querySelector(".side-bar" ).style.display = "block";
 			}
 
 			if (data['check'] === false) {
 				showFlashMessage('error', '❌ Code is not valid.');
+				document.getElementById('loader').style.display = 'none';
 
 			}
 		})

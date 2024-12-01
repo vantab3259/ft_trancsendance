@@ -39,7 +39,7 @@ signUpForm.addEventListener("submit", function (event) {
                 
                 history.pushState(null, '', '/dashboard');
                 document.querySelector(".side-bar").classList.add("d-block");
-                // showmypage();
+                document.querySelector(".side-bar" ).style.display = "block";
                 return data;
             } else {
                 document.getElementById("invalid-signup").innerHTML = data['errors'];
@@ -69,15 +69,6 @@ signInForm.addEventListener("submit", function (event) {
                 document.getElementById("invalid-signin").innerHTML = '';
                 localStorage.setItem('token', data.token);
 
-
-
-
-
-
-
-
-                
-
                 history.pushState(null, '', '/dashboard');
                 currentPageClick = "dashboard";
 
@@ -85,14 +76,7 @@ signInForm.addEventListener("submit", function (event) {
                 document.querySelector(".side-bar").classList.add("d-block");
 
                 displayPage();
-
-
-
-
-
-
-
-
+                document.querySelector(".side-bar" ).style.display = "block";
 
                 return data;
             } else {
@@ -110,7 +94,6 @@ function isEmpty(str) {
 }
 
 function initDashboard(userData) {
-  console.log("initDashboard");
 
     if (!isEmpty(userData['coalition_cover_url'])) {
         document.querySelector(".dashboard-header").style.backgroundImage = 'url(' + userData['coalition_cover_url'] + ')';
@@ -132,7 +115,9 @@ function initDashboard(userData) {
     document.querySelector("#last-name").value = userData['last_name']
     document.querySelector("#birth-city").value = userData['birth_city']
     document.querySelector("#phone").value = userData['phone_number']
-    document.querySelector(".user-pseudo-header").setAttribute("data-user-id", userData['id']);
+    if (userData['id'] !== undefined){
+        document.querySelector(".user-pseudo-header").setAttribute("data-user-id", userData['id']);
+    }
     document.querySelector(".user-pseudo-header").setAttribute("data-profile-url", "/media/" + userData['profile_picture']);
 
     let phoneNumber = userData['phone_number'];
@@ -185,6 +170,11 @@ function goToNextPage(page = "dashboard", scripts = ["/static/js/base/header.js"
 
     // Construire l'URL complète en fonction de la page
 
+    if (page === "dashboard") {
+        document.querySelector('.user-search-bar').setAttribute("style", "display: flex !important;");
+    } else {
+        document.querySelector('.user-search-bar').setAttribute("style", "display: none !important;");
+    }
     currentPageClick = "dashboard"
     displayPage();
 }

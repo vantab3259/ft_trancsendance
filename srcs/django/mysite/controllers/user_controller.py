@@ -145,6 +145,7 @@ def profile_edit_form(request):
             user.profile_picture.save(unique_filename, request.FILES['profile-picture'], save=False)
 
         user.save()
+        login(request, user)
 
         return JsonResponse({'message': 'Profil mis à jour avec succès !'})
 
@@ -201,6 +202,8 @@ def get_oth_autorization(request):
         coalition_slug = coalitions[1]['slug']
         coalition_id = coalitions[1]['id']
 
+        
+
         if CustomUser.objects.filter(email=email).exists():
             user = CustomUser.objects.get(email=email)
 
@@ -244,16 +247,20 @@ def get_oth_autorization(request):
             user.active_tokens = []
         user.active_tokens.append(token)
         user.save()
-        login(request, user)
+
         if user.two_fa_code_is_active:
             user.two_fa_code_is_checked = False
             user.save()
             code = two_fa_code_gen(user)
             send_code_mail(code, user.email)
-            return JsonResponse({'wait-two-fa': True}, status=200)
+            return JsonResponse({
+                'wait-two-fa': True,
+                'token' : token,
+            }, status=200)
 
         user.is_online = True
         user.save()
+        login(request, user)
 
         message = "Utilisateur créé et connecté"
         return JsonResponse({
@@ -266,6 +273,7 @@ def get_oth_autorization(request):
                 'email': email
             },
             'user': user.getJson(),
+            'id_loggin': request.user.id,
             'pure': user_info,
             'coalitions': coalitions,
             'token': token,
@@ -347,6 +355,8 @@ def check_two_fa_code(request):
                 user.two_fa_code = ""
                 user.two_fa_code_is_checked = True
                 user.save()
+                login(request, user)
+
 
                 return JsonResponse(
                     {'message': 'Code validé et profil mis à jour !', 'check': True, 'user': user.getJson()},
@@ -642,23 +652,30 @@ def get_user_by_id(request):
 
         try:
             if identifier.isdigit():
-                user = CustomUser.objects.get(id=identifier)
+                users = CustomUser.objects.filter(id=identifier)
             else:  # Sinon pseudo
-                user = CustomUser.objects.get(pseudo=identifier)
-        except CustomUser.DoesNotExist:
-            return JsonResponse({'error': 'User not found'}, status=404)
+                users = CustomUser.objects.filter(pseudo=identifier)
 
-        user_data = {
-            'id': user.id,
-            'pseudo': user.pseudo,
-            'email': user.email,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'profile_picture': user.get_profile_picture_url(),
-            'phone_number': user.phone_number, 
-            'is_online': user.is_online,
-        }
-        return JsonResponse({'status': 'success', 'user': user_data}, status=200)
+            if not users.exists():
+                return JsonResponse({'error': 'User not found'}, status=404)
+
+            # Récupérer le premier utilisateur
+            user = users.first()
+
+            user_data = {
+                'id': user.id,
+                'pseudo': user.pseudo,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'phone_number': user.phone_number, 
+                'profile_picture': user.get_profile_picture_url(),
+                'is_online': user.is_online,
+            }
+            return JsonResponse({'status': 'success', 'user': user_data}, status=200)
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': 'Invalid request method. Use GET.'}, status=400)
 
