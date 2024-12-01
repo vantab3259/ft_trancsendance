@@ -561,6 +561,7 @@ document.querySelector('.view-profile').addEventListener('click', function () {
     currentPageClick = "dashboard";
     loadContent('/dashboard', 'Dashboard', "dashboard", ['/static/js/dashboard/dashboard.js']);
 
+
     fetch(`/get-user-by-id/?user_id=${selectedFriendId}`, {
         method: 'GET',
         headers: {
@@ -573,6 +574,7 @@ document.querySelector('.view-profile').addEventListener('click', function () {
         if (data.status === 'success') {
             populateUserData(data.user);
             fetchMatchHistory(selectedFriendId);
+            document.getElementById("friends-container").style.display = "none";
         } else {
             console.error(data.error);
             alert('User not found.');
