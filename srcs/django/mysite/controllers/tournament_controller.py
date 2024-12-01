@@ -53,6 +53,7 @@ def create_tournament(request):
         data = json.loads(request.body)
         name = data.get('name', 'Tournament')
         nickname = data.get('nickname', '').strip() or request.user.pseudo
+        nickname = f"{nickname}#{request.user.id}"
         user = request.user
 
         tournament = Tournament.objects.create(name=name)
@@ -89,6 +90,7 @@ def join_tournament(request, tournament_id):
 
         data = json.loads(request.body)
         nickname = data.get('nickname', '').strip() or request.user.pseudo
+        nickname = f"{nickname}#{user.id}"
 
         tournament = get_object_or_404(Tournament, id=tournament_id, is_active=True)
 

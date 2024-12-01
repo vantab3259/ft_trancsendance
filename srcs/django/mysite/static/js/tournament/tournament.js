@@ -1,3 +1,7 @@
+
+let pollingInterval = null;
+
+
 async function onCreateTournament() {
     const tournamentName = document.getElementById('tournament-name').value;
     const nickname = document.getElementById('tournament-player-nickname').value;
@@ -72,6 +76,14 @@ async function onJoinTournament() {
 function showWaitingRoom(tournamentName = '', tournamentId = '') {
     clickOnReadyButton = 0
     console.log('Switching to the waiting room.');
+
+
+    document.getElementById('player-names').innerHTML = '';
+    document.getElementById('tournament-room-name').textContent = '';
+    document.getElementById('tournament-room-id').textContent = '';
+    document.getElementById('tournament-bracket').innerHTML = '';
+  
+
     document.getElementById('create-or-join-section').style.display = 'none';
     document.getElementById('waiting-room').style.display = 'block';
     document.getElementById("settingsTOUR").style.display = "none";
@@ -91,12 +103,15 @@ function showTournamentBracket() {
 }
 
 async function pollForPlayers(tournamentId) {
-
     console.log('Polling for players in tournament:', tournamentId);
 
     const playerListElement = document.getElementById('player-names');
 
-    const interval = setInterval(async () => {
+    if (pollingInterval) {
+        clearInterval(pollingInterval);
+    }
+
+    pollingInterval = setInterval(async () => {
         console.log('Polling tournament details...');
 
         try {
@@ -109,14 +124,14 @@ async function pollForPlayers(tournamentId) {
 
             if (!response.ok) {
                 console.error('Error response from server:', response.status);
-                clearInterval(interval);
+                clearInterval(pollingInterval);
+                pollingInterval = null;
                 showFlashMessage('error', '❌ Failed to fetch tournament details.');
-
                 return;
             }
 
             const data = await response.json();
-            console.log('Received tournament data:', data); 
+            console.log('Received tournament data:', data);
 
             if (data.status === 'success') {
                 const players = [];
@@ -132,7 +147,8 @@ async function pollForPlayers(tournamentId) {
 
                 if (players.length === 4) {
                     console.log('4 players joined. Launching tournament.');
-                    clearInterval(interval);
+                    clearInterval(pollingInterval);
+                    pollingInterval = null;
                     showFlashMessage('success', '✅ The tournament is starting!');
 
                     showTournamentBracket();
@@ -140,15 +156,18 @@ async function pollForPlayers(tournamentId) {
                 }
             } else {
                 console.error('Error fetching tournament details:', data.error);
-                clearInterval(interval);
+                clearInterval(pollingInterval);
+                pollingInterval = null;
                 alert(data.error);
             }
         } catch (error) {
             console.error('Error during polling:', error);
-            clearInterval(interval);
+            clearInterval(pollingInterval);
+            pollingInterval = null;
         }
-    }, 2000); 
+    }, 2000);
 }
+
 
 async function loadTournamentDetails(tournamentId) {
     try {
@@ -363,7 +382,12 @@ async function pollTournamentUpdates(tournamentId) {
 
     let hasBeenNotified = false;
 
-    const interval = setInterval(async () => {
+    // Clear any existing polling intervals
+    if (pollingInterval) {
+        clearInterval(pollingInterval);
+    }
+
+    pollingInterval = setInterval(async () => {
         try {
             const response = await fetch(`/tournament/${tournamentId}/details/`, {
                 method: 'GET',
@@ -374,10 +398,9 @@ async function pollTournamentUpdates(tournamentId) {
 
             if (!response.ok) {
                 console.error('Error fetching tournament details:', response.status);
-                clearInterval(interval);
-
+                clearInterval(pollingInterval);
+                pollingInterval = null;
                 showFlashMessage('error', '❌ Failed to fetch tournament updates.');
-
                 return;
             }
 
@@ -391,7 +414,6 @@ async function pollTournamentUpdates(tournamentId) {
                 tournament.rounds.forEach(round => {
                     round.matches.forEach(match => {
                         if (!match.is_complete && match.is_current_user_in_match && !hasBeenNotified) {
- 
                             showFlashMessage('success', '✅ Tournament system: You are expected for the game!');
                             hasBeenNotified = true;
                         }
@@ -400,25 +422,26 @@ async function pollTournamentUpdates(tournamentId) {
 
                 if (tournament.is_completed) {
                     console.log('Tournament completed. Stopping updates.');
-                    // document.getElementById("goofysettings").style.display = "block";
                     document.getElementById("settingslobby").style.display = "block";
                     document.getElementById("settingsTOUR").style.display = "block";
-                    clearInterval(interval);
-                    // document.getElementById('reset-tournament-section').style.display = 'block';
-
+                    clearInterval(pollingInterval);
+                    pollingInterval = null;
                     showFlashMessage('success', '✅ The tournament is over!');
                 }
             } else {
                 console.error('Error in tournament updates:', data.error);
-                clearInterval(interval);
+                clearInterval(pollingInterval);
+                pollingInterval = null;
                 alert(data.error);
             }
         } catch (error) {
             console.error('Error during tournament update polling:', error);
-            clearInterval(interval);
+            clearInterval(pollingInterval);
+            pollingInterval = null;
         }
     }, 2000);
 }
+
 
 
 function resetTournamentPage() {
