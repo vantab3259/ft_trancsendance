@@ -62,15 +62,18 @@ def two_fa_required(view_func):
 
 @two_fa_required
 def home(request):
-	return render(request, 'login/login.html')
+    redirect_string = os.getenv('REDIRECT_STRING')
+    return render(request, 'login/login.html', {'redirect_string': redirect_string})
 
 @two_fa_required
 def base(request):
-	return render(request, 'base/base.html')
+    redirect_string = os.getenv('REDIRECT_STRING')
+    return render(request, 'base/base.html', {'redirect_string': redirect_string})
 
 @not_logged_in_required
 def login(request):
-	return render(request, 'base/base.html')
+    redirect_string = os.getenv('REDIRECT_STRING')
+    return render(request, 'base/base.html', {'redirect_string': redirect_string})
 
 @login_required(login_url='/login/')
 def about(request):
