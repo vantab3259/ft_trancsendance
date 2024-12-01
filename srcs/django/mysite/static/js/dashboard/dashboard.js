@@ -266,6 +266,7 @@ function injectGamesIntoHistory(games) {
           </div>
           <div class="match-stats">
               <span class="match-date">${game.date}</span>
+              <span class="match-result">${game.result}</span>
               <span class="match-score">Score: ${game.score}</span>
               <span class="match-duration">Duration: ${game.duration}</span>
           </div>
@@ -362,40 +363,6 @@ function fetchMatchHistory(userId) {
             }
         })
         .catch(error => console.error('Error:', error));
-}
-
-function injectGamesIntoHistory(games) {
-    const historyList = document.querySelector(".match-history-list");
-    historyList.innerHTML = '';
-
-    games.forEach((game) => {
-        const gameItem = document.createElement('li');
-        gameItem.classList.add('match-history-item', game.result);
-
-        gameItem.innerHTML = `
-            <div class="player-info-wrapper">
-                <img src="${game.opponent_image}" alt="Opponent's Profile Picture" class="opponent-image">
-            </div>
-            <div class="content-versus">
-                <span class="versus">Vs</span>
-            </div>
-            <div class="opponent-info-wrapper">
-                <span class="opponent-name">${game.opponent_name}</span>
-                <img src="${game.opponent_image}" alt="Opponent's Profile Picture" class="opponent-image">
-            </div>
-            <div class="match-stats">
-                <span class="match-date">${game.date}</span>
-                <span class="match-score">Score: ${game.score}</span>
-                <span class="match-duration">Duration: ${game.duration}</span>
-            </div>
-        `;
-
-        historyList.appendChild(gameItem);
-    });
-
-    if (games.length === 0) {
-        historyList.innerHTML = '<li class="label-no-games-found">No games found.</li>';
-    }
 }
 
 function renderRankingChart(players) {
