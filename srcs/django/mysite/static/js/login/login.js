@@ -34,7 +34,8 @@ signUpForm.addEventListener("submit", function (event) {
 
             if (data['status'] === "success") {
                 localStorage.setItem('token', data.token);
-
+                
+                setUserIdOnWebsite();
                 initDashboard(data['data']['user'][0]['fields']);
                 goToNextPage();
                 document.getElementById("signup-form").reset();
@@ -238,7 +239,7 @@ function setUserIdOnWebsite()
             if (data['status'] === "success") {
                 let idUser = data['id'];
                 document.querySelector('.user-pseudo-header').setAttribute('data-user-id', idUser);
-                console.log("set id")
+                console.log("set id");
             }
 
         })
