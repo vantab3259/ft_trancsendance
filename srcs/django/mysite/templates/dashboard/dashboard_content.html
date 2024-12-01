@@ -120,6 +120,13 @@
     
 </div>
 
+<div id="friends-container" class="sub-first-container-dashboard">
+    <div class="sub-first-content-dashboard">
+        {% include 'friends/friends_content.html' %}
+    </div>
+</div>
+
+
 <div class="sub-first-container-dashboard">
     <div class="sub-first-content-dashboard" >
         {% include 'history_match/history_match_content.html' %}
@@ -139,11 +146,7 @@
     
     
 </div>
-<div id="friends-container" class="sub-first-container-dashboard">
-    <div class="sub-first-content-dashboard">
-        {% include 'friends/friends_content.html' %}
-    </div>
-</div>
+
 <link rel="stylesheet" href="{% static 'css/dashboard/dashboard.css' %}">
 <script src="{% static 'js/dashboard/dashboard.js' %}"></script>
 
